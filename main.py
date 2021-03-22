@@ -2,6 +2,9 @@ import sys
 import json
 import pathlib
 import datetime
+import PyQt6.QtWidgets
+import PyQt6.QtCore
+
 
 BASE_DIR = pathlib.Path().resolve()
 DATABASE = 'userdb.json'
