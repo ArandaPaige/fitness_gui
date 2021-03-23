@@ -26,14 +26,18 @@ class LoginMenu(QWidget):
         self.setFixedSize(400, 200)
         self.layout = QVBoxLayout()
         # Login display
-        self.user_display()
-        self.password_display()
+        self.userDisplay()
+        self.passwordDisplay()
 
-    def user_display(self):
-        self.layout.addWidget(QLineEdit)
+    def usernameDisplay(self):
+        username_box = QLineEdit()
+        username_box.setFixedSize(100, 20)
+        self.layout.addWidget(username_box)
 
-    def password_display(self):
-        self.layout.addWidget(QLineEdit)
+    def passwordDisplay(self):
+        password_box = QLineEdit()
+        password_box.setFixedSize(100, 20)
+        self.layout.addWidget(password_box)
 
 class MainMenu(QWidget):
     '''Main menu'''
