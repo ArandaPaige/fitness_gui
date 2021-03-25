@@ -3,6 +3,11 @@ import json
 import pathlib
 import datetime
 
+from menu import LoginMenu
+from menu import UserSelectionMenu
+from menu import CreateUserMenu
+
+from PyQt6.QtWidgets import QApplication
 
 
 BASE_DIR = pathlib.Path().resolve()
@@ -10,7 +15,7 @@ DATABASE = 'userdb.json'
 DB_BACKUP = 'dbbackup.json'
 DATABASEPATH = BASE_DIR / DATABASE
 DATETODAY = datetime.date.today()
-
+QTAPP = QApplication(sys.argv)
 
 def create_database():
     '''
@@ -588,7 +593,9 @@ def user_date_entry():
 def main():
     if DATABASEPATH.exists() == False:
         create_database()
-    user_selection()
+    usermenu = UserSelectionMenu()
+    usermenu.show()
+    sys.exit(QTAPP.exec())
 
 
 if __name__ == '__main__':
