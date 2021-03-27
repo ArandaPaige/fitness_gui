@@ -1,5 +1,3 @@
-import sys
-
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
@@ -11,10 +9,10 @@ class MainGUI(QWidget):
     def __init__(self):
         '''Initialize'''
         super().__init__()
-        self.user_selection_menu = UserSelectionMenu()
-        self.new_user_menu = CreateUserMenu()
-        self.login_menu = LoginMenu()
-        self.main_menu = MainMenu()
+        self.user_selection_menu = UserSelectionMenu(self)
+        self.new_user_menu = CreateUserMenu(self)
+        self.login_menu = LoginMenu(self)
+        self.main_menu = MainMenu(self)
         self.active_window = self.user_selection_menu
         self.active_window.show()
 
@@ -32,9 +30,10 @@ class MainGUI(QWidget):
 class UserSelectionMenu(QWidget):
     '''Main menu'''
 
-    def __init__(self):
+    def __init__(self, master):
         '''Initialize'''
         super().__init__()
+        self.master = master
         # Window properties
         self.setWindowTitle("Boog's Fitness Cruncher: User Selection")
         self.setFixedSize(400, 400)
@@ -55,18 +54,24 @@ class UserSelectionMenu(QWidget):
         self.layout.addWidget(self.existing_user_button)
 
     def new_user_transition(self):
-        CreateUserMenu()
+        pass
+
+    def existing_user_transition(self):
+        pass
+
 
 
 class CreateUserMenu(QWidget):
     '''Create new user'''
 
-    def __init__(self):
+    def __init__(self, master):
         '''Initialize'''
         super().__init__()
+        self.master = master
         # Window properties
         self.setWindowTitle("Boog's Fitness Cruncher: New User")
         self.setFixedSize(400, 400)
+
         # Sets the layout
         self.layout = QVBoxLayout(self)
         self.menu()
@@ -93,9 +98,10 @@ class CreateUserMenu(QWidget):
 class LoginMenu(QWidget):
     '''Main menu'''
 
-    def __init__(self):
+    def __init__(self, master):
         '''Initialize'''
         super().__init__()
+        self.master = master
         # Window Properties
         self.setWindowTitle("Boog's Fitness Cruncher: Login")
         self.setFixedSize(400, 200)
@@ -112,9 +118,11 @@ class LoginMenu(QWidget):
 class MainMenu(QWidget):
     '''Main menu'''
 
-    def __init__(self):
+    def __init__(self, master):
         '''Initialize'''
         super().__init__()
+        self.master = master
         # Window Properties
         self.setWindowTitle("Main Menu")
         self.setBaseSize(450, 450)
+
