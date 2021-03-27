@@ -5,6 +5,30 @@ from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 
 
+class MainGUI(QWidget):
+    '''Main GUI'''
+
+    def __init__(self):
+        '''Initialize'''
+        super().__init__()
+        self.user_selection_menu = UserSelectionMenu()
+        self.new_user_menu = CreateUserMenu()
+        self.login_menu = LoginMenu()
+        self.main_menu = MainMenu()
+        self.active_window = self.user_selection_menu
+        self.active_window.show()
+
+    def set_active_window(self, window):
+        self.active_window = window
+        self.active_window.show()
+
+    def hide_window(self, window):
+        window.hide()
+
+    def close_window(self, window):
+        window.close()
+
+
 class UserSelectionMenu(QWidget):
     '''Main menu'''
 
@@ -12,20 +36,26 @@ class UserSelectionMenu(QWidget):
         '''Initialize'''
         super().__init__()
         # Window properties
-        self.setWindowTitle("Boog's Fitness Cruncher")
+        self.setWindowTitle("Boog's Fitness Cruncher: User Selection")
         self.setFixedSize(400, 400)
         # Sets the layout
         self.layout = QHBoxLayout(self)
-        self.menu()
+        self.new_user_display()
+        self.existing_user_display()
 
-    def menu(self):
+    def new_user_display(self):
         self.new_user_button = QPushButton('New User', self)
         self.new_user_button.setFixedHeight(35)
+        self.new_user_button.clicked.connect(self.new_user_transition)
         self.layout.addWidget(self.new_user_button)
 
+    def existing_user_display(self):
         self.existing_user_button = QPushButton('Existing User', self)
         self.existing_user_button.setFixedHeight(35)
         self.layout.addWidget(self.existing_user_button)
+
+    def new_user_transition(self):
+        CreateUserMenu()
 
 
 class CreateUserMenu(QWidget):
@@ -42,17 +72,22 @@ class CreateUserMenu(QWidget):
         self.menu()
 
     def menu(self):
-        username = QLineEdit('Username', self)
-        names = QLineEdit('Name', self)
-        starting_weight = QLineEdit('Starting Weight', self)
-        current_weight = QLineEdit('Current Weight', self)
-        height = QLineEdit('Height', self)
+        self.username = QLineEdit(self)
+        self.username.setPlaceholderText('Username')
+        self.name = QLineEdit(self)
+        self.name.setPlaceholderText('Name')
+        self.starting_weight = QLineEdit(self)
+        self.starting_weight.setPlaceholderText('Starting Weight')
+        self.current_weight = QLineEdit(self)
+        self.current_weight.setPlaceholderText('Current Weight')
+        self.height = QLineEdit(self)
+        self.height.setPlaceholderText('Height')
         # arranges the widgets in the layout
-        self.layout.addWidget(username)
-        self.layout.addWidget(names)
-        self.layout.addWidget(starting_weight)
-        self.layout.addWidget(current_weight)
-        self.layout.addWidget(height)
+        self.layout.addWidget(self.username)
+        self.layout.addWidget(self.name)
+        self.layout.addWidget(self.starting_weight)
+        self.layout.addWidget(self.current_weight)
+        self.layout.addWidget(self.height)
 
 
 class LoginMenu(QWidget):
@@ -62,7 +97,7 @@ class LoginMenu(QWidget):
         '''Initialize'''
         super().__init__()
         # Window Properties
-        self.setWindowTitle("Login")
+        self.setWindowTitle("Boog's Fitness Cruncher: Login")
         self.setFixedSize(400, 200)
         self.layout = QVBoxLayout()
         # Login display

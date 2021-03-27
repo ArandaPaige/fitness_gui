@@ -5,6 +5,7 @@ import datetime
 
 from menu import LoginMenu
 from menu import UserSelectionMenu
+from menu import MainGUI
 from menu import CreateUserMenu
 
 from PyQt6.QtWidgets import QApplication
@@ -593,8 +594,7 @@ def user_date_entry():
 def main():
     if DATABASEPATH.exists() == False:
         create_database()
-    usermenu = UserSelectionMenu()
-    usermenu.show()
+    appgui = MainGUI()
     sys.exit(QTAPP.exec())
 
 
