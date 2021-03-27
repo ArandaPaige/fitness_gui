@@ -3,10 +3,7 @@ import json
 import pathlib
 import datetime
 
-from menu import LoginMenu
-from menu import UserSelectionMenu
-from menu import MainGUI
-from menu import CreateUserMenu
+from menu import GUIManager
 
 from PyQt6.QtWidgets import QApplication
 
@@ -594,7 +591,7 @@ def user_date_entry():
 def main():
     if DATABASEPATH.exists() == False:
         create_database()
-    appgui = MainGUI()
+    appgui = GUIManager()
     sys.exit(QTAPP.exec())
 
 

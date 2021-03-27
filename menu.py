@@ -3,7 +3,7 @@ from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 
 
-class MainGUI(QWidget):
+class GUIManager(QWidget):
     '''Main GUI'''
 
     def __init__(self):
@@ -17,6 +17,7 @@ class MainGUI(QWidget):
         self.active_window.show()
 
     def set_active_window(self, window):
+        self.active_window.hide()
         self.active_window = window
         self.active_window.show()
 
@@ -54,7 +55,7 @@ class UserSelectionMenu(QWidget):
         self.layout.addWidget(self.existing_user_button)
 
     def new_user_transition(self):
-        pass
+        self.master.set_active_window(self.master.new_user_menu)
 
     def existing_user_transition(self):
         pass
