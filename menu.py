@@ -52,14 +52,14 @@ class UserSelectionMenu(QWidget):
     def existing_user_display(self):
         self.existing_user_button = QPushButton('Existing User', self)
         self.existing_user_button.setFixedHeight(35)
+        self.existing_user_button.clicked.connect(self.existing_user_transition)
         self.layout.addWidget(self.existing_user_button)
 
     def new_user_transition(self):
         self.master.set_active_window(self.master.new_user_menu)
 
     def existing_user_transition(self):
-        pass
-
+        self.master.set_active_window(self.master.login_menu)
 
 
 class CreateUserMenu(QWidget):
@@ -77,23 +77,49 @@ class CreateUserMenu(QWidget):
         self.layout = QVBoxLayout(self)
         self.menu()
 
+    def username_edit(self):
+        username_label = QLabel(self)
+        username_label.setText('Username')
+        username = QLineEdit(self)
+        username.setPlaceholderText('Username')
+        return username_label, username
+
+    def names_edit(self):
+        name = QLineEdit(self)
+        name.setPlaceholderText('Name')
+        return name
+
+    def starting_weight_edit(self):
+        starting_weight = QLineEdit(self)
+        starting_weight.setPlaceholderText('Starting Weight')
+        validator = QDoubleValidator(75, 999, 3, starting_weight)
+        validator.Notation(0)
+        starting_weight.setValidator(validator)
+        return starting_weight
+
+    def current_weight_edit(self):
+        current_weight = QLineEdit(self)
+        current_weight.setPlaceholderText('Current Weight')
+        return current_weight
+
+    def height_edit(self):
+        height = QLineEdit(self)
+        height.setPlaceholderText('Height')
+        return height
+
     def menu(self):
-        self.username = QLineEdit(self)
-        self.username.setPlaceholderText('Username')
-        self.name = QLineEdit(self)
-        self.name.setPlaceholderText('Name')
-        self.starting_weight = QLineEdit(self)
-        self.starting_weight.setPlaceholderText('Starting Weight')
-        self.current_weight = QLineEdit(self)
-        self.current_weight.setPlaceholderText('Current Weight')
-        self.height = QLineEdit(self)
-        self.height.setPlaceholderText('Height')
-        # arranges the widgets in the layout
-        self.layout.addWidget(self.username)
-        self.layout.addWidget(self.name)
-        self.layout.addWidget(self.starting_weight)
-        self.layout.addWidget(self.current_weight)
-        self.layout.addWidget(self.height)
+        username_label, username = self.username_edit()
+        name = self.names_edit()
+        starting_weight = self.starting_weight_edit()
+        current_weight = self.current_weight_edit()
+        height = self.height_edit()
+        # arranges the widgets in the menu layout
+        self.layout.addWidget(username_label)
+        self.layout.addWidget(username)
+        self.layout.addWidget(name)
+        self.layout.addWidget(starting_weight)
+        self.layout.addWidget(current_weight)
+        self.layout.addWidget(height)
 
 
 class LoginMenu(QWidget):
@@ -105,15 +131,16 @@ class LoginMenu(QWidget):
         self.master = master
         # Window Properties
         self.setWindowTitle("Boog's Fitness Cruncher: Login")
-        self.setFixedSize(400, 200)
+        self.setFixedSize(400, 400)
         self.layout = QVBoxLayout()
         # Login display
         self.username_display()
 
     def username_display(self):
-        username_box = QLineEdit()
-        username_box.setFixedSize(100, 20)
-        self.layout.addWidget(username_box)
+        self.username_box = QLineEdit(self)
+        self.username_box.setFixedSize(400, 40)
+        self.username_box.setPlaceholderText('Enter a valid username')
+        self.layout.addWidget(self.username_box)
 
 
 class MainMenu(QWidget):
@@ -126,4 +153,3 @@ class MainMenu(QWidget):
         # Window Properties
         self.setWindowTitle("Main Menu")
         self.setBaseSize(450, 450)
-
