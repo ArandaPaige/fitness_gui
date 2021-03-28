@@ -154,7 +154,7 @@ class LoginMenu(QWidget):
         # Window Properties
         self.setWindowTitle("Boog's Fitness Cruncher: Login")
         self.setFixedSize(400, 400)
-        self.layout = QVBoxLayout()
+        self.layout = QGridLayout(self)
         # Login display
         self.menu()
 
@@ -184,16 +184,21 @@ class LoginMenu(QWidget):
 
     def menu(self):
         username = self.username_display()
-        self.layout.addWidget(username)
+        confirm = self.confirm_button()
+        cancel = self.cancel_button()
+        self.layout.addWidget(username, 0, 0, Qt.Alignment.AlignLeft)
+        self.layout.addWidget(confirm, 1, 1, Qt.Alignment.AlignRight)
+        self.layout.addWidget(cancel, 1, 2, Qt.Alignment.AlignRight)
 
 
 class MainMenu(QWidget):
     '''Main menu'''
 
-    def __init__(self, master):
+    def __init__(self, master, user=None):
         '''Initialize'''
         super().__init__()
         self.master = master
+        self.user = user
         # Window Properties
         self.setWindowTitle("Main Menu")
         self.setBaseSize(450, 450)
