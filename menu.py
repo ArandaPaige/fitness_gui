@@ -82,7 +82,6 @@ class CreateUserMenu(QWidget):
         self.menu()
 
     def username_edit(self):
-
         username = QLineEdit(self)
         username.setPlaceholderText('Username')
         return username
@@ -166,12 +165,22 @@ class LoginMenu(QWidget):
         return username
 
     def confirm_button(self):
-        confirm = QPushButton(self)
+        confirm = QPushButton('Confirm', self)
+        confirm.setFixedHeight(35)
+        confirm.clicked.connect(self.confirm_transition)
         return confirm
 
     def cancel_button(self):
-        cancel = QPushButton(self)
+        cancel = QPushButton('Cancel', self)
+        cancel.setFixedHeight(35)
+        cancel.clicked.connect(self.cancel_transition)
         return cancel
+
+    def confirm_transition(self):
+        pass
+
+    def cancel_transition(self):
+        self.master.set_active_window(self.master.user_selection_menu)
 
     def menu(self):
         username = self.username_display()
