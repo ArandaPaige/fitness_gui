@@ -77,17 +77,15 @@ class CreateUserMenu(QWidget):
         # Window properties
         self.setWindowTitle("Boog's Fitness Cruncher: New User")
         self.setFixedSize(400, 400)
-
         # Sets the layout
-        self.layout = QVBoxLayout(self)
+        self.layout = QGridLayout(self)
         self.menu()
 
     def username_edit(self):
-        username_label = QLabel(self)
-        username_label.setText('Username')
+
         username = QLineEdit(self)
         username.setPlaceholderText('Username')
-        return username_label, username
+        return username
 
     def names_edit(self):
         name = QLineEdit(self)
@@ -112,26 +110,39 @@ class CreateUserMenu(QWidget):
         return height
 
     def confirm_button(self):
-        confirm = QPushButton(self)
+        confirm = QPushButton('Confirm', self)
+        confirm.setFixedHeight(35)
+        confirm.clicked.connect(self.confirm_transition)
         return confirm
 
     def cancel_button(self):
-        cancel = QPushButton(self)
+        cancel = QPushButton('Cancel', self)
+        cancel.setFixedHeight(35)
+        cancel.clicked.connect(self.cancel_transition)
         return cancel
 
+    def confirm_transition(self):
+        pass
+
+    def cancel_transition(self):
+        self.master.set_active_window(self.master.user_selection_menu)
+
     def menu(self):
-        username_label, username = self.username_edit()
+        username = self.username_edit()
         name = self.names_edit()
         starting_weight = self.starting_weight_edit()
         current_weight = self.current_weight_edit()
         height = self.height_edit()
+        confirm = self.confirm_button()
+        cancel = self.cancel_button()
         # arranges the widgets in the menu layout
-        self.layout.addWidget(username_label)
-        self.layout.addWidget(username)
-        self.layout.addWidget(name)
-        self.layout.addWidget(starting_weight)
-        self.layout.addWidget(current_weight)
-        self.layout.addWidget(height)
+        self.layout.addWidget(username, 1, 0)
+        self.layout.addWidget(name, 2, 0)
+        self.layout.addWidget(starting_weight, 3, 0)
+        self.layout.addWidget(current_weight, 4, 0)
+        self.layout.addWidget(height, 5, 0)
+        self.layout.addWidget(confirm, 6, 0, Qt.Alignment.AlignRight)
+        self.layout.addWidget(cancel, 6, 1, Qt.Alignment.AlignRight)
 
 
 class LoginMenu(QWidget):
