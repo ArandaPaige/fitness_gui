@@ -1,3 +1,5 @@
+from functools import partial
+
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
@@ -6,9 +8,10 @@ from PyQt6.QtCore import *
 class GUIManager(QWidget):
     '''Main GUI'''
 
-    def __init__(self):
+    def __init__(self, database):
         '''Initialize'''
         super().__init__()
+        self.database = database
         self.user_selection_menu = UserSelectionMenu(self)
         self.new_user_menu = CreateUserMenu(self)
         self.login_menu = LoginMenu(self)
@@ -86,7 +89,7 @@ class CreateUserMenu(QWidget):
         username.setPlaceholderText('Username')
         return username
 
-    def names_edit(self):
+    def name_edit(self):
         name = QLineEdit(self)
         name.setPlaceholderText('Name')
         return name
@@ -94,24 +97,28 @@ class CreateUserMenu(QWidget):
     def starting_weight_edit(self):
         starting_weight = QLineEdit(self)
         starting_weight.setPlaceholderText('Starting Weight')
-        validator = QDoubleValidator(75, 999, 3, starting_weight)
+        validator = QDoubleValidator(50, 999, 2, starting_weight)
         starting_weight.setValidator(validator)
         return starting_weight
 
     def current_weight_edit(self):
         current_weight = QLineEdit(self)
         current_weight.setPlaceholderText('Current Weight')
+        validator = QDoubleValidator(50, 99, 2, current_weight)
+        current_weight.setValidator(validator)
         return current_weight
 
     def height_edit(self):
         height = QLineEdit(self)
         height.setPlaceholderText('Height')
+        validator = QDoubleValidator(2, 9, 2, height)
+        height.setValidator(validator)
         return height
 
     def confirm_button(self):
         confirm = QPushButton('Confirm', self)
         confirm.setFixedHeight(35)
-        confirm.clicked.connect(self.confirm_transition)
+        confirm.clicked.connect(partial(self.confirm_transition))
         return confirm
 
     def cancel_button(self):
@@ -128,7 +135,7 @@ class CreateUserMenu(QWidget):
 
     def menu(self):
         username = self.username_edit()
-        name = self.names_edit()
+        name = self.name_edit()
         starting_weight = self.starting_weight_edit()
         current_weight = self.current_weight_edit()
         height = self.height_edit()
@@ -167,7 +174,7 @@ class LoginMenu(QWidget):
     def confirm_button(self):
         confirm = QPushButton('Confirm', self)
         confirm.setFixedHeight(35)
-        confirm.clicked.connect(self.confirm_transition)
+        confirm.clicked.connect(partial(self.confirm_transition))
         return confirm
 
     def cancel_button(self):
@@ -176,7 +183,7 @@ class LoginMenu(QWidget):
         cancel.clicked.connect(self.cancel_transition)
         return cancel
 
-    def confirm_transition(self):
+    def confirm_transition(self, username):
         pass
 
     def cancel_transition(self):
@@ -202,3 +209,13 @@ class MainMenu(QWidget):
         # Window Properties
         self.setWindowTitle("Main Menu")
         self.setBaseSize(450, 450)
+
+
+class UsernameValidator(QValidator):
+    '''Docstring'''
+
+    def __init__(self):
+        super().__init__()
+
+    def validate(self, p_str, p_int):
+        pass

@@ -591,7 +591,7 @@ def user_date_entry():
 def main():
     if DATABASEPATH.exists() == False:
         create_database()
-    appgui = GUIManager()
+    appgui = GUIManager(DATABASE)
     sys.exit(QTAPP.exec())
 
 
