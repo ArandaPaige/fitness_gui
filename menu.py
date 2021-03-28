@@ -98,7 +98,6 @@ class CreateUserMenu(QWidget):
         starting_weight = QLineEdit(self)
         starting_weight.setPlaceholderText('Starting Weight')
         validator = QDoubleValidator(75, 999, 3, starting_weight)
-        validator.Notation(0)
         starting_weight.setValidator(validator)
         return starting_weight
 
@@ -111,6 +110,14 @@ class CreateUserMenu(QWidget):
         height = QLineEdit(self)
         height.setPlaceholderText('Height')
         return height
+
+    def confirm_button(self):
+        confirm = QPushButton(self)
+        return confirm
+
+    def cancel_button(self):
+        cancel = QPushButton(self)
+        return cancel
 
     def menu(self):
         username_label, username = self.username_edit()
@@ -139,13 +146,25 @@ class LoginMenu(QWidget):
         self.setFixedSize(400, 400)
         self.layout = QVBoxLayout()
         # Login display
-        self.username_display()
+        self.menu()
 
     def username_display(self):
-        self.username_box = QLineEdit(self)
-        self.username_box.setFixedSize(400, 40)
-        self.username_box.setPlaceholderText('Enter a valid username')
-        self.layout.addWidget(self.username_box)
+        username = QLineEdit(self)
+        username.setFixedSize(400, 40)
+        username.setPlaceholderText('Enter a valid username')
+        return username
+
+    def confirm_button(self):
+        confirm = QPushButton(self)
+        return confirm
+
+    def cancel_button(self):
+        cancel = QPushButton(self)
+        return cancel
+
+    def menu(self):
+        username = self.username_display()
+        self.layout.addWidget(username)
 
 
 class MainMenu(QWidget):
