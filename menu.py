@@ -40,20 +40,25 @@ class UserSelectionMenu(QWidget):
         self.setFixedSize(400, 400)
         # Sets the layout
         self.layout = QHBoxLayout(self)
-        self.new_user_display()
-        self.existing_user_display()
+        self.menu()
 
     def new_user_display(self):
-        self.new_user_button = QPushButton('New User', self)
-        self.new_user_button.setFixedHeight(35)
-        self.new_user_button.clicked.connect(self.new_user_transition)
-        self.layout.addWidget(self.new_user_button)
+        new_user_button = QPushButton('New User', self)
+        new_user_button.setFixedHeight(35)
+        new_user_button.clicked.connect(self.new_user_transition)
+        return new_user_button
 
     def existing_user_display(self):
-        self.existing_user_button = QPushButton('Existing User', self)
-        self.existing_user_button.setFixedHeight(35)
-        self.existing_user_button.clicked.connect(self.existing_user_transition)
-        self.layout.addWidget(self.existing_user_button)
+        existing_user_button = QPushButton('Existing User', self)
+        existing_user_button.setFixedHeight(35)
+        existing_user_button.clicked.connect(self.existing_user_transition)
+        return existing_user_button
+
+    def menu(self):
+        new_user_button = self.new_user_display()
+        existing_user_button = self.existing_user_display()
+        self.layout.addWidget(new_user_button)
+        self.layout.addWidget(existing_user_button)
 
     def new_user_transition(self):
         self.master.set_active_window(self.master.new_user_menu)
