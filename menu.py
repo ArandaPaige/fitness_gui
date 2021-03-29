@@ -111,7 +111,7 @@ class CreateUserMenu(QWidget):
     def username_edit(self):
         username = QLineEdit(self)
         username.setPlaceholderText('Username')
-        username.editingFinished.connect(partial(self.user_setup, username=username)
+        username.editingFinished.connect(partial(self.user_setup, username=username))
         return username
 
     def name_edit(self):
