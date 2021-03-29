@@ -1,8 +1,110 @@
+import datetime
+import sqlite3
 from functools import partial
 
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
+
+DATETODAY = datetime.date.today()
+
+class User:
+    '''
+    A user is documented with their personal health and fitness statistics.
+    These statistics are collated to generate useful data, like the trajectory of
+    their weight loss/gain.
+    '''
+
+    def __init__(self, username, name, startingweight, currentweight, height, weight_history=None):
+        self.username = username
+        self.user_dict = self.user_dict_create(name, startingweight, currentweight, height, weight_history)
+
+    def __repr__(self):
+        return f'{self.user_dict}'
+
+    def set_weight(self, weight=None):
+        if weight == None:
+            while True:
+                weight = input("What is the user's current weight in lbs: ")
+                try:
+                    weight = float(weight)
+                    break
+                except ValueError as error:
+                    print(error)
+                    print("Please type a valid number.")
+                    continue
+        self.current_weight = weight
+        self.user_dict['current weight'] = weight
+
+    def set_startweight(self, weight=None):
+        '''
+        Sets the user's starting weight to a new figure.
+        :param weight: the new starting weight entry
+        '''
+        if weight == None:
+            while True:
+                weight = input("What is the user's starting weight in lbs: ")
+                try:
+                    weight = float(weight)
+                    break
+                except ValueError as error:
+                    print(error)
+                    print("Please type a valid number.")
+                    continue
+        self.starting_weight = weight
+        self.user_dict['starting weight'] = weight
+
+    def user_dict_create(self, name, startingweight, currentweight, height, weight_history=None):
+        '''
+        Creates a dictionary with all of the user's personal statistics to be serialized as JSON.
+        :param name: User's full name
+        :param startingweight: The user's starting weight.
+        :param currentweight: The user's current weight.
+        :param height: The user's height.
+        :param weight_history: User's weight history is mapped by date.
+        :return Dictionary: a dictionary containing the user's personal statistics.
+        '''
+        if weight_history == None:
+            return {
+                'name': name,
+                'starting weight': startingweight,
+                'current weight': currentweight,
+                'height': height,
+                'weight history': {
+                    str(DATETODAY): currentweight
+                }
+            }
+        else:
+            return {
+                'name': name,
+                'starting weight': startingweight,
+                'current weight': currentweight,
+                'height': height,
+                'weight history': weight_history
+            }
+
+    def weight_entry(self, date, weight):
+        '''Assign a new weight entry to the dictionary with the date as the key'''
+        try:
+            self.user_dict['weight history'][date] = weight
+        except KeyError as error:
+            print(error)
+
+
+    def display_weight_history(self):
+        '''Average all of the dictionary's entries and compares to starting weight and current weight'''
+        for key, value in sorted(self.user_dict['weight history'].items()):
+            print(f"Date: {key} | Weight: {value}")
+
+    def display_weight_change(self):
+        '''Average all of the dictionary's entries and compares to starting weight and current weight'''
+        comparison_value = None
+        count = 0
+        for key, value in sorted(self.user_dict['weight history'].items()):
+            if comparison_value == None:
+                comparison_value = value
+
+            count += 1
 
 
 class GUIManager(QWidget):
@@ -99,6 +201,7 @@ class CreateUserMenu(QWidget):
         starting_weight.setPlaceholderText('Starting Weight')
         validator = QDoubleValidator(50, 999, 2, starting_weight)
         starting_weight.setValidator(validator)
+        starting_weight.editingFinished.connect()
         return starting_weight
 
     def current_weight_edit(self):
@@ -127,7 +230,7 @@ class CreateUserMenu(QWidget):
         cancel.clicked.connect(self.cancel_transition)
         return cancel
 
-    def confirm_transition(self):
+    def confirm_transition(self, username, name, starting_weight, current_weight, height):
         pass
 
     def cancel_transition(self):
@@ -149,6 +252,7 @@ class CreateUserMenu(QWidget):
         self.layout.addWidget(height, 5, 0)
         self.layout.addWidget(confirm, 6, 0, Qt.Alignment.AlignRight)
         self.layout.addWidget(cancel, 6, 1, Qt.Alignment.AlignRight)
+
 
 
 class LoginMenu(QWidget):
@@ -217,5 +321,5 @@ class UsernameValidator(QValidator):
     def __init__(self):
         super().__init__()
 
-    def validate(self, p_str, p_int):
+    def validate(self, str, pos):
         pass
