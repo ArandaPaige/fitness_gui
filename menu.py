@@ -24,10 +24,6 @@ class User:
         self.weight_history = weight_history
 
 
-    def __repr__(self):
-        return f'{self.user_dict}'
-
-
 class GUIManager(QWidget):
     '''Main GUI'''
 
@@ -107,6 +103,7 @@ class CreateUserMenu(QWidget):
         # Sets the layout
         self.layout = QGridLayout(self)
         self.menu()
+        self.confirm_dialog()
 
     def username_edit(self):
         username = QLineEdit(self)
@@ -147,18 +144,19 @@ class CreateUserMenu(QWidget):
     def user_setup(self, username=None, name=None, starting_weight=None, current_weight=None, height=None):
         if username != None:
             self.user.username = username
-            print(f'Username is {username}')
+            print(f'Username is {username.text()}')
         if name != None:
             self.user.name = name
+            print(f'Name is {name.text()}')
         if starting_weight != None:
-            self.user.starting_weight = int(starting_weight.text())
+            self.user.starting_weight = float(starting_weight.text())
             print(f'Starting weight is {starting_weight.text()}')
         if current_weight != None:
-            self.user.current_weight = int(current_weight.text())
-            print(f'Current weight is {current_weight}')
+            self.user.current_weight = float(current_weight.text())
+            print(f'Current weight is {current_weight.text()}')
         if height != None:
             self.user.height = int(height.text())
-            print(f'Height is {height}')
+            print(f'Height is {height.text()}')
 
     def confirm_button(self):
         confirm = QPushButton('Confirm', self)
@@ -171,6 +169,25 @@ class CreateUserMenu(QWidget):
         cancel.setFixedHeight(35)
         cancel.clicked.connect(self.cancel_transition)
         return cancel
+
+    def confirm_dialog(self):
+        confirm = QDialog(self)
+        confirm.layout = QVBoxLayout(confirm)
+        confirm.show()
+        username = QLabel(f'Username: {self.user.username}', confirm)
+        name = QLabel(f'Name: {self.user.name}', confirm)
+        starting_weight = QLabel(f'Starting weight: {self.user.starting_weight}', confirm)
+        current_weight = QLabel(f'Current weight: {self.user.current_weight}', confirm)
+        height = QLabel(f'Height: {self.user.height}', confirm)
+        confirm_btn = QPushButton('Confirm', confirm)
+        cancel_btn = QPushButton('Cancel', confirm)
+        confirm.layout.addWidget(username)
+        confirm.layout.addWidget(name)
+        confirm.layout.addWidget(starting_weight)
+        confirm.layout.addWidget(current_weight)
+        confirm.layout.addWidget(height)
+        #confirm.accept.connect()
+        #confirm.reject.connect()
 
     def confirm_transition(self):
         pass
