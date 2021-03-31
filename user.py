@@ -65,7 +65,8 @@ class User:
     def insert_weight_entry(self, date, weight):
         db = sqlite3.connect(DATABASE)
         cur = db.cursor()
-        cur.execute('''INSERT INTO WEIGHT_HISTORY (DATE, WEIGHT) \
+        cur.execute('''
+        INSERT INTO WEIGHT_HISTORY (DATE, WEIGHT) \
             VALUES (?,?)'''), (date, weight)
         db.commit()
         db.close()
@@ -73,7 +74,8 @@ class User:
     def update_weight_entry(self, date, weight):
         db = sqlite3.connect(DATABASE)
         cur = db.cursor()
-        cur.execute('''UPDATE WEIGHT_HISTORY SET WEIGHT = ? WHERE ID =  ?'''), (weight, date)
+        cur.execute('''
+        UPDATE WEIGHT_HISTORY SET WEIGHT = ? WHERE ID =  ?'''), (weight, date)
         db.commit()
         db.close()
 
@@ -98,16 +100,22 @@ class User:
             self.height = int(height.text())
             print(f'Height is {height.text()}')
 
-    def set_name(self):
+    def set_name(self, name):
+        self.name = name
+
+    def set_starting_weight(self, weight):
+        self.starting_weight = weight
+
+    def set_current_weight(self, weight):
+        self.current_weight = weight
+
+    def set_height(self, height):
+        self.height = height
+
+    def convert_height_metric(self):
         pass
 
-    def set_starting_weight(self):
-        pass
-
-    def set_current_weight(self):
-        pass
-
-    def set_height(self):
+    def convert_weight_metric(self):
         pass
 
     def user_dict_create(self, name, startingweight, currentweight, height, weight_history=None):
