@@ -11,9 +11,7 @@ QTAPP = QApplication(sys.argv)
 
 
 def main():
-    appgui = GUIManager()
-    sys.exit(QTAPP.exec())
-
+    appgui = GUIManager(QTAPP)
 
 if __name__ == '__main__':
     main()

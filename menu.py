@@ -1,6 +1,5 @@
-import datetime
-import sqlite3
 from functools import partial
+import sys
 
 from user import User
 
@@ -9,18 +8,17 @@ from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 
 
-DATETODAY = str(datetime.date.today())
-
-
 class GUIManager(QWidget):
     '''Main GUI'''
 
-    def __init__(self):
+    def __init__(self, app):
         '''Initialize'''
         super().__init__()
         self.main_menu = MainMenu(self)
+        self.app = app
         self.active_window = self.main_menu
         self.active_window.show()
+        sys.exit(self.app.exec())
 
 
 class MainMenu(QWidget):
@@ -72,7 +70,7 @@ class UserLayout(QLayout):
         pass
 
     def generate_layout(self):
-        self.layout.addWidget( self.user_name)
+        self.layout.addWidget(self.user_name)
         self.layout.addWidget(self.user_weight)
         self.layout.addWidget(self.user_height)
 
