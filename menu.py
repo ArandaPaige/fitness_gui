@@ -2,26 +2,14 @@ import datetime
 import sqlite3
 from functools import partial
 
+from user import User
+
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 
-DATETODAY = datetime.date.today()
-
-class User:
-    '''
-    A user is documented with their personal health and fitness statistics.
-    These statistics are collated to generate useful data, like the trajectory of
-    their weight loss/gain.
-    '''
-
-    def __init__(self, username=None, name=None, startingweight=None, current_weight=None, height=None, weight_history=None):
-        self.username = username
-        self.name = name
-        self.starting_weight = startingweight
-        self.current_weight = current_weight
-        self.height = height
-        self.weight_history = weight_history
+DATABASE = 'user.db'
+DATETODAY = str(datetime.date.today())
 
 
 class GUIManager(QWidget):
@@ -31,85 +19,61 @@ class GUIManager(QWidget):
         '''Initialize'''
         super().__init__()
         self.database = database
-        self.user_selection_menu = UserSelectionMenu(self)
-        self.new_user_menu = CreateUserMenu(self)
-        self.login_menu = LoginMenu(self)
         self.main_menu = MainMenu(self)
-        self.active_window = self.user_selection_menu
+        self.active_window = self.main_menu
         self.active_window.show()
 
-    def set_active_window(self, window):
-        self.active_window.hide()
-        self.active_window = window
-        self.active_window.show()
 
-    def hide_window(self, window):
-        window.hide()
-
-    def close_window(self, window):
-        window.close()
-
-
-class UserSelectionMenu(QWidget):
+class MainMenu(QWidget):
     '''Main menu'''
 
-    def __init__(self, master):
+    def __init__(self, master, user):
         '''Initialize'''
         super().__init__()
         self.master = master
-        # Window properties
-        self.setWindowTitle("Boog's Fitness Cruncher: User Selection")
-        self.setFixedSize(400, 400)
-        # Sets the layout
-        self.layout = QHBoxLayout(self)
-        self.menu()
-
-    def new_user_display(self):
-        new_user_button = QPushButton('New User', self)
-        new_user_button.setFixedHeight(35)
-        new_user_button.clicked.connect(self.new_user_transition)
-        return new_user_button
-
-    def existing_user_display(self):
-        existing_user_button = QPushButton('Existing User', self)
-        existing_user_button.setFixedHeight(35)
-        existing_user_button.clicked.connect(self.existing_user_transition)
-        return existing_user_button
-
-    def menu(self):
-        new_user_button = self.new_user_display()
-        existing_user_button = self.existing_user_display()
-        self.layout.addWidget(new_user_button)
-        self.layout.addWidget(existing_user_button)
-
-    def new_user_transition(self):
-        self.master.set_active_window(self.master.new_user_menu)
-
-    def existing_user_transition(self):
-        self.master.set_active_window(self.master.login_menu)
-
-
-class CreateUserMenu(QWidget):
-    '''Create new user'''
-
-    def __init__(self, master):
-        '''Initialize'''
-        super().__init__()
-        self.master = master
-        self.user = User()
-        # Window properties
-        self.setWindowTitle("Boog's Fitness Cruncher: New User")
-        self.setFixedSize(400, 400)
-        # Sets the layout
+        self.user = user
+        # Window Properties
+        self.setWindowTitle("Main Menu")
+        self.setBaseSize(450, 450)
         self.layout = QGridLayout(self)
-        self.menu()
-        self.confirm_dialog()
 
-    def username_edit(self):
-        username = QLineEdit(self)
-        username.setPlaceholderText('Username')
-        username.editingFinished.connect(partial(self.user_setup, username=username))
-        return username
+    def new_user_layout(self):
+        pass
+
+    def old_user_layout(self):
+        pass
+
+    def change_layout(self, layout):
+        pass
+
+
+class UserLayout(QLayout):
+
+    def __init__(self, parent_window):
+        super().__init__()
+        self.parent = parent_window
+        self.layout = QVBoxLayout
+
+    def user_name(self):
+        pass
+
+    def user_weight(self):
+        pass
+
+    def user_height(self):
+        pass
+
+    def user_graph(self):
+        pass
+
+
+class CreateUserLayout(QLayout):
+
+    def __init__(self, parent_window):
+        super().__init__()
+        self.parent = parent_window
+        self.layout = QVBoxLayout
+        self.menu()
 
     def name_edit(self):
         name = QLineEdit(self)
@@ -141,23 +105,6 @@ class CreateUserMenu(QWidget):
         height.editingFinished.connect(partial(self.user_setup, height=height))
         return height
 
-    def user_setup(self, username=None, name=None, starting_weight=None, current_weight=None, height=None):
-        if username != None:
-            self.user.username = username
-            print(f'Username is {username.text()}')
-        if name != None:
-            self.user.name = name
-            print(f'Name is {name.text()}')
-        if starting_weight != None:
-            self.user.starting_weight = float(starting_weight.text())
-            print(f'Starting weight is {starting_weight.text()}')
-        if current_weight != None:
-            self.user.current_weight = float(current_weight.text())
-            print(f'Current weight is {current_weight.text()}')
-        if height != None:
-            self.user.height = int(height.text())
-            print(f'Height is {height.text()}')
-
     def confirm_button(self):
         confirm = QPushButton('Confirm', self)
         confirm.setFixedHeight(35)
@@ -170,33 +117,13 @@ class CreateUserMenu(QWidget):
         cancel.clicked.connect(self.cancel_transition)
         return cancel
 
-    def confirm_dialog(self):
-        confirm = QDialog(self)
-        confirm.layout = QVBoxLayout(confirm)
-        confirm.show()
-        username = QLabel(f'Username: {self.user.username}', confirm)
-        name = QLabel(f'Name: {self.user.name}', confirm)
-        starting_weight = QLabel(f'Starting weight: {self.user.starting_weight}', confirm)
-        current_weight = QLabel(f'Current weight: {self.user.current_weight}', confirm)
-        height = QLabel(f'Height: {self.user.height}', confirm)
-        confirm_btn = QPushButton('Confirm', confirm)
-        cancel_btn = QPushButton('Cancel', confirm)
-        confirm.layout.addWidget(username)
-        confirm.layout.addWidget(name)
-        confirm.layout.addWidget(starting_weight)
-        confirm.layout.addWidget(current_weight)
-        confirm.layout.addWidget(height)
-        #confirm.accept.connect()
-        #confirm.reject.connect()
-
     def confirm_transition(self):
-        pass
+        self.master.set_active_window(self.master.main_menu)
 
     def cancel_transition(self):
         self.master.set_active_window(self.master.user_selection_menu)
 
     def menu(self):
-        username = self.username_edit()
         name = self.name_edit()
         starting_weight = self.starting_weight_edit()
         current_weight = self.current_weight_edit()
@@ -204,80 +131,9 @@ class CreateUserMenu(QWidget):
         confirm = self.confirm_button()
         cancel = self.cancel_button()
         # arranges the widgets in the menu layout
-        self.layout.addWidget(username, 1, 0)
-        self.layout.addWidget(name, 2, 0)
-        self.layout.addWidget(starting_weight, 3, 0)
-        self.layout.addWidget(current_weight, 4, 0)
-        self.layout.addWidget(height, 5, 0)
-        self.layout.addWidget(confirm, 6, 0, Qt.Alignment.AlignRight)
-        self.layout.addWidget(cancel, 6, 1, Qt.Alignment.AlignRight)
-
-
-class LoginMenu(QWidget):
-    '''Main menu'''
-
-    def __init__(self, master):
-        '''Initialize'''
-        super().__init__()
-        self.master = master
-        # Window Properties
-        self.setWindowTitle("Boog's Fitness Cruncher: Login")
-        self.setFixedSize(400, 400)
-        self.layout = QGridLayout(self)
-        # Login display
-        self.menu()
-
-    def username_display(self):
-        username = QLineEdit(self)
-        username.setFixedSize(400, 40)
-        username.setPlaceholderText('Enter a valid username')
-        return username
-
-    def confirm_button(self):
-        confirm = QPushButton('Confirm', self)
-        confirm.setFixedHeight(35)
-        confirm.clicked.connect(partial(self.confirm_transition))
-        return confirm
-
-    def cancel_button(self):
-        cancel = QPushButton('Cancel', self)
-        cancel.setFixedHeight(35)
-        cancel.clicked.connect(self.cancel_transition)
-        return cancel
-
-    def confirm_transition(self, username):
-        pass
-
-    def cancel_transition(self):
-        self.master.set_active_window(self.master.user_selection_menu)
-
-    def menu(self):
-        username = self.username_display()
-        confirm = self.confirm_button()
-        cancel = self.cancel_button()
-        self.layout.addWidget(username, 0, 0, Qt.Alignment.AlignLeft)
-        self.layout.addWidget(confirm, 1, 1, Qt.Alignment.AlignRight)
-        self.layout.addWidget(cancel, 1, 2, Qt.Alignment.AlignRight)
-
-
-class MainMenu(QWidget):
-    '''Main menu'''
-
-    def __init__(self, master, user=None):
-        '''Initialize'''
-        super().__init__()
-        self.master = master
-        self.user = user
-        # Window Properties
-        self.setWindowTitle("Main Menu")
-        self.setBaseSize(450, 450)
-
-
-class UsernameValidator(QValidator):
-    '''Docstring'''
-
-    def __init__(self):
-        super().__init__()
-
-    def validate(self, str, pos):
-        pass
+        self.layout.addWidget(name, 1, 0)
+        self.layout.addWidget(starting_weight, 2, 0)
+        self.layout.addWidget(current_weight, 3, 0)
+        self.layout.addWidget(height, 4, 0)
+        self.layout.addWidget(confirm, 5, 0, Qt.Alignment.AlignRight)
+        self.layout.addWidget(cancel, 5, 1, Qt.Alignment.AlignRight)
