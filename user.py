@@ -1,3 +1,8 @@
+import sqlite3
+
+DATABASE = 'user.db'
+
+
 class User:
     '''
     A user is documented with their personal health and fitness statistics.
@@ -12,6 +17,23 @@ class User:
         self.current_weight = current_weight
         self.height = height
         self.weight_history = weight_history
+
+    def retrieve_user(self):
+        db = sqlite3.connect(DATABASE)
+        cur = db.cursor()
+        if cur.execute("SELECT name from USER") == None:
+            pass
+
+    def create_user_table(self):
+        db = sqlite3.connect(DATABASE)
+        cur = db.cursor()
+        cur.execute('''CREATE TABLE USER
+                (ID INT PRIMARY KEY NOT NULL,
+                NAME            TEXT NOT NULL,
+                WEIGHT          REAL NOT NULL,
+                HEIGHT          INT NOT NULL);'''
+        )
+
 
     def user_setup(self, name=None, starting_weight=None, current_weight=None, height=None):
         if name != None:
