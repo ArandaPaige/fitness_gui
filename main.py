@@ -11,7 +11,7 @@ QTAPP = QApplication(sys.argv)
 
 
 def main():
-    appgui = GUIManager(DATABASE)
+    appgui = GUIManager()
     sys.exit(QTAPP.exec())
 
 

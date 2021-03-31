@@ -15,10 +15,9 @@ DATETODAY = str(datetime.date.today())
 class GUIManager(QWidget):
     '''Main GUI'''
 
-    def __init__(self, database):
+    def __init__(self):
         '''Initialize'''
         super().__init__()
-        self.database = database
         self.main_menu = MainMenu(self)
         self.active_window = self.main_menu
         self.active_window.show()
