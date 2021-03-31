@@ -8,7 +8,6 @@ from menu import GUIManager
 
 
 QTAPP = QApplication(sys.argv)
-DATABASE = sqlite3.connect('user.db')
 
 
 def main():
