@@ -34,6 +34,13 @@ class User:
                 HEIGHT          INT NOT NULL);'''
         )
 
+    def create_weight_history_table(self):
+        db = sqlite3.connect(DATABASE)
+        cur = db.cursor()
+        cur.execute('''CREATE TABLE WEIGHT_HISTORY
+                (DATE TEXT PRIMARY KEY NOT NULL,
+                WEIGHT             REAL NOT NULL);'''
+        )
 
     def user_setup(self, name=None, starting_weight=None, current_weight=None, height=None):
         if name != None:
