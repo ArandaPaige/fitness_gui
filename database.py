@@ -1,6 +1,9 @@
 import sqlite3
+from pathlib import Path
 
+BASE_DIR = Path().resolve()
 DATABASE = 'user.db'
+DATABASE_PATH = BASE_DIR / DATABASE
 
 
 class UserDB(sqlite3):
@@ -10,8 +13,14 @@ class UserDB(sqlite3):
         super().__init__()
         self.user = None
 
-    @staticmethod
-    def create_user_table(self):
+    @classmethod
+    def create_database(cls):
+        if DATABASE_PATH.exists() == False:
+            pass
+
+
+    @classmethod
+    def create_user_table(cls):
         db = sqlite3.connect(DATABASE)
         cur = db.cursor()
         cur.execute('''
@@ -24,8 +33,8 @@ class UserDB(sqlite3):
         db.commit()
         db.close()
 
-    @staticmethod
-    def create_weight_history_table(self):
+    @classmethod
+    def create_weight_history_table(cls):
         db = sqlite3.connect(DATABASE)
         cur = db.cursor()
         cur.execute('''

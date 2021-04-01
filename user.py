@@ -1,8 +1,6 @@
-import sqlite3
 import datetime
 
 DATETODAY = datetime.date.today()
-DATABASE = 'user.db'
 
 
 class User:
@@ -12,12 +10,11 @@ class User:
     their weight loss/gain.
     '''
 
-    def __init__(self, name=None, starting_weight=None, current_weight=None, height=None,
+    def __init__(self, user_id=None, name=None, weight=None, height=None,
                  weight_history=None, metric=False):
-        self.ID = 1
+        self.user_id = user_id
         self.name = name
-        self.starting_weight = starting_weight
-        self.current_weight = current_weight
+        self.weight = weight
         self.height = height
         self.weight_history = weight_history
         self.metric = metric
@@ -39,20 +36,19 @@ class User:
     def set_name(self, name):
         self.name = name
 
-    def set_starting_weight(self, weight):
-        self.starting_weight = weight
-
-    def set_current_weight(self, weight):
-        self.current_weight = weight
+    def set__weight(self, weight):
+        self.weight = weight
 
     def set_height(self, height):
         self.height = height
 
     def convert_height_metric(self):
-        pass
+        height_metric = self.height * 2.54
+        return height_metric
 
     def convert_weight_metric(self):
-        pass
+        weight_metric = self.weight * 0.45359237
+        return weight_metric
 
     def user_dict_create(self, name, startingweight, currentweight, height, weight_history=None):
         '''
