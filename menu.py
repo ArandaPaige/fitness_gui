@@ -95,6 +95,7 @@ class NewUserLayout(QLayout):
     def __init__(self, parent_window):
         super().__init__()
         self.parent = parent_window
+        self.user = User()
         self.layout = QGridLayout(self.parent)
         self.name = QLineEdit(self.parent)
         self.weight = QLineEdit(self.parent)

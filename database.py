@@ -36,7 +36,7 @@ def retrieve_user(user_id):
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     if cur.execute("SELECT ID from USER where ID = ?", (user_id,)) == "":
-        pass
+        return None
     else:
         cur.execute("SELECT ID, NAME, WEIGHT, HEIGHT from USER where ID = ?", (user_id,))
 
@@ -51,6 +51,33 @@ def insert_user(user):
     db.close()
 
 
+def update_user_name(name, user_id):
+    db = sqlite3.connect(DATABASE)
+    cur = db.cursor()
+    cur.execute('''
+        UPDATE USER SET NAME = ? WHERE ID = ?'''), (name, user_id)
+    db.commit()
+    db.close()
+
+
+def update_user_weight(weight, user_id):
+    db = sqlite3.connect(DATABASE)
+    cur = db.cursor()
+    cur.execute('''
+        UPDATE USER SET WEIGHT = ? WHERE ID = ?'''), (weight, user_id)
+    db.commit()
+    db.close()
+
+
+def update_user_height(height, user_id):
+    db = sqlite3.connect(DATABASE)
+    cur = db.cursor()
+    cur.execute('''
+        UPDATE USER SET HEIGHT = ? WHERE ID = ?'''), (height, user_id)
+    db.commit()
+    db.close()
+
+
 def insert_weight_entry(date, weight):
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
@@ -61,7 +88,7 @@ def insert_weight_entry(date, weight):
     db.close()
 
 
-def update_weight_entry(date, weight):
+def update_weight_entry(weight, date):
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''
