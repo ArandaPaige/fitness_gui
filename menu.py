@@ -29,18 +29,26 @@ class MainMenu(QWidget):
         '''Initialize'''
         super().__init__()
         self.master = master
-        self.user = User()
+        self.user = user
         # Window Properties
         self.setWindowTitle("Main Menu")
         self.setBaseSize(450, 450)
         self.user_layout = UserLayout(self)
         self.show()
 
+    def check_user_status(self):
+        if self.user == None:
+            self.new_user_layout()
+        else:
+            self.existing_user_layout()
+
     def new_user_layout(self):
-        pass
+        new_user_layout = NewUserLayout(self)
+        self.change_layout(new_user_layout)
 
     def existing_user_layout(self):
-        pass
+        existing_user_layout = UserLayout(self)
+        self.change_layout(existing_user_layout)
 
     def change_layout(self, layout):
         self.setLayout(layout)
@@ -55,6 +63,7 @@ class UserLayout(QLayout):
         self.user_name = QLineEdit(self.parent)
         self.user_weight = QLineEdit(self.parent)
         self.user_height = QLineEdit(self.parent)
+        self.set_widget_properties()
         self.generate_layout()
 
     def user_name_properties(self):
@@ -69,6 +78,12 @@ class UserLayout(QLayout):
     def user_graph_properties(self):
         pass
 
+    def set_widget_properties(self):
+        self.user_name_properties()
+        self.user_weight_properties()
+        self.user_height_properties()
+        self.user_graph_properties()
+
     def generate_layout(self):
         self.layout.addWidget(self.user_name)
         self.layout.addWidget(self.user_weight)
@@ -80,50 +95,38 @@ class NewUserLayout(QLayout):
     def __init__(self, parent_window):
         super().__init__()
         self.parent = parent_window
-        self.layout = QVBoxLayout
-        self.menu()
+        self.layout = QGridLayout(self.parent)
+        self.name = QLineEdit(self.parent)
+        self.weight = QLineEdit(self.parent)
+        self.height = QLineEdit(self.parent)
+        self.confirm = QPushButton('Confirm', self.parent)
+        self.cancel = QPushButton('Cancel', self.parent)
+        self.set_widget_properties()
+        self.generate_layout()
 
-    def name_edit(self):
-        name = QLineEdit(self.parent)
-        name.setPlaceholderText('Name')
-        name.editingFinished.connect(partial(self.user_setup, name=name))
-        return name
+    def name_properties(self):
+        self.name.setPlaceholderText('Name')
+        self.name.editingFinished.connect(partial(self.user_setup, name=self.name))
 
-    def starting_weight_edit(self):
-        starting_weight = QLineEdit(self.parent)
-        starting_weight.setPlaceholderText('Starting Weight')
-        validator = QDoubleValidator(50, 999, 2, starting_weight)
-        starting_weight.setValidator(validator)
-        starting_weight.editingFinished.connect(partial(self.user_setup, starting_weight=starting_weight))
-        return starting_weight
+    def weight_properties(self):
+        self.weight.setPlaceholderText('Current Weight')
+        validator = QDoubleValidator(0, 2000, 2, self.weight)
+        self.weight.setValidator(validator)
+        self.weight.editingFinished.connect(partial(self.user_setup, weight=self.weight))
 
-    def current_weight_edit(self):
-        current_weight = QLineEdit(self.parent)
-        current_weight.setPlaceholderText('Current Weight')
-        validator = QDoubleValidator(50, 99, 2, current_weight)
-        current_weight.setValidator(validator)
-        current_weight.editingFinished.connect(partial(self.user_setup, current_weight=current_weight))
-        return current_weight
+    def height_properties(self):
+        self.height.setPlaceholderText('Height')
+        validator = QDoubleValidator(0, 110, 2, self.height)
+        self.height.setValidator(validator)
+        self.height.editingFinished.connect(partial(self.user_setup, height=self.height))
 
-    def height_edit(self):
-        height = QLineEdit(self.parent)
-        height.setPlaceholderText('Height')
-        validator = QDoubleValidator(2, 9, 2, height)
-        height.setValidator(validator)
-        height.editingFinished.connect(partial(self.user_setup, height=height))
-        return height
+    def confirm_properties(self):
+        self.confirm.setFixedHeight(35)
+        self.confirm.clicked.connect(partial(self.confirm_transition))
 
-    def confirm_button(self):
-        confirm = QPushButton('Confirm', self.parent)
-        confirm.setFixedHeight(35)
-        confirm.clicked.connect(partial(self.confirm_transition))
-        return confirm
-
-    def cancel_button(self):
-        cancel = QPushButton('Cancel', self.parent)
-        cancel.setFixedHeight(35)
-        cancel.clicked.connect(self.cancel_transition)
-        return cancel
+    def cancel_properties(self):
+        self.cancel.setFixedHeight(35)
+        self.cancel.clicked.connect(self.cancel_transition)
 
     def confirm_transition(self):
         self.master.set_active_window(self.master.main_menu)
@@ -131,17 +134,16 @@ class NewUserLayout(QLayout):
     def cancel_transition(self):
         self.master.set_active_window(self.master.user_selection_menu)
 
-    def menu(self):
-        name = self.name_edit()
-        starting_weight = self.starting_weight_edit()
-        current_weight = self.current_weight_edit()
-        height = self.height_edit()
-        confirm = self.confirm_button()
-        cancel = self.cancel_button()
-        # arranges the widgets in the menu layout
-        self.layout.addWidget(name, 1, 0)
-        self.layout.addWidget(starting_weight, 2, 0)
-        self.layout.addWidget(current_weight, 3, 0)
-        self.layout.addWidget(height, 4, 0)
-        self.layout.addWidget(confirm, 5, 0, Qt.Alignment.AlignRight)
-        self.layout.addWidget(cancel, 5, 1, Qt.Alignment.AlignRight)
+    def set_widget_properties(self):
+        self.name_properties()
+        self.weight_properties()
+        self.height_properties()
+        self.confirm_properties()
+        self.cancel_properties()
+
+    def generate_layout(self):
+        self.layout.addWidget(self.name, 1, 0)
+        self.layout.addWidget(self.weight, 2, 0)
+        self.layout.addWidget(self.height, 3, 0)
+        self.layout.addWidget(self.confirm, 4, 0, Qt.Alignment.AlignRight)
+        self.layout.addWidget(self.cancel, 4, 1, Qt.Alignment.AlignRight)

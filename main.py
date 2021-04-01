@@ -23,5 +23,6 @@ def main():
 
     appgui = GUIManager(QTAPP, user)
 
+
 if __name__ == '__main__':
     main()
