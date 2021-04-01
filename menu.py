@@ -24,16 +24,15 @@ class GUIManager(QWidget):
 class MainMenu(QWidget):
     '''Main menu'''
 
-    def __init__(self, master, user=None):
+    def __init__(self, master):
         '''Initialize'''
         super().__init__()
         self.master = master
-        self.user = user
+        self.user = User()
         # Window Properties
         self.setWindowTitle("Main Menu")
         self.setBaseSize(450, 450)
         self.user_layout = UserLayout(self)
-        self.setLayout(self.user_layout)
         self.show()
 
     def new_user_layout(self):

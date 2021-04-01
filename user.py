@@ -13,78 +13,14 @@ class User:
     '''
 
     def __init__(self, name=None, starting_weight=None, current_weight=None, height=None,
-                 weight_history=None):
+                 weight_history=None, metric=False):
         self.ID = 1
         self.name = name
         self.starting_weight = starting_weight
         self.current_weight = current_weight
         self.height = height
         self.weight_history = weight_history
-
-    @staticmethod
-    def create_user_table(self):
-        db = sqlite3.connect(DATABASE)
-        cur = db.cursor()
-        cur.execute('''
-        CREATE TABLE USER
-            (ID INT PRIMARY KEY NOT NULL,
-            NAME            TEXT NOT NULL,
-            WEIGHT          REAL NOT NULL,
-            HEIGHT          INT NOT NULL);'''
-                    )
-        db.commit()
-        db.close()
-
-    @staticmethod
-    def create_weight_history_table(self):
-        db = sqlite3.connect(DATABASE)
-        cur = db.cursor()
-        cur.execute('''
-        CREATE TABLE WEIGHT_HISTORY
-            (DATE TEXT PRIMARY KEY NOT NULL,
-            WEIGHT             REAL NOT NULL);'''
-                    )
-        db.commit()
-        db.close()
-
-    def retrieve_user(self):
-        db = sqlite3.connect(DATABASE)
-        cur = db.cursor()
-        if cur.execute("SELECT name from USER") == None:
-            pass
-
-    def insert_user(self):
-        db = sqlite3.connect(DATABASE)
-        cur = db.cursor()
-        cur.execute('''
-        INSERT INTO USER (ID,NAME,WEIGHT,HEIGHT) \
-            VALUES (?,?,?,?)'''), (self.ID, self.name, self.current_weight, self.height)
-        db.commit()
-        db.close()
-
-    def insert_weight_entry(self, date, weight):
-        db = sqlite3.connect(DATABASE)
-        cur = db.cursor()
-        cur.execute('''
-        INSERT INTO WEIGHT_HISTORY (DATE, WEIGHT) \
-            VALUES (?,?)'''), (date, weight)
-        db.commit()
-        db.close()
-
-    def update_weight_entry(self, date, weight):
-        db = sqlite3.connect(DATABASE)
-        cur = db.cursor()
-        cur.execute('''
-        UPDATE WEIGHT_HISTORY SET WEIGHT = ? WHERE ID =  ?'''), (weight, date)
-        db.commit()
-        db.close()
-
-    def delete_weight_entry(self, date):
-        db = sqlite3.connect(DATABASE)
-        cur = db.cursor()
-        cur.execute('''DELETE from WEIGHT_HISTORY where DATE = (?)'''), (date,)
-        db.commit()
-        db.close()
+        self.metric = metric
 
     def user_setup(self, name=None, starting_weight=None, current_weight=None, height=None):
         if name != None:
