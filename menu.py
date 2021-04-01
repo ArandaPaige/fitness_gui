@@ -11,10 +11,11 @@ from PyQt6.QtCore import *
 class GUIManager(QWidget):
     '''Main GUI'''
 
-    def __init__(self, app):
+    def __init__(self, app, user=None):
         '''Initialize'''
         super().__init__()
-        self.main_menu = MainMenu(self)
+        self.user = user
+        self.main_menu = MainMenu(self, self.user)
         self.app = app
         self.active_window = self.main_menu
         self.active_window.show()
@@ -24,7 +25,7 @@ class GUIManager(QWidget):
 class MainMenu(QWidget):
     '''Main menu'''
 
-    def __init__(self, master):
+    def __init__(self, master, user):
         '''Initialize'''
         super().__init__()
         self.master = master

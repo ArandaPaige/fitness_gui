@@ -6,14 +6,6 @@ DATABASE = 'user.db'
 DATABASE_PATH = BASE_DIR / DATABASE
 
 
-def create_database():
-    if DATABASE_PATH.exists() == False:
-        create_user_table()
-        create_weight_history_table()
-    else:
-        retrieve_user(user_id=1)
-
-
 def create_user_table():
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
