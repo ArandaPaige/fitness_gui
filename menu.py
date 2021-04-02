@@ -1,5 +1,10 @@
 from functools import partial
 import sys
+import matplotlib
+matplotlib.use('Qt5Agg')
+
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
 
 from user import User
 
@@ -59,10 +64,14 @@ class UserLayout(QLayout):
     def __init__(self, parent_window):
         super().__init__()
         self.parent = parent_window
-        self.layout = QVBoxLayout(self.parent)
+        self.layout = QHBoxLayout(self.parent)
+        self.layout_left = QVBoxLayout()
+        self.layout_center = QVBoxLayout()
+        self.layout_right = QVBoxLayout()
         self.user_name = QLineEdit(self.parent)
         self.user_weight = QLineEdit(self.parent)
         self.user_height = QLineEdit(self.parent)
+        self.user_history = QTreeWidget(self.parent)
         self.set_widget_properties()
         self.generate_layout()
 
@@ -75,6 +84,10 @@ class UserLayout(QLayout):
     def user_height_properties(self):
         self.user_height.setReadOnly(True)
 
+    def user_history_properties(self):
+        label_list = ['Date', 'Weight']
+        self.user_history.setHeaderLabels(label_list)
+
     def user_graph_properties(self):
         pass
 
@@ -83,12 +96,28 @@ class UserLayout(QLayout):
         self.user_weight_properties()
         self.user_height_properties()
         self.user_graph_properties()
+        self.user_history_properties()
+
+    def left_layout_properties(self):
+        self.layout_left.addWidget(self.user_name)
+        self.layout_left.addWidget(self.user_weight)
+        self.layout_left.addWidget(self.user_height)
+
+    def center_layout_properties(self):
+        self.layout_center.addWidget(self.user_history)
+
+    def right_layout_properties(self):
+        pass
+
+    def main_layout_properties(self):
+        self.layout.addLayout(self.layout_left, 1)
+        self.layout.addLayout(self.layout_center, 1)
+        self.layout.addLayout(self.layout_right, 1)
 
     def generate_layout(self):
-        self.layout.addWidget(self.user_name)
-        self.layout.addWidget(self.user_weight)
-        self.layout.addWidget(self.user_height)
-
+        self.left_layout_properties()
+        self.center_layout_properties()
+        self.main_layout_properties()
 
 class NewUserLayout(QLayout):
 
