@@ -11,7 +11,7 @@ def create_user_table():
     cur = db.cursor()
     cur.execute('''
     CREATE TABLE USER
-        (ID INT PRIMARY KEY NOT NULL,
+        (USER_ID INT PRIMARY KEY NOT NULL,
         NAME            TEXT NOT NULL,
         WEIGHT          REAL NOT NULL,
         HEIGHT          INT NOT NULL);'''
@@ -25,8 +25,11 @@ def create_weight_history_table():
     cur = db.cursor()
     cur.execute('''
     CREATE TABLE WEIGHT_HISTORY
-        (DATE TEXT PRIMARY KEY NOT NULL,
-        WEIGHT             REAL NOT NULL);'''
+        (ID INT PRIMARY KEY NOT NULL,
+        DATE                TEXT NOT NULL,
+        WEIGHT              REAL NOT NULL,
+        USER                INT NOT NULL,
+        FOREIGN KEY(USER) REFERENCES USER(USER_ID);'''
                 )
     db.commit()
     db.close()
