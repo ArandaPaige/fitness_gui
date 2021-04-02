@@ -1,16 +1,13 @@
 from functools import partial
 import sys
-import matplotlib
-matplotlib.use('Qt5Agg')
-
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 
 from user import User
 
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
+
+import pyqtgraph as pg
 
 
 class GUIManager(QWidget):
@@ -72,6 +69,7 @@ class UserLayout(QLayout):
         self.user_weight = QLineEdit(self.parent)
         self.user_height = QLineEdit(self.parent)
         self.user_history = QTreeWidget(self.parent)
+        self.user_history_graph = pg.PlotWidget()
         self.set_widget_properties()
         self.generate_layout()
 
@@ -98,26 +96,27 @@ class UserLayout(QLayout):
         self.user_graph_properties()
         self.user_history_properties()
 
-    def left_layout_properties(self):
+    def generate_left_layout(self):
         self.layout_left.addWidget(self.user_name)
         self.layout_left.addWidget(self.user_weight)
         self.layout_left.addWidget(self.user_height)
 
-    def center_layout_properties(self):
+    def generate_center_layout(self):
         self.layout_center.addWidget(self.user_history)
 
-    def right_layout_properties(self):
-        pass
+    def generate_right_layout(self):
+        self.layout_right.addWidget(self.user_history_graph)
 
-    def main_layout_properties(self):
+    def generate_master_layout(self):
         self.layout.addLayout(self.layout_left, 1)
         self.layout.addLayout(self.layout_center, 1)
         self.layout.addLayout(self.layout_right, 1)
 
     def generate_layout(self):
-        self.left_layout_properties()
-        self.center_layout_properties()
-        self.main_layout_properties()
+        self.generate_left_layout()
+        self.generate_center_layout()
+        self.generate_right_layout()
+        self.generate_master_layout()
 
 class NewUserLayout(QLayout):
 
