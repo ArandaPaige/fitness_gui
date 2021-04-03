@@ -125,7 +125,8 @@ class UserLayout(QLayout):
         self.delete_entry.setEnabled(False)
 
     def weight_entry_edit(self):
-        self.weight_entry.setText('Weight Entry')
+        self.weight_entry.setPlaceholderText('Type a valid weight into here')
+        self.weight_entry.setAlignment(Qt.Alignment.AlignCenter)
         self.weight_entry.setEnabled(False)
 
     def calendar_widget(self):
