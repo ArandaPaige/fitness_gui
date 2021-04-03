@@ -70,6 +70,8 @@ class UserLayout(QLayout):
         self.user_name = QLineEdit(self.parent)
         self.user_weight = QLineEdit(self.parent)
         self.user_height = QLineEdit(self.parent)
+        self.user_bmi = QLineEdit(self.parent)
+        self.user_goal_weight = QLineEdit(self.parent)
         # Initializes a tree for displaying all user's weight history and buttons for editing DB
         self.user_history = QTreeWidget(self.parent)
         self.add_entry = QPushButton()
@@ -82,26 +84,40 @@ class UserLayout(QLayout):
         self.generate_layout()
 
     def user_name_properties(self):
+        self.user_name.setText('Name')
         self.user_name.setReadOnly(True)
 
     def user_weight_properties(self):
+        self.user_weight.setText('Weight')
         self.user_weight.setReadOnly(True)
 
     def user_height_properties(self):
+        self.user_height.setText('Height')
         self.user_height.setReadOnly(True)
+
+    def user_bmi_properties(self):
+        self.user_bmi.setText('Body Mass Index')
+        self.user_bmi.setReadOnly(True)
+
+    def user_goal_weight_properties(self):
+        self.user_goal_weight.setText('Goal Weight')
+        self.user_goal_weight.setReadOnly(True)
 
     def user_history_properties(self):
         label_list = ['Date', 'Weight']
         self.user_history.setHeaderLabels(label_list)
 
     def add_entry_button(self):
-        pass
+        self.add_entry.setText('Add Entry')
+        self.add_entry.setEnabled(False)
 
     def modify_entry_button(self):
-        pass
+        self.modify_entry.setText('Modify Entry')
+        self.modify_entry.setEnabled(False)
 
     def delete_entry_button(self):
-        pass
+        self.delete_entry.setText('Delete Entry')
+        self.delete_entry.setEnabled(False)
 
     def user_graph_properties(self):
         pass
@@ -110,13 +126,20 @@ class UserLayout(QLayout):
         self.user_name_properties()
         self.user_weight_properties()
         self.user_height_properties()
+        self.user_bmi_properties()
+        self.user_goal_weight_properties()
         self.user_graph_properties()
+        self.add_entry_button()
+        self.modify_entry_button()
+        self.delete_entry_button()
         self.user_history_properties()
 
     def generate_left_layout(self):
         self.layout_left.addWidget(self.user_name)
         self.layout_left.addWidget(self.user_weight)
         self.layout_left.addWidget(self.user_height)
+        self.layout_left.addWidget(self.user_bmi)
+        self.layout_left.addWidget(self.user_goal_weight)
 
     def generate_center_layout(self):
         self.layout_center.addWidget(self.user_history, 0, 0, 4, 4)

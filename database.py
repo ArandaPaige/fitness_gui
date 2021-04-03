@@ -12,7 +12,7 @@ def create_user_tables():
     cur = db.cursor()
     cur.execute('''
     CREATE TABLE USER
-        (USER_ID INT PRIMARY KEY NOT NULL,
+        (USER_ID INTEGER PRIMARY KEY NOT NULL,
         NAME            TEXT NOT NULL,
         WEIGHT          REAL NOT NULL,
         HEIGHT          INT NOT NULL);'''
@@ -20,7 +20,7 @@ def create_user_tables():
 
     cur.execute('''
     CREATE TABLE WEIGHT_HISTORY
-        (ID INT PRIMARY KEY NOT NULL,
+        (ID INTEGER PRIMARY KEY AUTOINCREMENT,
         DATE                TEXT NOT NULL,
         WEIGHT              REAL NOT NULL,
         PERSON              INT NOT NULL,
@@ -76,7 +76,7 @@ def update_user_height(height, user_id):
     db.close()
 
 
-def insert_weight_entry(user_id, date, weight):
+def insert_weight_entry(entry_id, date, weight):
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''
@@ -95,7 +95,7 @@ def update_weight_entry(entry_id, weight, date):
     db.close()
 
 
-def delete_weight_entry(entry_id):
+def delete_weight_entry(entry_id, date):
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''DELETE from WEIGHT_HISTORY where ID = ?'''), (entry_id,)

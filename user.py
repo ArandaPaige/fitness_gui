@@ -11,12 +11,14 @@ class User:
     their weight loss/gain.
     '''
 
-    def __init__(self, user_id=None, name=None, weight=None, height=None,
+    def __init__(self, user_id=None, name=None, weight=None, goal_weight=None, height=None,
                  weight_history=None, metric=False):
         self.user_id = user_id
         self.name = name
         self.weight = weight
         self.height = height
+        self.goal_weight = goal_weight
+        self.bmi = None
         self.weight_history = weight_history
         self.metric = metric
 
@@ -40,6 +42,9 @@ class User:
     def set__weight(self, weight):
         self.weight = weight
 
+    def set_goal_weight(self, weight):
+        self.goal_weight = weight
+
     def set_height(self, height):
         self.height = height
 
@@ -50,6 +55,9 @@ class User:
     def convert_weight_metric(self):
         weight_metric = self.weight * 0.45359237
         return weight_metric
+
+    def calculate_bmi(self):
+        pass
 
     def user_dict_create(self, name, startingweight, currentweight, height, weight_history=None):
         '''
