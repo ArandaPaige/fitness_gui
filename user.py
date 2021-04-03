@@ -11,13 +11,13 @@ class User:
     their weight loss/gain.
     '''
 
-    def __init__(self, user_id=None, name=None, weight=None, goal_weight=None, height=None,
+    def __init__(self, user_id=None, name=None, weight=None, goal=None, height=None,
                  weight_history=None, metric=False):
         self.user_id = user_id
         self.name = name
         self.weight = weight
         self.height = height
-        self.goal_weight = goal_weight
+        self.goal = goal
         self.bmi = None
         self.weight_history = weight_history
         self.metric = metric
@@ -43,7 +43,7 @@ class User:
         self.weight = weight
 
     def set_goal_weight(self, weight):
-        self.goal_weight = weight
+        self.goal = weight
 
     def set_height(self, height):
         self.height = height

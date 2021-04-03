@@ -64,7 +64,9 @@ class UserLayout(QLayout):
         # Initializes the layouts with a master layout
         self.layout = QHBoxLayout(self.parent)
         self.layout_left = QVBoxLayout()
-        self.layout_center = QGridLayout()
+        self.layout_center = QVBoxLayout()
+        self.center_layout_left = QVBoxLayout()
+        self.center_layout_right = QVBoxLayout()
         self.layout_right = QVBoxLayout()
         # Initializes widgets to display user metrics
         self.user_name = QLineEdit(self.parent)
@@ -77,8 +79,11 @@ class UserLayout(QLayout):
         self.add_entry = QPushButton()
         self.modify_entry = QPushButton()
         self.delete_entry = QPushButton()
+        self.weight_entry = QLineEdit()
+        self.calendar = QCalendarWidget()
         # Initializes the graph for visualizing weight history with buttons for modifying display
         self.user_history_graph = pg.PlotWidget()
+        self.plot = None
         # Sets the properties for all widgets and their layouts
         self.set_widget_properties()
         self.generate_layout()
@@ -119,8 +124,17 @@ class UserLayout(QLayout):
         self.delete_entry.setText('Delete Entry')
         self.delete_entry.setEnabled(False)
 
+    def weight_entry_edit(self):
+        self.weight_entry.setText('Weight Entry')
+        self.weight_entry.setEnabled(False)
+
+    def calendar_widget(self):
+        self.calendar.setEnabled(False)
+
     def user_graph_properties(self):
-        pass
+        axis_left = pg.AxisItem(orientation='left')
+        axis_bottom = pg.AxisItem(orientation='bottom')
+        self.plot = pg.PlotItem()
 
     def set_widget_properties(self):
         self.user_name_properties()
@@ -132,6 +146,8 @@ class UserLayout(QLayout):
         self.add_entry_button()
         self.modify_entry_button()
         self.delete_entry_button()
+        self.weight_entry_edit()
+        self.calendar_widget()
         self.user_history_properties()
 
     def generate_left_layout(self):
@@ -142,10 +158,14 @@ class UserLayout(QLayout):
         self.layout_left.addWidget(self.user_goal_weight)
 
     def generate_center_layout(self):
-        self.layout_center.addWidget(self.user_history, 0, 0, 4, 4)
-        self.layout_center.addWidget(self.add_entry, 5, 0, 1, 1)
-        self.layout_center.addWidget(self.modify_entry, 5, 1, 1, 1)
-        self.layout_center.addWidget(self.delete_entry, 5, 2, 1, 1)
+        self.layout_center.addWidget(self.user_history)
+        self.center_layout_left.addWidget(self.add_entry)
+        self.center_layout_left.addWidget(self.modify_entry)
+        self.center_layout_left.addWidget(self.delete_entry)
+        self.center_layout_right.addWidget(self.weight_entry)
+        self.center_layout_right.addWidget(self.calendar)
+        self.layout_center.addLayout(self.center_layout_left)
+        self.layout_center.addLayout(self.center_layout_right)
 
     def generate_right_layout(self):
         self.layout_right.addWidget(self.user_history_graph)
@@ -201,10 +221,10 @@ class NewUserLayout(QLayout):
         self.cancel.clicked.connect(self.cancel_transition)
 
     def confirm_transition(self):
-        self.master.set_active_window(self.master.main_menu)
+        pass
 
     def cancel_transition(self):
-        self.master.set_active_window(self.master.user_selection_menu)
+        pass
 
     def set_widget_properties(self):
         self.name_properties()
