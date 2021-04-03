@@ -15,8 +15,7 @@ QTAPP = QApplication(sys.argv)
 
 def main():
     if DATABASE_PATH.exists() == False:
-        database.create_user_table()
-        database.create_weight_history_table()
+        database.create_user_tables()
         user = None
     else:
         user = database.retrieve_user(user_id=1)

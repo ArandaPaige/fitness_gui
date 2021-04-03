@@ -61,15 +61,23 @@ class UserLayout(QLayout):
     def __init__(self, parent_window):
         super().__init__()
         self.parent = parent_window
+        # Initializes the layouts with a master layout
         self.layout = QHBoxLayout(self.parent)
         self.layout_left = QVBoxLayout()
-        self.layout_center = QVBoxLayout()
+        self.layout_center = QGridLayout()
         self.layout_right = QVBoxLayout()
+        # Initializes widgets to display user metrics
         self.user_name = QLineEdit(self.parent)
         self.user_weight = QLineEdit(self.parent)
         self.user_height = QLineEdit(self.parent)
+        # Initializes a tree for displaying all user's weight history and buttons for editing DB
         self.user_history = QTreeWidget(self.parent)
+        self.add_entry = QPushButton()
+        self.modify_entry = QPushButton()
+        self.delete_entry = QPushButton()
+        # Initializes the graph for visualizing weight history with buttons for modifying display
         self.user_history_graph = pg.PlotWidget()
+        # Sets the properties for all widgets and their layouts
         self.set_widget_properties()
         self.generate_layout()
 
@@ -85,6 +93,15 @@ class UserLayout(QLayout):
     def user_history_properties(self):
         label_list = ['Date', 'Weight']
         self.user_history.setHeaderLabels(label_list)
+
+    def add_entry_button(self):
+        pass
+
+    def modify_entry_button(self):
+        pass
+
+    def delete_entry_button(self):
+        pass
 
     def user_graph_properties(self):
         pass
@@ -102,7 +119,10 @@ class UserLayout(QLayout):
         self.layout_left.addWidget(self.user_height)
 
     def generate_center_layout(self):
-        self.layout_center.addWidget(self.user_history)
+        self.layout_center.addWidget(self.user_history, 0, 0, 4, 4)
+        self.layout_center.addWidget(self.add_entry, 5, 0, 1, 1)
+        self.layout_center.addWidget(self.modify_entry, 5, 1, 1, 1)
+        self.layout_center.addWidget(self.delete_entry, 5, 2, 1, 1)
 
     def generate_right_layout(self):
         self.layout_right.addWidget(self.user_history_graph)
