@@ -3,6 +3,8 @@ import sys
 
 from user import User
 
+import database
+
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
@@ -35,8 +37,7 @@ class MainMenu(QWidget):
         # Window Properties
         self.setWindowTitle("Main Menu")
         self.setBaseSize(450, 450)
-        self.user_layout = UserLayout(self)
-        self.show()
+        self.check_user_status()
 
     def check_user_status(self):
         if self.user == None:
@@ -46,7 +47,7 @@ class MainMenu(QWidget):
 
     def new_user_layout(self):
         new_user_layout = NewUserLayout(self)
-        self.change_layout(new_user_layout)
+        #self.change_layout(new_user_layout)
 
     def existing_user_layout(self):
         existing_user_layout = UserLayout(self)
@@ -82,7 +83,7 @@ class UserLayout(QLayout):
         self.weight_entry = QLineEdit()
         self.calendar = QCalendarWidget()
         # Initializes the graph for visualizing weight history with buttons for modifying display
-        self.graph_label = QLabel(self.parent)
+        self.graph_label = QLabel()
         self.user_history_graph = pg.plot()
         # Sets the properties for all widgets and their layouts
         self.set_widget_properties()
@@ -155,7 +156,7 @@ class UserLayout(QLayout):
             **axis_label_style
         )
         axis_bottom.showLabel(show=True)
-        title_label_style = {'bgcolor': 'FFF', 'color': 'FFF', 'size': '22pt', 'font-weight': 'bold'}
+        title_label_style = {'color': 'FFF', 'size': '22pt', 'font-weight': 'bold'}
         #self.user_history_graph.setTitle(title='Weight Visualizer', **title_label_style)
         self.user_history_graph.setAxisItems(axisItems={'left': axis_left, 'bottom': axis_bottom})
 
@@ -216,6 +217,7 @@ class NewUserLayout(QLayout):
         self.layout = QGridLayout(self.parent)
         self.name = QLineEdit(self.parent)
         self.weight = QLineEdit(self.parent)
+        self.goal = QLineEdit(self.parent)
         self.height = QLineEdit(self.parent)
         self.confirm = QPushButton('Confirm', self.parent)
         self.cancel = QPushButton('Cancel', self.parent)
@@ -224,37 +226,55 @@ class NewUserLayout(QLayout):
 
     def name_properties(self):
         self.name.setPlaceholderText('Name')
-        self.name.editingFinished.connect(partial(self.user_setup, name=self.name))
+        self.name.editingFinished.connect(partial(self.user.user_setup, name=self.name))
+        self.name.editingFinished.connect(self.enable_confirm_btn)
 
     def weight_properties(self):
-        self.weight.setPlaceholderText('Current Weight')
+        self.weight.setPlaceholderText('Weight')
         validator = QDoubleValidator(0, 2000, 2, self.weight)
         self.weight.setValidator(validator)
-        self.weight.editingFinished.connect(partial(self.user_setup, weight=self.weight))
+        self.weight.editingFinished.connect(partial(self.user.user_setup, weight=self.weight))
+        self.weight.editingFinished.connect(self.enable_confirm_btn)
+
+    def goal_properties(self):
+        self.goal.setPlaceholderText('Goal Weight')
+        validator = QDoubleValidator(0, 2000, 2, self.weight)
+        self.goal.setValidator(validator)
+        self.goal.editingFinished.connect(partial(self.user.user_setup, weight=self.goal))
+        self.goal.editingFinished.connect(self.enable_confirm_btn)
 
     def height_properties(self):
         self.height.setPlaceholderText('Height')
         validator = QDoubleValidator(0, 110, 2, self.height)
         self.height.setValidator(validator)
-        self.height.editingFinished.connect(partial(self.user_setup, height=self.height))
+        self.height.editingFinished.connect(partial(self.user.user_setup, height=self.height))
+        self.height.editingFinished.connect(self.enable_confirm_btn)
 
     def confirm_properties(self):
         self.confirm.setFixedHeight(35)
-        self.confirm.clicked.connect(partial(self.confirm_transition))
+        self.confirm.setEnabled(False)
+        self.confirm.clicked.connect(partial(self.confirm_transition, self.user))
 
     def cancel_properties(self):
         self.cancel.setFixedHeight(35)
         self.cancel.clicked.connect(self.cancel_transition)
 
-    def confirm_transition(self):
-        pass
+    def enable_confirm_btn(self):
+        if (self.name.hasAcceptableInput() == True and self.weight.hasAcceptableInput() == True and
+                self.goal.hasAcceptableInput() == True and self.height.hasAcceptableInput() == True):
+            self.confirm.setEnabled(True)
+
+    def confirm_transition(self, user):
+        database.insert_user(user)
+        self.parent.existing_user_layout()
 
     def cancel_transition(self):
-        pass
+        sys.exit()
 
     def set_widget_properties(self):
         self.name_properties()
         self.weight_properties()
+        self.goal_properties()
         self.height_properties()
         self.confirm_properties()
         self.cancel_properties()
@@ -262,6 +282,7 @@ class NewUserLayout(QLayout):
     def generate_layout(self):
         self.layout.addWidget(self.name, 1, 0)
         self.layout.addWidget(self.weight, 2, 0)
-        self.layout.addWidget(self.height, 3, 0)
-        self.layout.addWidget(self.confirm, 4, 0, Qt.Alignment.AlignRight)
-        self.layout.addWidget(self.cancel, 4, 1, Qt.Alignment.AlignRight)
+        self.layout.addWidget(self.goal, 3, 0)
+        self.layout.addWidget(self.height, 4, 0)
+        self.layout.addWidget(self.confirm, 5, 0, Qt.Alignment.AlignRight)
+        self.layout.addWidget(self.cancel, 5, 1, Qt.Alignment.AlignRight)

@@ -21,6 +21,7 @@ def main():
         user = database.retrieve_user(user_id=1)
 
     appgui = GUIManager(QTAPP, user)
+    sys.exit(appgui.exec())
 
 
 if __name__ == '__main__':

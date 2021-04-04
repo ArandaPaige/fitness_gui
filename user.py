@@ -22,16 +22,16 @@ class User:
         self.weight_history = weight_history
         self.metric = metric
 
-    def user_setup(self, name=None, starting_weight=None, current_weight=None, height=None):
+    def user_setup(self, name=None, weight=None, goal=None, height=None):
         if name != None:
             self.name = name
             print(f'Name is {name.text()}')
-        if starting_weight != None:
-            self.starting_weight = float(starting_weight.text())
-            print(f'Starting weight is {starting_weight.text()}')
-        if current_weight != None:
-            self.current_weight = float(current_weight.text())
-            print(f'Current weight is {current_weight.text()}')
+        if weight != None:
+            self.weight = float(weight.text())
+            print(f'Starting weight is {weight.text()}')
+        if goal != None:
+            self.goal = float(goal.text())
+            print(f'Current weight is {goal.text()}')
         if height != None:
             self.height = int(height.text())
             print(f'Height is {height.text()}')

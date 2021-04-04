@@ -45,7 +45,7 @@ def insert_user(user):
     cur = db.cursor()
     cur.execute('''
     INSERT INTO USER (USER_ID,NAME,WEIGHT,GOAL,HEIGHT) \
-        VALUES (?,?,?,?,?)'''), (user.user_id, user.name, user.weight, user.goal_weight, user.height)
+        VALUES (?,?,?,?,?)'''), (user.user_id, user.name, user.weight, user.goal, user.height)
     db.commit()
     db.close()
 
