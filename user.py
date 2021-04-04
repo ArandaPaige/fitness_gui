@@ -12,20 +12,19 @@ class User:
     '''
 
     def __init__(self, user_id=None, name=None, weight=None, goal=None, height=None,
-                 weight_history=None, metric=False):
+                 weight_history=None):
         self.user_id = user_id
-        self.name = name
+        self.user_name = name
         self.weight = weight
         self.height = height
         self.goal = goal
         self.bmi = None
         self.weight_history = weight_history
-        self.metric = metric
 
-    def user_setup(self, name=None, weight=None, goal=None, height=None):
-        if name != None:
-            self.name = name
-            print(f'Name is {name.text()}')
+    def user_setup(self, person_name=None, weight=None, goal=None, height=None):
+        if person_name != None:
+            self.user_name = str(person_name.text())
+            print(f'Name is {person_name.text()}')
         if weight != None:
             self.weight = float(weight.text())
             print(f'Current weight is {weight.text()}')
@@ -37,7 +36,7 @@ class User:
             print(f'Height is {height.text()}')
 
     def set_name(self, name):
-        self.name = name
+        self.user_name = name
 
     def set__weight(self, weight):
         self.weight = weight

@@ -215,40 +215,40 @@ class NewUserLayout(QLayout):
         self.parent = parent_window
         self.user = User()
         self.layout = QGridLayout(self.parent)
-        self.name = QLineEdit(self.parent)
-        self.weight = QLineEdit(self.parent)
-        self.goal = QLineEdit(self.parent)
-        self.height = QLineEdit(self.parent)
+        self.person_name = QLineEdit()
+        self.weight = QLineEdit()
+        self.goal = QLineEdit()
+        self.height = QLineEdit()
         self.confirm = QPushButton('Confirm', self.parent)
         self.cancel = QPushButton('Cancel', self.parent)
         self.set_widget_properties()
         self.generate_layout()
 
     def name_properties(self):
-        self.name.setPlaceholderText('Name')
-        self.name.textChanged.connect(partial(self.user.user_setup, name=self.name))
-        self.name.textChanged.connect(self.enable_confirm_btn)
+        self.person_name.setPlaceholderText('Type your name here')
+        self.person_name.textEdited.connect(partial(self.user.user_setup, person_name=self.person_name))
+        self.person_name.textEdited.connect(self.enable_confirm_btn)
 
     def weight_properties(self):
-        self.weight.setPlaceholderText('Weight')
+        self.weight.setPlaceholderText('Type your current weight here')
         validator = QDoubleValidator(0, 2000, 2, self.weight)
         self.weight.setValidator(validator)
-        self.weight.textChanged.connect(partial(self.user.user_setup, weight=self.weight))
-        self.weight.textChanged.connect(self.enable_confirm_btn)
+        self.weight.textEdited.connect(partial(self.user.user_setup, weight=self.weight))
+        self.weight.textEdited.connect(self.enable_confirm_btn)
 
     def goal_properties(self):
-        self.goal.setPlaceholderText('Goal Weight')
-        validator = QDoubleValidator(0, 2000, 2, self.weight)
+        self.goal.setPlaceholderText('Type your goal weight here')
+        validator = QDoubleValidator(0, 2000, 2, self.goal)
         self.goal.setValidator(validator)
-        self.goal.textChanged.connect(partial(self.user.user_setup, goal=self.goal))
-        self.goal.textChanged.connect(self.enable_confirm_btn)
+        self.goal.textEdited.connect(partial(self.user.user_setup, goal=self.goal))
+        self.goal.textEdited.connect(self.enable_confirm_btn)
 
     def height_properties(self):
-        self.height.setPlaceholderText('Height')
+        self.height.setPlaceholderText('Type your height here')
         validator = QDoubleValidator(0, 110, 2, self.height)
         self.height.setValidator(validator)
-        self.height.textChanged.connect(partial(self.user.user_setup, height=self.height))
-        self.height.textChanged.connect(self.enable_confirm_btn)
+        self.height.textEdited.connect(partial(self.user.user_setup, height=self.height))
+        self.height.textEdited.connect(self.enable_confirm_btn)
 
     def confirm_properties(self):
         self.confirm.setFixedHeight(35)
@@ -260,7 +260,7 @@ class NewUserLayout(QLayout):
         self.cancel.clicked.connect(self.cancel_transition)
 
     def enable_confirm_btn(self):
-        if (self.name.hasAcceptableInput() == True and self.weight.hasAcceptableInput() == True and
+        if (self.person_name.hasAcceptableInput() == True and self.weight.hasAcceptableInput() == True and
                 self.goal.hasAcceptableInput() == True and self.height.hasAcceptableInput() == True):
             self.confirm.setEnabled(True)
         else:
@@ -268,7 +268,7 @@ class NewUserLayout(QLayout):
 
     def confirm_transition(self, user):
         database.insert_user(user)
-        self.parent.existing_user_layout()
+        #self.parent.existing_user_layout()
 
     def cancel_transition(self):
         sys.exit()
@@ -282,7 +282,7 @@ class NewUserLayout(QLayout):
         self.cancel_properties()
 
     def generate_layout(self):
-        self.layout.addWidget(self.name, 1, 0)
+        self.layout.addWidget(self.person_name, 1, 0)
         self.layout.addWidget(self.weight, 2, 0)
         self.layout.addWidget(self.goal, 3, 0)
         self.layout.addWidget(self.height, 4, 0)
