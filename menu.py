@@ -82,8 +82,8 @@ class UserLayout(QLayout):
         self.weight_entry = QLineEdit()
         self.calendar = QCalendarWidget()
         # Initializes the graph for visualizing weight history with buttons for modifying display
-        self.user_history_graph = pg.PlotWidget()
-        self.plot = None
+        self.graph_label = QLabel(self.parent)
+        self.user_history_graph = pg.plot()
         # Sets the properties for all widgets and their layouts
         self.set_widget_properties()
         self.generate_layout()
@@ -132,10 +132,33 @@ class UserLayout(QLayout):
     def calendar_widget(self):
         self.calendar.setEnabled(False)
 
+    def graph_label_properties(self):
+        self.graph_label.setText('Weight Visualizer')
+        self.graph_label.setStyleSheet(
+            'font: bold 18px;'
+            'color: steel grey;'
+
+        )
+        self.graph_label.setAlignment(Qt.Alignment.AlignCenter)
+
     def user_graph_properties(self):
-        axis_left = pg.AxisItem(orientation='left')
-        axis_bottom = pg.AxisItem(orientation='bottom')
-        self.plot = pg.PlotItem()
+        axis_label_style = {'color': '#FFF', 'font-size': '14pt', 'font-weight': 'bold'}
+        axis_left = pg.AxisItem(
+            orientation='left',
+            text='Weight',
+            **axis_label_style
+        )
+        axis_left.showLabel(show=True)
+        axis_bottom = pg.AxisItem(
+            orientation='bottom',
+            text='Date',
+            **axis_label_style
+        )
+        axis_bottom.showLabel(show=True)
+        title_label_style = {'bgcolor': 'FFF', 'color': 'FFF', 'size': '22pt', 'font-weight': 'bold'}
+        #self.user_history_graph.setTitle(title='Weight Visualizer', **title_label_style)
+        self.user_history_graph.setAxisItems(axisItems={'left': axis_left, 'bottom': axis_bottom})
+
 
     def set_widget_properties(self):
         self.user_name_properties()
@@ -143,6 +166,7 @@ class UserLayout(QLayout):
         self.user_height_properties()
         self.user_bmi_properties()
         self.user_goal_weight_properties()
+        self.graph_label_properties()
         self.user_graph_properties()
         self.add_entry_button()
         self.modify_entry_button()
@@ -169,6 +193,7 @@ class UserLayout(QLayout):
         self.layout_center.addLayout(self.center_layout_right)
 
     def generate_right_layout(self):
+        self.layout_right.addWidget(self.graph_label)
         self.layout_right.addWidget(self.user_history_graph)
 
     def generate_master_layout(self):

@@ -103,7 +103,7 @@ def update_weight_entry(entry_id, weight, date):
     db.close()
 
 
-def delete_weight_entry(entry_id, date):
+def delete_weight_entry(entry_id):
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''DELETE from WEIGHT_HISTORY where ID = ?'''), (entry_id,)
