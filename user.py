@@ -28,10 +28,10 @@ class User:
             print(f'Name is {name.text()}')
         if weight != None:
             self.weight = float(weight.text())
-            print(f'Starting weight is {weight.text()}')
+            print(f'Current weight is {weight.text()}')
         if goal != None:
             self.goal = float(goal.text())
-            print(f'Current weight is {goal.text()}')
+            print(f'Weight goal is {goal.text()}')
         if height != None:
             self.height = int(height.text())
             print(f'Height is {height.text()}')

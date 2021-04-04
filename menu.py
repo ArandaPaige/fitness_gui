@@ -226,29 +226,29 @@ class NewUserLayout(QLayout):
 
     def name_properties(self):
         self.name.setPlaceholderText('Name')
-        self.name.editingFinished.connect(partial(self.user.user_setup, name=self.name))
-        self.name.editingFinished.connect(self.enable_confirm_btn)
+        self.name.textChanged.connect(partial(self.user.user_setup, name=self.name))
+        self.name.textChanged.connect(self.enable_confirm_btn)
 
     def weight_properties(self):
         self.weight.setPlaceholderText('Weight')
         validator = QDoubleValidator(0, 2000, 2, self.weight)
         self.weight.setValidator(validator)
-        self.weight.editingFinished.connect(partial(self.user.user_setup, weight=self.weight))
-        self.weight.editingFinished.connect(self.enable_confirm_btn)
+        self.weight.textChanged.connect(partial(self.user.user_setup, weight=self.weight))
+        self.weight.textChanged.connect(self.enable_confirm_btn)
 
     def goal_properties(self):
         self.goal.setPlaceholderText('Goal Weight')
         validator = QDoubleValidator(0, 2000, 2, self.weight)
         self.goal.setValidator(validator)
-        self.goal.editingFinished.connect(partial(self.user.user_setup, weight=self.goal))
-        self.goal.editingFinished.connect(self.enable_confirm_btn)
+        self.goal.textChanged.connect(partial(self.user.user_setup, goal=self.goal))
+        self.goal.textChanged.connect(self.enable_confirm_btn)
 
     def height_properties(self):
         self.height.setPlaceholderText('Height')
         validator = QDoubleValidator(0, 110, 2, self.height)
         self.height.setValidator(validator)
-        self.height.editingFinished.connect(partial(self.user.user_setup, height=self.height))
-        self.height.editingFinished.connect(self.enable_confirm_btn)
+        self.height.textChanged.connect(partial(self.user.user_setup, height=self.height))
+        self.height.textChanged.connect(self.enable_confirm_btn)
 
     def confirm_properties(self):
         self.confirm.setFixedHeight(35)
