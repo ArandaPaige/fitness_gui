@@ -263,6 +263,8 @@ class NewUserLayout(QLayout):
         if (self.name.hasAcceptableInput() == True and self.weight.hasAcceptableInput() == True and
                 self.goal.hasAcceptableInput() == True and self.height.hasAcceptableInput() == True):
             self.confirm.setEnabled(True)
+        else:
+            self.confirm.setEnabled(False)
 
     def confirm_transition(self, user):
         database.insert_user(user)
