@@ -59,9 +59,10 @@ class MainMenu(QWidget):
 
 class UserLayout(QLayout):
 
-    def __init__(self, parent_window):
+    def __init__(self, parent_window, user):
         super().__init__()
         self.parent = parent_window
+        self.user = user
         # Initializes the layouts with a master layout
         self.layout = QHBoxLayout(self.parent)
         self.layout_left = QVBoxLayout()
@@ -70,13 +71,13 @@ class UserLayout(QLayout):
         self.center_layout_right = QVBoxLayout()
         self.layout_right = QVBoxLayout()
         # Initializes widgets to display user metrics
-        self.user_name = QLineEdit(self.parent)
-        self.user_weight = QLineEdit(self.parent)
-        self.user_height = QLineEdit(self.parent)
-        self.user_bmi = QLineEdit(self.parent)
-        self.user_goal_weight = QLineEdit(self.parent)
+        self.user_name = QLineEdit()
+        self.user_weight = QLineEdit()
+        self.user_height = QLineEdit()
+        self.user_bmi = QLineEdit()
+        self.user_goal_weight = QLineEdit()
         # Initializes a tree for displaying all user's weight history and buttons for editing DB
-        self.user_history = QTreeWidget(self.parent)
+        self.user_history = QTreeWidget()
         self.add_entry = QPushButton()
         self.modify_entry = QPushButton()
         self.delete_entry = QPushButton()
@@ -90,23 +91,23 @@ class UserLayout(QLayout):
         self.generate_layout()
 
     def user_name_properties(self):
-        self.user_name.setText('Name')
+        self.user_name.setText(f'Name: {self.user_name}')
         self.user_name.setReadOnly(True)
 
     def user_weight_properties(self):
-        self.user_weight.setText('Weight')
+        self.user_weight.setText(f'Weight: {self.user.weight}')
         self.user_weight.setReadOnly(True)
 
     def user_height_properties(self):
-        self.user_height.setText('Height')
+        self.user_height.setText(f'Height: {self.user.height}')
         self.user_height.setReadOnly(True)
 
     def user_bmi_properties(self):
-        self.user_bmi.setText('Body Mass Index')
+        self.user_bmi.setText(f'Body Mass Index: {self.user.bmi}')
         self.user_bmi.setReadOnly(True)
 
     def user_goal_weight_properties(self):
-        self.user_goal_weight.setText('Goal Weight')
+        self.user_goal_weight.setText(f'Goal Weight: {self.user.goal}')
         self.user_goal_weight.setReadOnly(True)
 
     def user_history_properties(self):
@@ -157,9 +158,8 @@ class UserLayout(QLayout):
         )
         axis_bottom.showLabel(show=True)
         title_label_style = {'color': 'FFF', 'size': '22pt', 'font-weight': 'bold'}
-        #self.user_history_graph.setTitle(title='Weight Visualizer', **title_label_style)
+        # self.user_history_graph.setTitle(title='Weight Visualizer', **title_label_style)
         self.user_history_graph.setAxisItems(axisItems={'left': axis_left, 'bottom': axis_bottom})
-
 
     def set_widget_properties(self):
         self.user_name_properties()
@@ -208,6 +208,7 @@ class UserLayout(QLayout):
         self.generate_right_layout()
         self.generate_master_layout()
 
+
 class NewUserLayout(QLayout):
 
     def __init__(self, parent_window):
@@ -219,36 +220,39 @@ class NewUserLayout(QLayout):
         self.weight = QLineEdit()
         self.goal = QLineEdit()
         self.height = QLineEdit()
-        self.confirm = QPushButton('Confirm', self.parent)
-        self.cancel = QPushButton('Cancel', self.parent)
+        self.confirm = QPushButton('Confirm')
+        self.cancel = QPushButton('Cancel')
         self.set_widget_properties()
         self.generate_layout()
 
     def name_properties(self):
         self.person_name.setPlaceholderText('Type your name here')
-        self.person_name.textEdited.connect(partial(self.user.user_setup, person_name=self.person_name))
+        self.person_name.textEdited.connect(partial(self.user.set_name, self.person_name))
         self.person_name.textEdited.connect(self.enable_confirm_btn)
 
     def weight_properties(self):
         self.weight.setPlaceholderText('Type your current weight here')
         validator = QDoubleValidator(0, 2000, 2, self.weight)
         self.weight.setValidator(validator)
-        self.weight.textEdited.connect(partial(self.user.user_setup, weight=self.weight))
+        self.weight.textEdited.connect(partial(self.user.set_weight, self.weight))
         self.weight.textEdited.connect(self.enable_confirm_btn)
 
     def goal_properties(self):
         self.goal.setPlaceholderText('Type your goal weight here')
         validator = QDoubleValidator(0, 2000, 2, self.goal)
         self.goal.setValidator(validator)
-        self.goal.textEdited.connect(partial(self.user.user_setup, goal=self.goal))
+        self.goal.textEdited.connect(partial(self.user.set_goal_weight, self.goal))
         self.goal.textEdited.connect(self.enable_confirm_btn)
 
     def height_properties(self):
         self.height.setPlaceholderText('Type your height here')
         validator = QDoubleValidator(0, 110, 2, self.height)
         self.height.setValidator(validator)
-        self.height.textEdited.connect(partial(self.user.user_setup, height=self.height))
+        self.height.textEdited.connect(partial(self.user.set_height, self.height))
         self.height.textEdited.connect(self.enable_confirm_btn)
+
+    def validation_color(self, obj):
+        pass
 
     def confirm_properties(self):
         self.confirm.setFixedHeight(35)
@@ -268,7 +272,7 @@ class NewUserLayout(QLayout):
 
     def confirm_transition(self, user):
         database.insert_user(user)
-        #self.parent.existing_user_layout()
+        self.parent.existing_user_layout()
 
     def cancel_transition(self):
         sys.exit()

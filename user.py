@@ -11,41 +11,30 @@ class User:
     their weight loss/gain.
     '''
 
-    def __init__(self, user_id=None, name=None, weight=None, goal=None, height=None,
+    def __init__(self, name=None, weight=None, goal=None, height=None,
                  weight_history=None):
-        self.user_id = user_id
-        self.user_name = name
+        self.name = name
         self.weight = weight
         self.height = height
         self.goal = goal
         self.bmi = None
         self.weight_history = weight_history
 
-    def user_setup(self, person_name=None, weight=None, goal=None, height=None):
-        if person_name != None:
-            self.user_name = str(person_name.text())
-            print(f'Name is {person_name.text()}')
-        if weight != None:
-            self.weight = float(weight.text())
-            print(f'Current weight is {weight.text()}')
-        if goal != None:
-            self.goal = float(goal.text())
-            print(f'Weight goal is {goal.text()}')
-        if height != None:
-            self.height = int(height.text())
-            print(f'Height is {height.text()}')
-
     def set_name(self, name):
-        self.user_name = name
+        self.name = str(name.text())
+        print(self.name)
 
-    def set__weight(self, weight):
-        self.weight = weight
+    def set_weight(self, weight):
+        self.weight = float(weight.text())
+        print(self.weight)
 
-    def set_goal_weight(self, weight):
-        self.goal = weight
+    def set_goal_weight(self, goal):
+        self.goal = float(goal.text())
+        print(self.goal)
 
     def set_height(self, height):
-        self.height = height
+        self.height = float(height.text())
+        print(self.height)
 
     def convert_height_metric(self):
         height_metric = self.height * 2.54
@@ -56,9 +45,10 @@ class User:
         return weight_metric
 
     def calculate_bmi(self):
-        pass
+        bmi = self.weight / ((self.height)**2) * 703
+        return bmi
 
-    def user_dict_create(self, name, startingweight, currentweight, height, weight_history=None):
+    def user_dict_create(self, name, weight, goal, height, weight_history=None):
         '''
         Creates a dictionary with all of the user's personal statistics to be serialized as JSON.
         :param name: User's full name
@@ -71,18 +61,18 @@ class User:
         if weight_history == None:
             return {
                 'name': name,
-                'starting weight': startingweight,
-                'current weight': currentweight,
+                'weight': weight,
+                'goal': goal,
                 'height': height,
                 'weight history': {
-                    str(DATETODAY): currentweight
+                    str(DATETODAY): weight
                 }
             }
         else:
             return {
                 'name': name,
-                'starting weight': startingweight,
-                'current weight': currentweight,
+                'weight': weight,
+                'goal': goal,
                 'height': height,
                 'weight history': weight_history
             }

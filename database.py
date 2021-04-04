@@ -12,7 +12,7 @@ def create_user_tables():
     cur = db.cursor()
     cur.execute('''
     CREATE TABLE USER
-        (USER_ID INTEGER PRIMARY KEY NOT NULL,
+        (USER_ID INTEGER PRIMARY KEY AUTOINCREMENT,
         NAME            TEXT NOT NULL,
         WEIGHT          REAL NOT NULL,
         GOAL            REAL NOT NULL,
