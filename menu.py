@@ -91,7 +91,7 @@ class UserLayout(QLayout):
         self.generate_layout()
 
     def user_name_properties(self):
-        self.user_name.setText(f'Name: {self.user_name}')
+        self.user_name.setText(f'Name: {self.user.name}')
         self.user_name.setReadOnly(True)
 
     def user_weight_properties(self):
@@ -103,7 +103,7 @@ class UserLayout(QLayout):
         self.user_height.setReadOnly(True)
 
     def user_bmi_properties(self):
-        self.user_bmi.setText(f'Body Mass Index: {self.user.bmi}')
+        self.user_bmi.setText(f'Body Mass Index:')
         self.user_bmi.setReadOnly(True)
 
     def user_goal_weight_properties(self):

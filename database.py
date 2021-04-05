@@ -44,6 +44,7 @@ def retrieve_user(user_id):
         row = user_data.fetchone()
         user_history = cur.execute("SELECT DATE, WEIGHT from WEIGHT_HISTORY where PERSON_ID = ?", (user_id,))
         row_history = user_history.fetchall()
+        print(row_history)
         user = User(name=row[0], weight=row[1], goal=row[2], height=row[3], weight_history=row_history)
         return user
 
