@@ -47,10 +47,10 @@ class MainMenu(QWidget):
 
     def new_user_layout(self):
         new_user_layout = NewUserLayout(self)
-        #self.change_layout(new_user_layout)
+        # self.change_layout(new_user_layout)
 
     def existing_user_layout(self):
-        existing_user_layout = UserLayout(self)
+        existing_user_layout = UserLayout(self, self.user)
         self.change_layout(existing_user_layout)
 
     def change_layout(self, layout):
@@ -273,6 +273,7 @@ class NewUserLayout(QLayout):
     def confirm_transition(self, user):
         database.insert_user(user)
         self.parent.existing_user_layout()
+        self.layout.setEnabled(False)
 
     def cancel_transition(self):
         sys.exit()

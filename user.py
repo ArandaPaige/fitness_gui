@@ -13,6 +13,7 @@ class User:
 
     def __init__(self, name=None, weight=None, goal=None, height=None,
                  weight_history=None):
+        self.user_id = 1
         self.name = name
         self.weight = weight
         self.height = height
@@ -45,7 +46,7 @@ class User:
         return weight_metric
 
     def calculate_bmi(self):
-        bmi = self.weight / ((self.height)**2) * 703
+        bmi = self.weight / ((self.height) ** 2) * 703
         return bmi
 
     def user_dict_create(self, name, weight, goal, height, weight_history=None):
