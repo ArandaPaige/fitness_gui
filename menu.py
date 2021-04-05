@@ -77,7 +77,7 @@ class UserLayout(QLayout):
         self.user_bmi = QLineEdit()
         self.user_goal_weight = QLineEdit()
         # Initializes a tree for displaying all user's weight history and buttons for editing DB
-        self.user_history = QTreeWidget()
+        self.user_history = QTableWidget()
         self.add_entry = QPushButton()
         self.modify_entry = QPushButton()
         self.delete_entry = QPushButton()
@@ -95,24 +95,28 @@ class UserLayout(QLayout):
         self.user_name.setReadOnly(True)
 
     def user_weight_properties(self):
-        self.user_weight.setText(f'Weight: {self.user.weight}')
+        self.user_weight.setText(f'Weight: {self.user.weight} lbs')
         self.user_weight.setReadOnly(True)
 
     def user_height_properties(self):
-        self.user_height.setText(f'Height: {self.user.height}')
+        self.user_height.setText(f'Height: {self.user.height} inches')
         self.user_height.setReadOnly(True)
 
     def user_bmi_properties(self):
-        self.user_bmi.setText(f'Body Mass Index:')
+        self.user_bmi.setText(f'Body Mass Index: {(self.user.weight / self.user.height**2 * 703):.1f}')
         self.user_bmi.setReadOnly(True)
 
     def user_goal_weight_properties(self):
-        self.user_goal_weight.setText(f'Goal Weight: {self.user.goal}')
+        self.user_goal_weight.setText(f'Goal Weight: {self.user.goal} lbs')
         self.user_goal_weight.setReadOnly(True)
 
     def user_history_properties(self):
         label_list = ['Date', 'Weight']
-        self.user_history.setHeaderLabels(label_list)
+        self.user_history.setColumnCount(2)
+        self.user_history.setRowCount(len(self.user.weight_history))
+        self.user_history.setHorizontalHeaderLabels(label_list)
+        date_header = self.user_history.horizontalHeaderItem(1)
+        weight_header = self.user_history.horizontalHeaderItem(2)
 
     def add_entry_button(self):
         self.add_entry.setText('Add Entry')

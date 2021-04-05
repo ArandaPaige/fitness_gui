@@ -27,7 +27,7 @@ def create_user_tables():
         (ID INTEGER PRIMARY KEY AUTOINCREMENT,
         DATE                TEXT NOT NULL,
         WEIGHT              REAL NOT NULL,
-        PERSON_ID              INT NOT NULL,
+        PERSON_ID           INT NOT NULL,
         FOREIGN KEY(PERSON_ID) REFERENCES USER(USER_ID));'''
                 )
     db.commit()
@@ -44,13 +44,11 @@ def retrieve_user(user_id):
         row = user_data.fetchone()
         user_history = cur.execute("SELECT DATE, WEIGHT from WEIGHT_HISTORY where PERSON_ID = ?", (user_id,))
         row_history = user_history.fetchall()
-        print(row_history)
         user = User(name=row[0], weight=row[1], goal=row[2], height=row[3], weight_history=row_history)
         return user
 
 
 def insert_user(user):
-    print(user.name, user.weight, user.goal, user.height)
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''
@@ -99,7 +97,7 @@ def update_user_height(height, user_id):
     db.close()
 
 
-def insert_weight_entry(entry_id, date, weight):
+def insert_weight_entry(date, weight):
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''
