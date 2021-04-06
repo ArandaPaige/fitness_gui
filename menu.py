@@ -111,12 +111,17 @@ class UserLayout(QLayout):
         self.user_goal_weight.setReadOnly(True)
 
     def user_history_properties(self):
-        label_list = ['Date', 'Weight']
+        hlabel_list = ['Date', 'Weight']
         self.user_history.setColumnCount(2)
         self.user_history.setRowCount(len(self.user.weight_history))
-        self.user_history.setHorizontalHeaderLabels(label_list)
-        date_header = self.user_history.horizontalHeaderItem(1)
-        weight_header = self.user_history.horizontalHeaderItem(2)
+        self.user_history.setHorizontalHeaderLabels(hlabel_list)
+        weight_header = self.user_history.horizontalHeaderItem(1)
+        for row in range(len(self.user.weight_history_table[0])):
+            for column, value in enumerate(self.user.weight_history_table[0]):
+                self.user_history.setItem(row, column, value)
+        for row in range(len(self.user.weight_history_table[1])):
+            for column, value in enumerate(self.user.weight_history_table[1], 1):
+                self.user_history.setItem(row, column, value)
 
     def add_entry_button(self):
         self.add_entry.setText('Add Entry')
