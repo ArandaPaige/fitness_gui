@@ -115,17 +115,26 @@ class UserLayout(QLayout):
         self.user_history.setColumnCount(2)
         self.user_history.setRowCount(len(self.user.weight_history))
         self.user_history.setHorizontalHeaderLabels(hlabel_list)
-        weight_header = self.user_history.horizontalHeaderItem(1)
-        for row in range(len(self.user.weight_history_table[0])):
-            for column, value in enumerate(self.user.weight_history_table[0]):
-                self.user_history.setItem(row, column, value)
-        for row in range(len(self.user.weight_history_table[1])):
-            for column, value in enumerate(self.user.weight_history_table[1], 1):
-                self.user_history.setItem(row, column, value)
+        # populates the table with entries by date
+        for row, items in enumerate(self.user.weight_history_table):
+            self.user_history.setItem(row, 0, items[0])
+            self.user_history.setItem(row, 1, items[1])
 
     def add_entry_button(self):
         self.add_entry.setText('Add Entry')
         self.add_entry.setEnabled(False)
+        self.add_entry.clicked.connect(self.add_entry_database)
+
+    def add_entry_trigger(self):
+        if self.weight_entry.hasAcceptableInput() is True:
+            self.add_entry.setEnabled(True)
+        else:
+            self.add_entry.setEnabled(False)
+
+    def add_entry_database(self):
+        date, weight = self.calendar.selectedDate(), float(self.weight_entry.text())
+        date = date.toString('yyyy-MM-dd')
+        database.insert_weight_entry(date, weight, self.user.user_id)
 
     def modify_entry_button(self):
         self.modify_entry.setText('Modify Entry')
@@ -137,11 +146,14 @@ class UserLayout(QLayout):
 
     def weight_entry_edit(self):
         self.weight_entry.setPlaceholderText('Type a valid weight into here')
+        validator = QDoubleValidator(0, 1000, 2, self.weight_entry)
+        self.weight_entry.setValidator(validator)
         self.weight_entry.setAlignment(Qt.Alignment.AlignCenter)
-        self.weight_entry.setEnabled(False)
+        self.weight_entry.textEdited.connect(self.add_entry_trigger)
 
     def calendar_widget(self):
-        self.calendar.setEnabled(False)
+        pass
+        #self.calendar.selectionChanged.connect()
 
     def graph_label_properties(self):
         self.graph_label.setText('Weight Visualizer')

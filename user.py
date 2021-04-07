@@ -38,17 +38,19 @@ class User:
         return weight_metric
 
     def weight_history_table_items(self):
+        def sorter(pair):
+            return pair[0]
         if self.weight_history is not None:
-            date_list = []
-            weight_list = []
-            for entry in self.weight_history:
+            date_weight_list = []
+            sorted_weight_history = sorted(self.weight_history, key=sorter)
+            for entry in sorted_weight_history:
                 date_item = QTableWidgetItem(type=1)
                 weight_item = QTableWidgetItem(type=2)
                 date_item.setData(0, entry[0])
                 weight_item.setData(0, entry[1])
-                date_list.append(date_item)
-                weight_list.append(weight_item)
-            return date_list, weight_list
+                date_weight_pair = (date_item, weight_item)
+                date_weight_list.append(date_weight_pair)
+            return date_weight_list
         else:
             return None
 
@@ -56,10 +58,10 @@ class User:
         '''
         Creates a dictionary with all of the user's personal statistics to be serialized as JSON.
         :param name: User's full name
-        :param startingweight: The user's starting weight.
-        :param currentweight: The user's current weight.
+        :param weight: User's weight
+        :param goal: User's goal weight
         :param height: The user's height.
-        :param weight_history: User's weight history is mapped by date.
+        :param weight_history: User's weight history is mapped by date and weight
         :return Dictionary: a dictionary containing the user's personal statistics.
         '''
 

@@ -97,12 +97,12 @@ def update_user_height(height, user_id):
     db.close()
 
 
-def insert_weight_entry(date, weight):
+def insert_weight_entry(date, weight, person_id):
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''
-    INSERT INTO WEIGHT_HISTORY (DATE, WEIGHT) \
-        VALUES (?,?)''', (date, weight))
+    INSERT INTO WEIGHT_HISTORY (DATE, WEIGHT, PERSON_ID) 
+        VALUES (?,?,?)''', (date, weight, person_id))
     db.commit()
     db.close()
 
