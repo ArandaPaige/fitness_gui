@@ -15,7 +15,6 @@ class User:
         self.height = height
         self.goal = goal
         self.weight_history = weight_history
-        self.weight_history_table = self.weight_history_table_items()
 
     def set_name(self, name):
         self.name = str(name.text())
@@ -36,23 +35,6 @@ class User:
     def convert_weight_metric(self):
         weight_metric = self.weight * 0.45359237
         return weight_metric
-
-    def weight_history_table_items(self):
-        def sorter(pair):
-            return pair[0]
-        if self.weight_history is not None:
-            date_weight_list = []
-            sorted_weight_history = sorted(self.weight_history, key=sorter)
-            for entry in sorted_weight_history:
-                date_item = QTableWidgetItem(type=1)
-                weight_item = QTableWidgetItem(type=2)
-                date_item.setData(0, entry[0])
-                weight_item.setData(0, entry[1])
-                date_weight_pair = (date_item, weight_item)
-                date_weight_list.append(date_weight_pair)
-            return date_weight_list
-        else:
-            return None
 
     def user_dict_create(self, name, weight, goal, height, weight_history=None):
         '''

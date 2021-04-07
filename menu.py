@@ -5,6 +5,8 @@ from user import User
 
 import database
 
+import model
+
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
@@ -111,12 +113,14 @@ class UserLayout(QLayout):
         self.user_goal_weight.setReadOnly(True)
 
     def user_history_properties(self):
+        weight_history_items = model.create_table_list(self.user.weight_history)
         hlabel_list = ['Date', 'Weight']
         self.user_history.setColumnCount(2)
         self.user_history.setRowCount(len(self.user.weight_history))
         self.user_history.setHorizontalHeaderLabels(hlabel_list)
+        self.user_history.setAlternatingRowColors(True)
         # populates the table with entries by date
-        for row, items in enumerate(self.user.weight_history_table):
+        for row, items in enumerate(weight_history_items):
             self.user_history.setItem(row, 0, items[0])
             self.user_history.setItem(row, 1, items[1])
 
@@ -153,7 +157,6 @@ class UserLayout(QLayout):
 
     def calendar_widget(self):
         pass
-        #self.calendar.selectionChanged.connect()
 
     def graph_label_properties(self):
         self.graph_label.setText('Weight Visualizer')
