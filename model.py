@@ -15,6 +15,5 @@ def create_table_list(user_list):
         weight_item.setData(0, entry[1])
         date_weight_pair = (date_item, weight_item)
         date_weight_list.append(date_weight_pair)
-        print(date_weight_list)
     return date_weight_list
 
