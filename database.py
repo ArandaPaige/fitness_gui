@@ -42,7 +42,7 @@ def retrieve_user(user_id):
     else:
         user_data = cur.execute("SELECT NAME, WEIGHT, GOAL, HEIGHT from USER where USER_ID = ?", (user_id,))
         row = user_data.fetchone()
-        user_history = cur.execute("SELECT DATE, WEIGHT from WEIGHT_HISTORY where PERSON_ID = ?", (user_id,))
+        user_history = cur.execute("SELECT ID, DATE, WEIGHT from WEIGHT_HISTORY where PERSON_ID = ?", (user_id,))
         row_history = user_history.fetchall()
         user = User(name=row[0], weight=row[1], goal=row[2], height=row[3], weight_history=row_history)
         return user

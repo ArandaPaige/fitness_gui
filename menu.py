@@ -113,17 +113,19 @@ class UserLayout(QLayout):
         self.user_goal_weight.setReadOnly(True)
 
     def user_history_properties(self):
-        hlabel_list = ['Date', 'Weight']
-        self.user_history.setColumnCount(2)
-        self.user_history.setRowCount(len(self.user.weight_history))
+        hlabel_list = ['ID', 'Date', 'Weight']
+        self.user_history.setColumnCount(3)
+        self.user_history.setColumnHidden(0, True)
         self.user_history.setHorizontalHeaderLabels(hlabel_list)
         self.user_history.setAlternatingRowColors(True)
 
     def user_history_table(self):
+        self.user_history.setRowCount(len(self.user.weight_history))
         weight_history_items = model.create_table_list(self.user.weight_history)
         for row, items in enumerate(weight_history_items):
             self.user_history.setItem(row, 0, items[0])
             self.user_history.setItem(row, 1, items[1])
+            self.user_history.setItem(row, 2, items[2])
 
     def add_entry_button(self):
         self.add_entry.setText('Add Entry')
@@ -140,6 +142,10 @@ class UserLayout(QLayout):
         date, weight = self.calendar.selectedDate(), float(self.weight_entry.text())
         date = date.toString('yyyy-MM-dd')
         database.insert_weight_entry(date, weight, self.user.user_id)
+        database.load_user_history(self.user)
+        self.user_history.clearContents()
+        self.user_history_table()
+
 
     def modify_entry_button(self):
         self.modify_entry.setText('Modify Entry')
@@ -150,7 +156,8 @@ class UserLayout(QLayout):
         pass
 
     def modify_entry_database(self):
-        pass
+        self.user_history.clearContents()
+        self.user_history_table()
 
     def delete_entry_button(self):
         self.delete_entry.setText('Delete Entry')
@@ -161,7 +168,8 @@ class UserLayout(QLayout):
         pass
 
     def delete_entry_database(self):
-        pass
+        self.user_history.clearContents()
+        self.user_history_table()
 
     def weight_entry_edit(self):
         self.weight_entry.setPlaceholderText('Type a valid weight into here')
