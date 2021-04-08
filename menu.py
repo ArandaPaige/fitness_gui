@@ -105,7 +105,7 @@ class UserLayout(QLayout):
         self.user_height.setReadOnly(True)
 
     def user_bmi_properties(self):
-        self.user_bmi.setText(f'Body Mass Index: {(self.user.weight / self.user.height**2 * 703):.1f}')
+        self.user_bmi.setText(f'Body Mass Index: {(self.user.weight / self.user.height ** 2 * 703):.1f}')
         self.user_bmi.setReadOnly(True)
 
     def user_goal_weight_properties(self):
@@ -113,13 +113,14 @@ class UserLayout(QLayout):
         self.user_goal_weight.setReadOnly(True)
 
     def user_history_properties(self):
-        weight_history_items = model.create_table_list(self.user.weight_history)
         hlabel_list = ['Date', 'Weight']
         self.user_history.setColumnCount(2)
         self.user_history.setRowCount(len(self.user.weight_history))
         self.user_history.setHorizontalHeaderLabels(hlabel_list)
         self.user_history.setAlternatingRowColors(True)
-        # populates the table with entries by date
+
+    def user_history_table(self):
+        weight_history_items = model.create_table_list(self.user.weight_history)
         for row, items in enumerate(weight_history_items):
             self.user_history.setItem(row, 0, items[0])
             self.user_history.setItem(row, 1, items[1])
@@ -143,10 +144,24 @@ class UserLayout(QLayout):
     def modify_entry_button(self):
         self.modify_entry.setText('Modify Entry')
         self.modify_entry.setEnabled(False)
+        self.modify_entry.clicked.connect(self.modify_entry_database)
+
+    def modify_entry_trigger(self):
+        pass
+
+    def modify_entry_database(self):
+        pass
 
     def delete_entry_button(self):
         self.delete_entry.setText('Delete Entry')
         self.delete_entry.setEnabled(False)
+        self.delete_entry.clicked.connect(self.delete_entry_database)
+
+    def delete_entry_trigger(self):
+        pass
+
+    def delete_entry_database(self):
+        pass
 
     def weight_entry_edit(self):
         self.weight_entry.setPlaceholderText('Type a valid weight into here')
@@ -199,6 +214,7 @@ class UserLayout(QLayout):
         self.weight_entry_edit()
         self.calendar_widget()
         self.user_history_properties()
+        self.user_history_table()
 
     def generate_left_layout(self):
         self.layout_left.addWidget(self.user_name)

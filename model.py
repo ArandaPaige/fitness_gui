@@ -4,10 +4,8 @@ from PyQt6.QtCore import *
 
 
 def create_table_list(user_list):
-    def sorter(pair):
-        return pair[0]
     date_weight_list = []
-    sorted_list = sorted(user_list, key=sorter, reverse=True)
+    sorted_list = sorted(user_list, key=lambda x: x[0], reverse=True)
     for entry in sorted_list:
         date_item = QTableWidgetItem(type=1)
         weight_item = QTableWidgetItem(type=2)
@@ -16,4 +14,3 @@ def create_table_list(user_list):
         date_weight_pair = (date_item, weight_item)
         date_weight_list.append(date_weight_pair)
     return date_weight_list
-

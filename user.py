@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QTableWidgetItem
 
+
 class User:
     '''
     A user is documented with their personal health and fitness statistics.
@@ -28,6 +29,9 @@ class User:
     def set_height(self, height):
         self.height = float(height.text())
 
+    def set_weight_history(self, weight_history):
+        self.weight_history = weight_history
+
     def convert_height_metric(self):
         height_metric = self.height * 2.54
         return height_metric
@@ -35,23 +39,3 @@ class User:
     def convert_weight_metric(self):
         weight_metric = self.weight * 0.45359237
         return weight_metric
-
-    def user_dict_create(self, name, weight, goal, height, weight_history=None):
-        '''
-        Creates a dictionary with all of the user's personal statistics to be serialized as JSON.
-        :param name: User's full name
-        :param weight: User's weight
-        :param goal: User's goal weight
-        :param height: The user's height.
-        :param weight_history: User's weight history is mapped by date and weight
-        :return Dictionary: a dictionary containing the user's personal statistics.
-        '''
-
-        return {
-            'name': name,
-            'weight': weight,
-            'goal': goal,
-            'height': height,
-            'weight history': weight_history
-            }
-

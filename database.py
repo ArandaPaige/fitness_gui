@@ -61,6 +61,14 @@ def insert_user(user):
     db.close()
 
 
+def load_user_history(user):
+    db = sqlite3.connect(DATABASE)
+    cur = db.cursor()
+    user_history = cur.execute("SELECT DATE, WEIGHT from WEIGHT_HISTORY where PERSON_ID = ?", (user.user_id,))
+    row_history = user_history.fetchall()
+    user.set_weight_history(row_history)
+
+
 def update_user_name(name, user_id):
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
