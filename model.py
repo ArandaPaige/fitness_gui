@@ -4,11 +4,11 @@ from PyQt6.QtCore import *
 
 
 def create_table_list(user_list):
-    '''
-    Sorted the user's weight history by date and then creates QTableWidget items for each ID, date, and weight entry.
+    """
+    Sorts the user's weight history by date and then creates QTableWidget items for each ID, date, and weight entry.
     :param user_list: user supplied weight history list
     :return: List: a list of tuples containing ID, date, and weight items
-    '''
+    """
     id_date_weight_list = []
     sorted_list = sorted(user_list, key=lambda x: x[1], reverse=True)
     for entry in sorted_list:

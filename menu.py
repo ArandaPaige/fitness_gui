@@ -15,7 +15,6 @@ import pyqtgraph as pg
 
 
 class GUIManager(QWidget):
-    '''Main GUI'''
 
     def __init__(self, app, user=None):
         '''Initialize'''

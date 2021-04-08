@@ -2,11 +2,11 @@ from PyQt6.QtWidgets import QTableWidgetItem
 
 
 class User:
-    '''
+    """
     A user is documented with their personal health and fitness statistics.
     These statistics are collated to generate useful data, like the trajectory of
     their weight loss/gain.
-    '''
+    """
 
     def __init__(self, name=None, weight=None, goal=None, height=None,
                  weight_history=None):
