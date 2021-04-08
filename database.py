@@ -49,6 +49,11 @@ def retrieve_user(user_id):
 
 
 def insert_user(user):
+    '''
+    Inserts the user object into the database with the object's attributes as parameters
+    :param user: a user object
+    :return: None
+    '''
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''
@@ -64,7 +69,7 @@ def insert_user(user):
 def load_user_history(user):
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
-    user_history = cur.execute("SELECT DATE, WEIGHT from WEIGHT_HISTORY where PERSON_ID = ?", (user.user_id,))
+    user_history = cur.execute("SELECT ID, DATE, WEIGHT from WEIGHT_HISTORY where PERSON_ID = ?", (user.user_id,))
     row_history = user_history.fetchall()
     user.set_weight_history(row_history)
 

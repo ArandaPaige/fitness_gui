@@ -62,6 +62,11 @@ class MainMenu(QWidget):
 class UserLayout(QLayout):
 
     def __init__(self, parent_window, user):
+        '''
+        Creates a layout that displays user's personal metrics in text, table, and in graphical formats.
+        :param parent_window: The main window upon which the layout will be displayed.
+        :param user: a user object derived from the database.
+        '''
         super().__init__()
         self.parent = parent_window
         self.user = user
@@ -113,6 +118,10 @@ class UserLayout(QLayout):
         self.user_goal_weight.setReadOnly(True)
 
     def user_history_properties(self):
+        '''
+        Sets the static properties of the user history table.
+        :return: None
+        '''
         hlabel_list = ['ID', 'Date', 'Weight']
         self.user_history.setColumnCount(3)
         self.user_history.setColumnHidden(0, True)
@@ -120,6 +129,10 @@ class UserLayout(QLayout):
         self.user_history.setAlternatingRowColors(True)
 
     def user_history_table(self):
+        '''
+        Sets the items of the user's weight history dynamically into the table.
+        :return: None
+        '''
         self.user_history.setRowCount(len(self.user.weight_history))
         weight_history_items = model.create_table_list(self.user.weight_history)
         for row, items in enumerate(weight_history_items):
