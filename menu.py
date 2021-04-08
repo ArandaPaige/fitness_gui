@@ -1,23 +1,25 @@
-from functools import partial
 import sys
-
-from user import User
-
-import database
-
-import model
-
-from PyQt6.QtWidgets import *
-from PyQt6.QtGui import *
-from PyQt6.QtCore import *
+from functools import partial
 
 import pyqtgraph as pg
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
+
+import database
+import model
+from user import User
 
 
 class GUIManager(QWidget):
+    """Overall manager for all GUI objects and app UI functions."""
 
     def __init__(self, app, user=None):
-        '''Initialize'''
+        """
+        Initializes with an instance of the main menu and a user. It controls the state of the main menu window.
+        :param app: an instance of the QtApplication class.
+        :param user: an instance of a user object.
+        """
         super().__init__()
         self.user = user
         self.main_menu = MainMenu(self, self.user)
@@ -28,10 +30,15 @@ class GUIManager(QWidget):
 
 
 class MainMenu(QWidget):
-    '''Main menu'''
+    """The main menu is the main window of the application. It manages the layouts that constitute the GUI."""
 
     def __init__(self, master, user):
-        '''Initialize'''
+        """
+        Initializes the main menu's main GUI properties and checks user instance to direct the creation of the
+        appropriate layout.
+        :param master: the master object that controls the main menu's state.
+        :param user: the user object.
+        """
         super().__init__()
         self.master = master
         self.user = user
@@ -41,6 +48,10 @@ class MainMenu(QWidget):
         self.check_user_status()
 
     def check_user_status(self):
+        """
+        Directs the initialization of a layout based on the instance's user attribute
+        :return: None
+        """
         if self.user == None:
             self.new_user_layout()
         else:
@@ -157,7 +168,6 @@ class UserLayout(QLayout):
         database.load_user_history(self.user)
         self.user_history.clearContents()
         self.user_history_table()
-
 
     def modify_entry_button(self):
         self.modify_entry.setText('Modify Entry')

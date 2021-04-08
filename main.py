@@ -1,9 +1,9 @@
 import sys
 from pathlib import Path
-import database
 
 from PyQt6.QtWidgets import QApplication
 
+import database
 from menu import GUIManager
 
 BASE_DIR = Path().resolve()

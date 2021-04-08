@@ -1,6 +1,7 @@
+import datetime
 import sqlite3
 from pathlib import Path
-import datetime
+
 from user import User
 
 BASE_DIR = Path().resolve()
@@ -94,7 +95,7 @@ def update_user_name(name, user_id):
     Updates the user's name in the USER table.
     :param name: The personal name of the user
     :param user_id: The user's ID in the database
-    :return:
+    :return: None
     """
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()

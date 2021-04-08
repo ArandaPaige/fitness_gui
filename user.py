@@ -1,6 +1,3 @@
-from PyQt6.QtWidgets import QTableWidgetItem
-
-
 class User:
     """
     A user is documented with their personal health and fitness statistics.
