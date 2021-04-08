@@ -108,28 +108,48 @@ class UserLayout(QLayout):
         self.generate_layout()
 
     def user_name_properties(self):
+        """
+        Sets the default properties of the name QLineEdit object.
+        :return: None
+        """
         self.user_name.setText(f'Name: {self.user.name}')
         self.user_name.setReadOnly(True)
 
     def user_weight_properties(self):
+        """
+        Sets the default properties of the weight QLineEdit object.
+        :return: None
+        """
         self.user_weight.setText(f'Weight: {self.user.weight} lbs')
         self.user_weight.setReadOnly(True)
 
     def user_height_properties(self):
+        """
+        Sets the default properties of the height QLineEdit object.
+        :return: None
+        """
         self.user_height.setText(f'Height: {self.user.height} inches')
         self.user_height.setReadOnly(True)
 
     def user_bmi_properties(self):
+        """
+        Sets the default properties of the BMI object.
+        :return: None
+        """
         self.user_bmi.setText(f'Body Mass Index: {(self.user.weight / self.user.height ** 2 * 703):.1f}')
         self.user_bmi.setReadOnly(True)
 
     def user_goal_weight_properties(self):
+        """
+        Sets the default properties of the weight goal QLineEdit object.
+        :return: None
+        """
         self.user_goal_weight.setText(f'Goal Weight: {self.user.goal} lbs')
         self.user_goal_weight.setReadOnly(True)
 
     def user_history_properties(self):
         '''
-        Sets the static properties of the user history table.
+        Sets the default properties of the user history table.
         :return: None
         '''
         hlabel_list = ['ID', 'Date', 'Weight']
@@ -151,6 +171,10 @@ class UserLayout(QLayout):
             self.user_history.setItem(row, 2, items[2])
 
     def add_entry_button(self):
+        """
+        Sets the default properties of the 'Add Entry' button. Clicking the button adds an entry to the database.
+        :return: None
+        """
         self.add_entry.setText('Add Entry')
         self.add_entry.setEnabled(False)
         self.add_entry.clicked.connect(self.add_entry_database)
@@ -170,6 +194,11 @@ class UserLayout(QLayout):
         self.user_history_table()
 
     def modify_entry_button(self):
+        """
+        Sets the default properties of the 'Modify Entry' button. It is enabled when a valid selection on the table
+        is made. Clicking the button modifies the entry in the database.
+        :return: None
+        """
         self.modify_entry.setText('Modify Entry')
         self.modify_entry.setEnabled(False)
         self.modify_entry.clicked.connect(self.modify_entry_database)
@@ -182,6 +211,11 @@ class UserLayout(QLayout):
         self.user_history_table()
 
     def delete_entry_button(self):
+        """
+        Sets the default properties of the 'Delete Entry' button. It is enabled when a valid selection on the table
+        is made. Clicking the button deletes the entry in the database.
+        :return: None
+        """
         self.delete_entry.setText('Delete Entry')
         self.delete_entry.setEnabled(False)
         self.delete_entry.clicked.connect(self.delete_entry_database)

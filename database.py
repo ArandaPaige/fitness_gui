@@ -65,14 +65,25 @@ def insert_user(user):
     :param user: a user object
     :return: None
     """
-    db = sqlite3.connect(DATABASE)
-    cur = db.cursor()
-    cur.execute('''
-    INSERT INTO USER (NAME,WEIGHT,GOAL,HEIGHT) 
-        VALUES (?,?,?,?)''', (user.name, user.weight, user.goal, user.height))
-    cur.execute('''
-    INSERT INTO WEIGHT_HISTORY (DATE, WEIGHT, PERSON_ID)
-        VALUES (?,?,?)''', (DATE_TODAY, user.weight, user.user_id))
+    try:
+        db = sqlite3.connect(DATABASE)
+        cur = db.cursor()
+    except sqlite3.DatabaseError as db_error:
+        create_user_tables()
+    finally:
+        db = sqlite3.connect(DATABASE)
+        cur = db.cursor()
+    try:
+        cur.execute('''
+        INSERT INTO USER (NAME,WEIGHT,GOAL,HEIGHT) 
+            VALUES (?,?,?,?)''', (user.name, user.weight, user.goal, user.height))
+        cur.execute('''
+        INSERT INTO WEIGHT_HISTORY (DATE, WEIGHT, PERSON_ID)
+            VALUES (?,?,?)''', (DATE_TODAY, user.weight, user.user_id))
+    except sqlite3.ProgrammingError as error_program:
+        db.rollback()
+    except sqlite3.IntegrityError as integrity_error:
+        db.rollback()
     db.commit()
     db.close()
 
