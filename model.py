@@ -28,12 +28,14 @@ def create_graph_list(user_list):
     :param user_list: a list from the user instance
     :return: List
     """
-    weight_list = []
+    graph_xlist = []
+    graph_ylist = []
     sorted_list = sorted(user_list, key=lambda x: x[1])
     for i, entry in enumerate(sorted_list):
-        graph_x, graph_y = entry, i
-        sorted_list.append((graph_x, graph_y))
-    return sorted_list
+        graph_x, graph_y = entry[2], i
+        graph_xlist.append(graph_x)
+        graph_ylist.append(graph_y)
+    return graph_xlist, graph_ylist
 
 
 def graph_entries(sorted_list, list_end=None):

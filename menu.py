@@ -312,13 +312,18 @@ class UserLayout(QLayout):
         axis_left.showLabel(show=True)
         axis_bottom = pg.AxisItem(
             orientation='bottom',
-            text='Date',
+            text='Entries',
             **axis_label_style
         )
         axis_bottom.showLabel(show=True)
         title_label_style = {'color': 'FFF', 'size': '22pt', 'font-weight': 'bold'}
         # self.user_history_graph.setTitle(title='Weight Visualizer', **title_label_style)
         self.user_history_graph.setAxisItems(axisItems={'left': axis_left, 'bottom': axis_bottom})
+
+    def user_graph_plot(self):
+        graph_x, graph_y = model.create_graph_list(self.user.weight_history)
+        data = pg.PlotDataItem(graph_y, graph_x)
+        self.user_history_graph.addItem(data)
 
     def set_widget_properties(self):
         self.user_name_properties()
@@ -335,6 +340,7 @@ class UserLayout(QLayout):
         self.calendar_widget()
         self.user_history_properties()
         self.user_history_table()
+        self.user_graph_plot()
 
     def generate_left_layout(self):
         self.layout_left.addWidget(self.user_name)
@@ -488,10 +494,7 @@ class NewUserLayout(QLayout):
         self.layout.setEnabled(False)
 
     def cancel_transition(self):
-        """
-        Exits the application.
-        :return: None
-        """
+        """Exits the application."""
         sys.exit()
 
     def set_widget_properties(self):
