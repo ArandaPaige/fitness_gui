@@ -23,20 +23,31 @@ def create_table_list(user_list):
 
 
 def create_graph_list(user_list):
+    """
+    Creates a list of weights that have been sorted by date in descending order
+    :param user_list: a list from the user instance
+    :return: List
+    """
     weight_list = []
     sorted_list = sorted(user_list, key=lambda x: x[1])
-    for entry in sorted_list:
-        sorted_list.append(entry[2])
+    for i, entry in enumerate(sorted_list):
+        graph_x, graph_y = entry, i
+        sorted_list.append((graph_x, graph_y))
     return sorted_list
 
 
 def graph_entries(sorted_list, list_end=None):
+    """
+    Creates a tuple of x, y values based on the sorted list. The length of the list is determined by the user's input.
+    :param sorted_list:
+    :param list_end:
+    :return: List
+    """
     if list_end is not None:
-        graph_x = sorted_list[:list_end]
+        graph = sorted_list[:list_end]
     else:
-        graph_x = sorted_list
-    graph_y = len(graph_x)
-    return graph_x, graph_y
+        graph = sorted_list
+    return graph
 
 
 def lerp_weight(sorted_list):
