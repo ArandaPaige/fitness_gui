@@ -52,7 +52,7 @@ class MainMenu(QWidget):
         Directs the initialization of a layout based on the instance's user attribute
         :return: None
         """
-        if self.user == None:
+        if self.user is None:
             self.new_user_layout()
         else:
             self.existing_user_layout()
@@ -72,11 +72,11 @@ class MainMenu(QWidget):
 class UserLayout(QLayout):
 
     def __init__(self, parent_window, user):
-        '''
+        """
         Creates a layout that displays user's personal metrics in text, table, and in graphical formats.
         :param parent_window: The main window upon which the layout will be displayed.
         :param user: a user object derived from the database.
-        '''
+        """
         super().__init__()
         self.parent = parent_window
         self.user = user
@@ -103,6 +103,10 @@ class UserLayout(QLayout):
         # Initializes the graph for visualizing weight history with buttons for modifying display
         self.graph_label = QLabel()
         self.user_history_graph = pg.plot()
+        self.graph_display_10 = QPushButton()
+        self.graph_display_20 = QPushButton()
+        self.graph_display_30 = QPushButton()
+        self.graph_display_all = QPushButton()
         # Sets the properties for all widgets and their layouts
         self.set_widget_properties()
         self.generate_layout()
@@ -148,10 +152,10 @@ class UserLayout(QLayout):
         self.user_goal_weight.setReadOnly(True)
 
     def user_history_properties(self):
-        '''
+        """
         Sets the default properties of the user history table.
         :return: None
-        '''
+        """
         hlabel_list = ['ID', 'Date', 'Weight']
         self.user_history.setColumnCount(3)
         self.user_history.setColumnHidden(0, True)
@@ -159,10 +163,10 @@ class UserLayout(QLayout):
         self.user_history.setAlternatingRowColors(True)
 
     def user_history_table(self):
-        '''
+        """
         Sets the items of the user's weight history dynamically into the table.
         :return: None
-        '''
+        """
         self.user_history.setRowCount(len(self.user.weight_history))
         weight_history_items = model.create_table_list(self.user.weight_history)
         for row, items in enumerate(weight_history_items):
@@ -212,6 +216,8 @@ class UserLayout(QLayout):
         """
         if len(self.user_history.selectedItems()) == 0:
             self.modify_entry.setEnabled(False)
+        elif len(self.user_history.selectedItems()) > 1:
+            self.modify_entry.setEnabled(False)
         else:
             self.modify_entry.setEnabled(True)
 
@@ -236,7 +242,7 @@ class UserLayout(QLayout):
     def delete_entry_button(self):
         """
         Sets the default properties of the 'Delete Entry' button. It is enabled when a valid selection on the table
-        is made. Clicking the button deletes the entry in the database.
+        is made. Clicking the button deletes the entries in the database.
         :return: None
         """
         self.delete_entry.setText('Delete Entry')

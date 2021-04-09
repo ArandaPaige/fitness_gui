@@ -1,6 +1,5 @@
 from PyQt6.QtWidgets import *
-from PyQt6.QtGui import *
-from PyQt6.QtCore import *
+import pyqtgraph as pg
 
 
 def create_table_list(user_list):
@@ -23,9 +22,21 @@ def create_table_list(user_list):
     return id_date_weight_list
 
 
-def graph_entries(user_list, list_start=None, list_end=None):
-    pass
+def create_graph_list(user_list):
+    weight_list = []
+    sorted_list = sorted(user_list, key=lambda x: x[1])
+    for entry in sorted_list:
+        sorted_list.append(entry[2])
+    return sorted_list
 
 
-def lerp_weight(user_list):
+def graph_entries(sorted_list, list_end=None):
+    if list_end is not None:
+        graph = sorted_list[:list_end]
+    else:
+        graph = sorted_list
+    return graph
+
+
+def lerp_weight(sorted_list):
     pass
