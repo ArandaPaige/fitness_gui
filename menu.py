@@ -215,8 +215,11 @@ class UserLayout(QLayout):
     def modify_entry_database(self, entry):
         if len(self.user_history.selectedItems()) > 1:
             print('Please select only one item to modify')
-        date, weight = self.calendar.selectedDate(), float(self.weight_entry.text())
-        date = date.toString('yyyy-MM-dd')
+        try:
+            date, weight = self.calendar.selectedDate(), float(self.weight_entry.text())
+            date = date.toString('yyyy-MM-dd')
+        except ValueError as value_error:
+            pass
         #database.update_weight_entry(1, weight, date)
         #self.user_history.clearContents()
         #self.user_history_table()
@@ -236,21 +239,29 @@ class UserLayout(QLayout):
             self.delete_entry.setEnabled(False)
         else:
             items = self.user_history.selectedItems()
-            entries = []
+            entries = set()
             for item in items:
-                row = item.row()
-                item_id = self.user_history.item(row, 0)
-                entries.append(item_id.data(0))
+                item_id = self.user_history.item(item.row(), 0)
+                entries.add(item_id.data(0))
             print(entries)
             self.delete_entry.setEnabled(True)
 
-    def delete_entry_database(self, entry_list):
+    def delete_entry_database(self, entry_set):
+        """
+        Deletes the set of entries from the database.
+        :param entry_set: a set of entries
+        :return: None
+        """
         pass
         #database.delete_weight_entry(1)
         #self.user_history.clearContents()
         #self.user_history_table()
 
     def weight_entry_edit(self):
+        """
+        Sets the default properties of the weight entry QLineEdit object.
+        :return: None
+        """
         self.weight_entry.setPlaceholderText('Type a valid weight into here')
         validator = QDoubleValidator(0, 1000, 2, self.weight_entry)
         self.weight_entry.setValidator(validator)
@@ -270,6 +281,10 @@ class UserLayout(QLayout):
         self.graph_label.setAlignment(Qt.Alignment.AlignCenter)
 
     def user_graph_properties(self):
+        """
+        Sets the default properties of the graph.
+        :return: None
+        """
         axis_label_style = {'color': '#FFF', 'font-size': '14pt', 'font-weight': 'bold'}
         axis_left = pg.AxisItem(
             orientation='left',
@@ -321,15 +336,26 @@ class UserLayout(QLayout):
         self.layout_center.addLayout(self.center_layout_right)
 
     def generate_right_layout(self):
+        """
+        :return: None
+        """
         self.layout_right.addWidget(self.graph_label)
         self.layout_right.addWidget(self.user_history_graph)
 
     def generate_master_layout(self):
+        """
+        Adds all the child layouts to the master layout.
+        :return: None
+        """
         self.layout.addLayout(self.layout_left, 1)
         self.layout.addLayout(self.layout_center, 1)
         self.layout.addLayout(self.layout_right, 1)
 
     def generate_layout(self):
+        """
+        Calls all layout property setting functions and generates the layout.
+        :return: None
+        """
         self.generate_left_layout()
         self.generate_center_layout()
         self.generate_right_layout()
@@ -337,8 +363,16 @@ class UserLayout(QLayout):
 
 
 class NewUserLayout(QLayout):
+    """
+    An introductory layout for new users that prompts them for their personal information to construct a user object
+    that is then passed into the database.
+    """
 
     def __init__(self, parent_window):
+        """
+        Initializes the layout with several QLineEdit boxes and two buttons to confirm or cancel the inputs of the user.
+        :param parent_window: the main menu widget
+        """
         super().__init__()
         self.parent = parent_window
         self.user = User()
@@ -353,11 +387,19 @@ class NewUserLayout(QLayout):
         self.generate_layout()
 
     def name_properties(self):
+        """
+        Sets the default properties of the name QLineEdit object.
+        :return: None
+        """
         self.person_name.setPlaceholderText('Type your name here')
         self.person_name.textEdited.connect(partial(self.user.set_name, self.person_name))
         self.person_name.textEdited.connect(self.enable_confirm_btn)
 
     def weight_properties(self):
+        """
+        Sets the default properties of the weight QLineEdit object.
+        :return: None
+        """
         self.weight.setPlaceholderText('Type your current weight here')
         validator = QDoubleValidator(0, 2000, 2, self.weight)
         self.weight.setValidator(validator)
@@ -365,6 +407,10 @@ class NewUserLayout(QLayout):
         self.weight.textEdited.connect(self.enable_confirm_btn)
 
     def goal_properties(self):
+        """
+        Sets the default properties of the goal weight QLineEdit object.
+        :return: None
+        """
         self.goal.setPlaceholderText('Type your goal weight here')
         validator = QDoubleValidator(0, 2000, 2, self.goal)
         self.goal.setValidator(validator)
@@ -372,6 +418,10 @@ class NewUserLayout(QLayout):
         self.goal.textEdited.connect(self.enable_confirm_btn)
 
     def height_properties(self):
+        """
+        Sets the default properties of the height QLineEdit object.
+        :return: None
+        """
         self.height.setPlaceholderText('Type your height here')
         validator = QDoubleValidator(0, 110, 2, self.height)
         self.height.setValidator(validator)
@@ -382,15 +432,27 @@ class NewUserLayout(QLayout):
         pass
 
     def confirm_properties(self):
+        """
+        Sets the default properties of the confirm QPushButton object.
+        :return: None
+        """
         self.confirm.setFixedHeight(35)
         self.confirm.setEnabled(False)
         self.confirm.clicked.connect(partial(self.confirm_transition, self.user))
 
     def cancel_properties(self):
+        """
+        Sets the default properties of the cancel QPushButton object.
+        :return: None
+        """
         self.cancel.setFixedHeight(35)
         self.cancel.clicked.connect(self.cancel_transition)
 
     def enable_confirm_btn(self):
+        """
+        If all QLineEdit objects have inputs that have been validated, the confirm QPushButton is enabled.
+        :return:
+        """
         if (self.person_name.hasAcceptableInput() is True and self.weight.hasAcceptableInput() is True and
                 self.goal.hasAcceptableInput() is True and self.height.hasAcceptableInput() is True):
             self.confirm.setEnabled(True)
@@ -398,14 +460,27 @@ class NewUserLayout(QLayout):
             self.confirm.setEnabled(False)
 
     def confirm_transition(self, user):
+        """
+        Inserts the supplied user object into the database and switches the layout.
+        :param user: the user object
+        :return: None
+        """
         database.insert_user(user)
         self.parent.existing_user_layout()
         self.layout.setEnabled(False)
 
     def cancel_transition(self):
+        """
+        Exits the application.
+        :return: None
+        """
         sys.exit()
 
     def set_widget_properties(self):
+        """
+        Calls all the widget property setting functions.
+        :return: None
+        """
         self.name_properties()
         self.weight_properties()
         self.goal_properties()
@@ -414,6 +489,10 @@ class NewUserLayout(QLayout):
         self.cancel_properties()
 
     def generate_layout(self):
+        """
+        Generates the layout for the new user experience.
+        :return: None
+        """
         self.layout.addWidget(self.person_name, 1, 0)
         self.layout.addWidget(self.weight, 2, 0)
         self.layout.addWidget(self.goal, 3, 0)
