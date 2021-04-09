@@ -21,3 +21,11 @@ def create_table_list(user_list):
         id_date_weight = (id_item, date_item, weight_item)
         id_date_weight_list.append(id_date_weight)
     return id_date_weight_list
+
+
+def graph_entries(user_list, list_start=None, list_end=None):
+    pass
+
+
+def lerp_weight(user_list):
+    pass

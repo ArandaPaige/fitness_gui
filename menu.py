@@ -169,6 +169,8 @@ class UserLayout(QLayout):
             self.user_history.setItem(row, 0, items[0])
             self.user_history.setItem(row, 1, items[1])
             self.user_history.setItem(row, 2, items[2])
+        self.user_history.itemSelectionChanged.connect(self.modify_entry_trigger)
+        self.user_history.itemSelectionChanged.connect(self.delete_entry_trigger)
 
     def add_entry_button(self):
         """
@@ -204,11 +206,20 @@ class UserLayout(QLayout):
         self.modify_entry.clicked.connect(self.modify_entry_database)
 
     def modify_entry_trigger(self):
-        pass
+        if len(self.user_history.selectedItems()) == 0:
+            self.modify_entry.setEnabled(False)
+        else:
+            items = self.user_history.selectedItems()
+            self.modify_entry.setEnabled(True)
 
-    def modify_entry_database(self):
-        self.user_history.clearContents()
-        self.user_history_table()
+    def modify_entry_database(self, entry):
+        if len(self.user_history.selectedItems()) > 1:
+            print('Please select only one item to modify')
+        date, weight = self.calendar.selectedDate(), float(self.weight_entry.text())
+        date = date.toString('yyyy-MM-dd')
+        #database.update_weight_entry(1, weight, date)
+        #self.user_history.clearContents()
+        #self.user_history_table()
 
     def delete_entry_button(self):
         """
@@ -221,11 +232,23 @@ class UserLayout(QLayout):
         self.delete_entry.clicked.connect(self.delete_entry_database)
 
     def delete_entry_trigger(self):
-        pass
+        if len(self.user_history.selectedItems()) == 0:
+            self.delete_entry.setEnabled(False)
+        else:
+            items = self.user_history.selectedItems()
+            entries = []
+            for item in items:
+                row = item.row()
+                item_id = self.user_history.item(row, 0)
+                entries.append(item_id.data(0))
+            print(entries)
+            self.delete_entry.setEnabled(True)
 
-    def delete_entry_database(self):
-        self.user_history.clearContents()
-        self.user_history_table()
+    def delete_entry_database(self, entry_list):
+        pass
+        #database.delete_weight_entry(1)
+        #self.user_history.clearContents()
+        #self.user_history_table()
 
     def weight_entry_edit(self):
         self.weight_entry.setPlaceholderText('Type a valid weight into here')
@@ -368,8 +391,8 @@ class NewUserLayout(QLayout):
         self.cancel.clicked.connect(self.cancel_transition)
 
     def enable_confirm_btn(self):
-        if (self.person_name.hasAcceptableInput() == True and self.weight.hasAcceptableInput() == True and
-                self.goal.hasAcceptableInput() == True and self.height.hasAcceptableInput() == True):
+        if (self.person_name.hasAcceptableInput() is True and self.weight.hasAcceptableInput() is True and
+                self.goal.hasAcceptableInput() is True and self.height.hasAcceptableInput() is True):
             self.confirm.setEnabled(True)
         else:
             self.confirm.setEnabled(False)
