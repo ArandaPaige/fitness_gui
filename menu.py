@@ -206,23 +206,32 @@ class UserLayout(QLayout):
         self.modify_entry.clicked.connect(self.modify_entry_database)
 
     def modify_entry_trigger(self):
+        """
+        Checks whether items have been selected on the weight history and enables/disables the modify QPushButton.
+        :return:
+        """
         if len(self.user_history.selectedItems()) == 0:
             self.modify_entry.setEnabled(False)
         else:
-            items = self.user_history.selectedItems()
             self.modify_entry.setEnabled(True)
 
-    def modify_entry_database(self, entry):
+    def modify_entry_database(self):
+        """
+        Updates the selected item in the table with the new value for weight and/or date.
+        :return: None
+        """
         if len(self.user_history.selectedItems()) > 1:
             print('Please select only one item to modify')
+            return
         try:
             date, weight = self.calendar.selectedDate(), float(self.weight_entry.text())
             date = date.toString('yyyy-MM-dd')
         except ValueError as value_error:
             pass
-        #database.update_weight_entry(1, weight, date)
-        #self.user_history.clearContents()
-        #self.user_history_table()
+        # database.update_weight_entry(1, weight, date)
+        # database.load_user_history(self.user)
+        # self.user_history.clearContents()
+        # self.user_history_table()
 
     def delete_entry_button(self):
         """
@@ -235,27 +244,30 @@ class UserLayout(QLayout):
         self.delete_entry.clicked.connect(self.delete_entry_database)
 
     def delete_entry_trigger(self):
+        """
+        Checks whether items have been selected on the weight history and enables/disables the delete QPushButton.
+        :return: None
+        """
         if len(self.user_history.selectedItems()) == 0:
             self.delete_entry.setEnabled(False)
         else:
-            items = self.user_history.selectedItems()
-            entries = set()
-            for item in items:
-                item_id = self.user_history.item(item.row(), 0)
-                entries.add(item_id.data(0))
-            print(entries)
             self.delete_entry.setEnabled(True)
 
-    def delete_entry_database(self, entry_set):
+    def delete_entry_database(self):
         """
         Deletes the set of entries from the database.
-        :param entry_set: a set of entries
         :return: None
         """
-        pass
-        #database.delete_weight_entry(1)
-        #self.user_history.clearContents()
-        #self.user_history_table()
+        items = self.user_history.selectedItems()
+        entries = set()
+        for item in items:
+            item_id = self.user_history.item(item.row(), 0)
+            entries.add(item_id.data(0))
+        for entry in entries:
+            database.delete_weight_entry(entry)
+        database.load_user_history(self.user)
+        self.user_history.clearContents()
+        self.user_history_table()
 
     def weight_entry_edit(self):
         """
