@@ -32,10 +32,11 @@ def create_graph_list(user_list):
 
 def graph_entries(sorted_list, list_end=None):
     if list_end is not None:
-        graph = sorted_list[:list_end]
+        graph_x = sorted_list[:list_end]
     else:
-        graph = sorted_list
-    return graph
+        graph_x = sorted_list
+    graph_y = len(graph_x)
+    return graph_x, graph_y
 
 
 def lerp_weight(sorted_list):
