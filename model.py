@@ -1,4 +1,5 @@
 from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
 import pyqtgraph as pg
 
 
@@ -17,6 +18,9 @@ def create_table_list(user_list):
         id_item.setData(0, entry[0])
         date_item.setData(0, entry[1])
         weight_item.setData(0, entry[2])
+        id_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+        date_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+        weight_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
         id_date_weight = (id_item, date_item, weight_item)
         id_date_weight_list.append(id_date_weight)
     return id_date_weight_list

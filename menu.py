@@ -156,11 +156,30 @@ class UserLayout(QLayout):
         Sets the default properties of the user history table.
         :return: None
         """
-        hlabel_list = ['ID', 'Date', 'Weight']
+        hlabel_list = ['ID', 'DATE', 'WEIGHT']
         self.user_history.setColumnCount(3)
         self.user_history.setColumnHidden(0, True)
         self.user_history.setHorizontalHeaderLabels(hlabel_list)
         self.user_history.setAlternatingRowColors(True)
+        self.user_history.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
+        self.user_history.verticalHeader().setVisible(False)
+        style_sheet = '''
+            QHeaderView::section {
+                border-radius:14px;
+                font-size:20px;
+                font-weight:bold;
+            }
+            QTableCornerButton::section {
+                border-radius:14px;
+                font-size:10px;
+                font-weight:bold;
+            }
+            QTableWidget::item {
+                border-radius:12px;
+                font-size:16px;
+            }
+        '''
+        self.user_history.setStyleSheet(style_sheet)
 
     def user_history_table(self):
         """
@@ -303,7 +322,16 @@ class UserLayout(QLayout):
         Sets the default properties of the graph.
         :return: None
         """
-        axis_label_style = {'color': '#FFF', 'font-size': '14pt', 'font-weight': 'bold'}
+        axis_label_style = {
+            'color': '#FFF',
+            'font-size': '14pt',
+            'font-weight': 'bold'
+        }
+        title_label_style = {
+            'color': 'FFF',
+            'size': '22pt',
+            'font-weight': 'bold'
+        }
         axis_left = pg.AxisItem(
             orientation='left',
             text='Weight',
@@ -316,7 +344,6 @@ class UserLayout(QLayout):
             **axis_label_style
         )
         axis_bottom.showLabel(show=True)
-        title_label_style = {'color': 'FFF', 'size': '22pt', 'font-weight': 'bold'}
         # self.user_history_graph.setTitle(title='Weight Visualizer', **title_label_style)
         self.user_history_graph.setAxisItems(axisItems={'left': axis_left, 'bottom': axis_bottom})
 
