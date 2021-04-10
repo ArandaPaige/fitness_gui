@@ -13,6 +13,7 @@ from user import User
 
 DATETODAY = datetime.date.today()
 
+
 class GUIManager(QWidget):
     """Overall manager for all GUI objects and app UI functions."""
 
@@ -356,6 +357,8 @@ class UserLayout(QLayout):
         graph_x, graph_y = model.create_graph_list(self.user.weight_history)
         data = pg.PlotDataItem(graph_y, graph_x)
         self.user_history_graph.addItem(data)
+        self.user_history_graph.setYRange((max(graph_x) + 20), (min(graph_x) - 20))
+
 
     def set_widget_properties(self):
         self.user_name_properties()
