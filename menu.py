@@ -1,5 +1,6 @@
 import sys
 from functools import partial
+import datetime
 
 import pyqtgraph as pg
 from PyQt6.QtCore import *
@@ -10,6 +11,7 @@ import database
 import model
 from user import User
 
+DATETODAY = datetime.date.today()
 
 class GUIManager(QWidget):
     """Overall manager for all GUI objects and app UI functions."""
@@ -162,6 +164,8 @@ class UserLayout(QLayout):
         self.user_history.setHorizontalHeaderLabels(hlabel_list)
         self.user_history.setAlternatingRowColors(True)
         self.user_history.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
+        self.user_history.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.user_history.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
         self.user_history.verticalHeader().setVisible(False)
         style_sheet = '''
             QHeaderView::section {
@@ -217,6 +221,7 @@ class UserLayout(QLayout):
         database.load_user_history(self.user)
         self.user_history.clearContents()
         self.user_history_table()
+        self.weight_entry.clear()
 
     def modify_entry_button(self):
         """
@@ -306,7 +311,7 @@ class UserLayout(QLayout):
         self.weight_entry.textEdited.connect(self.add_entry_trigger)
 
     def calendar_widget(self):
-        pass
+        self.calendar.setMaximumDate(DATETODAY)
 
     def graph_label_properties(self):
         self.graph_label.setText('Weight Visualizer')
