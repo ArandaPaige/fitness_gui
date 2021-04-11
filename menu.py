@@ -1,6 +1,6 @@
+import datetime
 import sys
 from functools import partial
-import datetime
 
 import pyqtgraph as pg
 from PyQt6.QtCore import *
@@ -105,7 +105,8 @@ class UserLayout(QLayout):
         self.calendar = QCalendarWidget()
         # Initializes the graph for visualizing weight history with buttons for modifying display
         self.graph_label = QLabel()
-        self.user_history_graph = pg.plot()
+        self.graph_x, self.graph_y = model.create_graph_list(self.user.weight_history)
+        self.user_history_graph = pg.plot(x=self.graph_x, y=self.graph_y, symbol='o')
         self.graph_display_10 = QPushButton()
         self.graph_display_20 = QPushButton()
         self.graph_display_30 = QPushButton()
@@ -170,7 +171,7 @@ class UserLayout(QLayout):
         self.user_history.verticalHeader().setVisible(False)
         style_sheet = '''
             QHeaderView::section {
-                border-radius:14px;
+                border-radius:20px;
                 font-size:20px;
                 font-weight:bold;
             }
@@ -223,6 +224,7 @@ class UserLayout(QLayout):
         self.user_history.clearContents()
         self.user_history_table()
         self.weight_entry.clear()
+        self.update_graph()
 
     def modify_entry_button(self):
         """
@@ -352,13 +354,10 @@ class UserLayout(QLayout):
         axis_bottom.showLabel(show=True)
         # self.user_history_graph.setTitle(title='Weight Visualizer', **title_label_style)
         self.user_history_graph.setAxisItems(axisItems={'left': axis_left, 'bottom': axis_bottom})
+        self.user_history_graph.setYRange((max(self.graph_y) + 20), (min(self.graph_y) - 20))
 
-    def user_graph_plot(self):
-        graph_x, graph_y = model.create_graph_list(self.user.weight_history)
-        data = pg.PlotDataItem(graph_y, graph_x)
-        self.user_history_graph.addItem(data)
-        self.user_history_graph.setYRange((max(graph_x) + 20), (min(graph_x) - 20))
-
+    def update_graph(self):
+        self.graph_x, self.graph_y = model.create_graph_list(self.user.weight_history)
 
     def set_widget_properties(self):
         self.user_name_properties()
@@ -375,7 +374,6 @@ class UserLayout(QLayout):
         self.calendar_widget()
         self.user_history_properties()
         self.user_history_table()
-        self.user_graph_plot()
 
     def generate_left_layout(self):
         self.layout_left.addWidget(self.user_name)

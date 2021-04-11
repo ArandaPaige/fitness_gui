@@ -43,8 +43,8 @@ def create_graph_list(user_list):
     sorted_list = sorted(user_list, key=lambda x: x[1])
     for i, entry in enumerate(sorted_list):
         graph_x, graph_y = entry[2], i
-        graph_xlist.append(graph_x)
-        graph_ylist.append(graph_y)
+        graph_ylist.append(graph_x)
+        graph_xlist.append(graph_y)
     return graph_xlist, graph_ylist
 
 
