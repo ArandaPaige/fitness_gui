@@ -91,84 +91,92 @@ class UserLayout(QLayout):
         self.center_layout_right = QVBoxLayout()
         self.layout_right = QVBoxLayout()
         # Initializes widgets to display user metrics
-        self.user_name = QLineEdit()
-        self.user_weight = QLineEdit()
-        self.user_height = QLineEdit()
-        self.user_bmi = QLineEdit()
-        self.user_goal_weight = QLineEdit()
+        self.user_name = self.user_name_properties()
+        self.user_weight = self.user_weight_properties()
+        self.user_height = self.user_height_properties()
+        self.user_bmi = self.user_bmi_properties()
+        self.user_goal_weight = self.user_goal_weight_properties()
         # Initializes a tree for displaying all user's weight history and buttons for editing DB
-        self.user_history = QTableWidget()
-        self.add_entry = QPushButton()
-        self.modify_entry = QPushButton()
-        self.delete_entry = QPushButton()
-        self.weight_entry = QLineEdit()
-        self.calendar = QCalendarWidget()
+        self.user_history = self.user_history_properties()
+        self.add_entry = self.add_entry_button()
+        self.modify_entry = self.modify_entry_button()
+        self.delete_entry = self.delete_entry_button()
+        self.weight_entry = self.weight_entry_edit()
+        self.calendar = self.calendar_widget()
         # Initializes the graph for visualizing weight history with buttons for modifying display
         self.graph_label = QLabel()
         self.graph_x, self.graph_y = model.create_graph_list(self.user.weight_history)
-        self.user_history_graph = pg.plot(x=self.graph_x, y=self.graph_y, symbol='o')
-        self.graph_display_10 = QPushButton()
-        self.graph_display_20 = QPushButton()
-        self.graph_display_30 = QPushButton()
-        self.graph_display_all = QPushButton()
+        self.user_graph = self.user_graph_properties()
         # Sets the properties for all widgets and their layouts
-        self.set_widget_properties()
+        self.user_history_table()
         self.generate_layout()
+        self.update_graph()
 
     def user_name_properties(self):
         """
         Sets the default properties of the name QLineEdit object.
         :return: None
         """
-        self.user_name.setText(f'Name: {self.user.name}')
-        self.user_name.setReadOnly(True)
+        name = QLineEdit()
+        name.setText(f'Name: {self.user.name}')
+        name.setReadOnly(True)
+        return name
 
     def user_weight_properties(self):
         """
         Sets the default properties of the weight QLineEdit object.
         :return: None
         """
-        self.user_weight.setText(f'Weight: {self.user.weight} lbs')
-        self.user_weight.setReadOnly(True)
+        weight = QLineEdit()
+        weight.setText(f'Weight: {self.user.weight} lbs')
+        weight.setReadOnly(True)
+        return weight
 
     def user_height_properties(self):
         """
         Sets the default properties of the height QLineEdit object.
         :return: None
         """
-        self.user_height.setText(f'Height: {self.user.height} inches')
-        self.user_height.setReadOnly(True)
+        height = QLineEdit()
+        height.setText(f'Height: {self.user.height} inches')
+        height.setReadOnly(True)
+        return height
 
     def user_bmi_properties(self):
         """
         Sets the default properties of the BMI object.
         :return: None
         """
-        self.user_bmi.setText(f'Body Mass Index: {(self.user.weight / self.user.height ** 2 * 703):.1f}')
-        self.user_bmi.setReadOnly(True)
+        bmi = QLineEdit()
+        bmi.setText(f'Body Mass Index: {(self.user.weight / self.user.height ** 2 * 703):.1f}')
+        bmi.setReadOnly(True)
+        return bmi
 
     def user_goal_weight_properties(self):
         """
         Sets the default properties of the weight goal QLineEdit object.
         :return: None
         """
-        self.user_goal_weight.setText(f'Goal Weight: {self.user.goal} lbs')
-        self.user_goal_weight.setReadOnly(True)
+        goal_weight = QLineEdit()
+        goal_weight.setText(f'Goal Weight: {self.user.goal} lbs')
+        goal_weight.setReadOnly(True)
+        return goal_weight
 
     def user_history_properties(self):
         """
         Sets the default properties of the user history table.
         :return: None
         """
+        user_history = QTableWidget()
         hlabel_list = ['ID', 'DATE', 'WEIGHT']
-        self.user_history.setColumnCount(3)
-        self.user_history.setColumnHidden(0, True)
-        self.user_history.setHorizontalHeaderLabels(hlabel_list)
-        self.user_history.setAlternatingRowColors(True)
-        self.user_history.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
-        self.user_history.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
-        self.user_history.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
-        self.user_history.verticalHeader().setVisible(False)
+        user_history.setColumnCount(3)
+        user_history.setColumnHidden(0, True)
+        user_history.setHorizontalHeaderLabels(hlabel_list)
+        user_history.setAlternatingRowColors(True)
+        user_history.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
+        user_history.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        user_history.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        user_history.verticalHeader().setVisible(False)
         style_sheet = '''
             QHeaderView::section {
                 border-radius:20px;
@@ -185,7 +193,8 @@ class UserLayout(QLayout):
                 font-size:16px;
             }
         '''
-        self.user_history.setStyleSheet(style_sheet)
+        user_history.setStyleSheet(style_sheet)
+        return user_history
 
     def user_history_table(self):
         """
@@ -206,9 +215,11 @@ class UserLayout(QLayout):
         Sets the default properties of the 'Add Entry' button. Clicking the button adds an entry to the database.
         :return: None
         """
-        self.add_entry.setText('Add Entry')
-        self.add_entry.setEnabled(False)
-        self.add_entry.clicked.connect(self.add_entry_database)
+        add_entry = QPushButton()
+        add_entry.setText('Add Entry')
+        add_entry.setEnabled(False)
+        add_entry.clicked.connect(self.add_entry_database)
+        return add_entry
 
     def add_entry_trigger(self):
         if self.weight_entry.hasAcceptableInput() is True:
@@ -232,9 +243,11 @@ class UserLayout(QLayout):
         is made. Clicking the button modifies the entry in the database.
         :return: None
         """
-        self.modify_entry.setText('Modify Entry')
-        self.modify_entry.setEnabled(False)
-        self.modify_entry.clicked.connect(self.modify_entry_database)
+        modify_entry = QPushButton()
+        modify_entry.setText('Modify Entry')
+        modify_entry.setEnabled(False)
+        modify_entry.clicked.connect(self.modify_entry_database)
+        return modify_entry
 
     def modify_entry_trigger(self):
         """
@@ -272,9 +285,11 @@ class UserLayout(QLayout):
         is made. Clicking the button deletes the entries in the database.
         :return: None
         """
-        self.delete_entry.setText('Delete Entry')
-        self.delete_entry.setEnabled(False)
-        self.delete_entry.clicked.connect(self.delete_entry_database)
+        delete_entry = QPushButton()
+        delete_entry.setText('Delete Entry')
+        delete_entry.setEnabled(False)
+        delete_entry.clicked.connect(self.delete_entry_database)
+        return delete_entry
 
     def delete_entry_trigger(self):
         """
@@ -301,20 +316,25 @@ class UserLayout(QLayout):
         database.load_user_history(self.user)
         self.user_history.clearContents()
         self.user_history_table()
+        self.update_graph()
 
     def weight_entry_edit(self):
         """
         Sets the default properties of the weight entry QLineEdit object.
         :return: None
         """
-        self.weight_entry.setPlaceholderText('Type a valid weight into here')
-        validator = QDoubleValidator(0, 1000, 2, self.weight_entry)
-        self.weight_entry.setValidator(validator)
-        self.weight_entry.setAlignment(Qt.Alignment.AlignCenter)
-        self.weight_entry.textEdited.connect(self.add_entry_trigger)
+        weight_entry = QLineEdit()
+        weight_entry.setPlaceholderText('Type a valid weight into here')
+        validator = QDoubleValidator(0, 1000, 2, weight_entry)
+        weight_entry.setValidator(validator)
+        weight_entry.setAlignment(Qt.Alignment.AlignCenter)
+        weight_entry.textEdited.connect(self.add_entry_trigger)
+        return weight_entry
 
     def calendar_widget(self):
-        self.calendar.setMaximumDate(DATETODAY)
+        calendar = QCalendarWidget()
+        calendar.setMaximumDate(DATETODAY)
+        return calendar
 
     def graph_label_properties(self):
         self.graph_label.setText('Weight Visualizer')
@@ -335,11 +355,12 @@ class UserLayout(QLayout):
             'font-size': '14pt',
             'font-weight': 'bold'
         }
-        title_label_style = {
-            'color': 'FFF',
-            'size': '22pt',
-            'font-weight': 'bold'
-        }
+        axis_title = pg.AxisItem(
+            orientation='top',
+            text='Weight Visualizer',
+            **axis_label_style
+        )
+        axis_title.showLabel(show=True)
         axis_left = pg.AxisItem(
             orientation='left',
             text='Weight',
@@ -352,28 +373,21 @@ class UserLayout(QLayout):
             **axis_label_style
         )
         axis_bottom.showLabel(show=True)
-        # self.user_history_graph.setTitle(title='Weight Visualizer', **title_label_style)
-        self.user_history_graph.setAxisItems(axisItems={'left': axis_left, 'bottom': axis_bottom})
-        self.user_history_graph.setYRange((max(self.graph_y) + 20), (min(self.graph_y) - 20))
+        viewbox = pg.ViewBox()
+        user_graph = pg.PlotWidget(
+            viewbox=viewbox,
+            axisItems={
+                'top': axis_title,
+                'left': axis_left,
+                'bottom': axis_bottom
+            }
+        )
+        user_graph.setYRange((max(self.graph_y) + 20), (min(self.graph_y) - 20))
+        return user_graph
 
     def update_graph(self):
         self.graph_x, self.graph_y = model.create_graph_list(self.user.weight_history)
-
-    def set_widget_properties(self):
-        self.user_name_properties()
-        self.user_weight_properties()
-        self.user_height_properties()
-        self.user_bmi_properties()
-        self.user_goal_weight_properties()
-        self.graph_label_properties()
-        self.user_graph_properties()
-        self.add_entry_button()
-        self.modify_entry_button()
-        self.delete_entry_button()
-        self.weight_entry_edit()
-        self.calendar_widget()
-        self.user_history_properties()
-        self.user_history_table()
+        self.user_graph.getPlotItem().plot(self.graph_x, self.graph_y, symbol='o')
 
     def generate_left_layout(self):
         self.layout_left.addWidget(self.user_name)
@@ -397,7 +411,7 @@ class UserLayout(QLayout):
         :return: None
         """
         self.layout_right.addWidget(self.graph_label)
-        self.layout_right.addWidget(self.user_history_graph)
+        self.layout_right.addWidget(self.user_graph)
 
     def generate_master_layout(self):
         """
@@ -438,8 +452,8 @@ class NewUserLayout(QLayout):
         self.weight = QLineEdit()
         self.goal = QLineEdit()
         self.height = QLineEdit()
-        self.confirm = QPushButton('Confirm')
-        self.cancel = QPushButton('Cancel')
+        self.confirm = self.confirm_properties()
+        self.cancel = self.cancel_properties()
         self.set_widget_properties()
         self.generate_layout()
 
@@ -493,17 +507,21 @@ class NewUserLayout(QLayout):
         Sets the default properties of the confirm QPushButton object.
         :return: None
         """
+        confirm = QPushButton('Confirm')
         self.confirm.setFixedHeight(35)
         self.confirm.setEnabled(False)
         self.confirm.clicked.connect(partial(self.confirm_transition, self.user))
+        return confirm
 
     def cancel_properties(self):
         """
         Sets the default properties of the cancel QPushButton object.
         :return: None
         """
+        cancel = QPushButton('Cancel')
         self.cancel.setFixedHeight(35)
         self.cancel.clicked.connect(self.cancel_transition)
+        return cancel
 
     def enable_confirm_btn(self):
         """
@@ -539,8 +557,6 @@ class NewUserLayout(QLayout):
         self.weight_properties()
         self.goal_properties()
         self.height_properties()
-        self.confirm_properties()
-        self.cancel_properties()
 
     def generate_layout(self):
         """
