@@ -387,7 +387,7 @@ class UserLayout(QLayout):
 
     def update_graph(self):
         self.graph_x, self.graph_y = model.create_graph_list(self.user.weight_history)
-        self.user_graph.getPlotItem().plot(self.graph_x, self.graph_y, symbol='o')
+        self.user_graph.getPlotItem().plot(self.graph_x, self.graph_y, symbol='o', clear=True)
 
     def generate_left_layout(self):
         self.layout_left.addWidget(self.user_name)
