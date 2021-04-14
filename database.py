@@ -48,7 +48,8 @@ def retrieve_user(user_id):
     """
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
-    if cur.execute("SELECT USER_ID from USER where USER_ID = ?", (user_id,)) == "":
+    user = cur.execute("SELECT USER_ID from USER where USER_ID = ?", (user_id,))
+    if user.fetchone() is None:
         return None
     else:
         user_data = cur.execute("SELECT NAME, WEIGHT, GOAL, HEIGHT from USER where USER_ID = ?", (user_id,))
