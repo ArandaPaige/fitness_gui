@@ -249,13 +249,15 @@ class UserLayout(QLayout):
         Updates the selected item in the table with the new value for weight and/or date.
         :return: None
         """
+        entry = self.user_history.selectedItems()[0]
+        item_id = self.user_history.item(entry.row(), 0)
         date, weight = self.calendar.selectedDate(), float(self.weight_entry.text())
         date = date.toString('yyyy-MM-dd')
-        # database.update_weight_entry(1, weight, date)
-        # database.load_user_history(self.user)
-        # self.user_history.clearContents()
-        # self.user_history_table()
-        # self.update_graph()
+        database.update_weight_entry(item_id, weight, date)
+        database.load_user_history(self.user)
+        self.user_history.clearContents()
+        self.user_history_table()
+        self.update_graph()
 
     def delete_entry_button(self):
         """
@@ -386,9 +388,9 @@ class UserLayout(QLayout):
     def generate_left_layout(self):
         self.layout_left.addWidget(self.user_name)
         self.layout_left.addWidget(self.user_weight)
+        self.layout_left.addWidget(self.user_goal_weight)
         self.layout_left.addWidget(self.user_height)
         self.layout_left.addWidget(self.user_bmi)
-        self.layout_left.addWidget(self.user_goal_weight)
 
     def generate_center_layout(self):
         self.layout_center.addWidget(self.user_history)
@@ -434,6 +436,7 @@ class NewUserDialog:
         self.dialog = self.create_dialog()
         self.layout = QVBoxLayout(self.dialog)
         self.button_layout = QHBoxLayout()
+        self.label = self.label_properties()
         self.name = self.name_properties()
         self.weight = self.weight_properties()
         self.goal = self.goal_properties()
@@ -443,11 +446,21 @@ class NewUserDialog:
         self.open_dialog()
         self.btn_layout()
         self.main_layout()
+        self.dialog.resize(200, 200)
 
     def create_dialog(self):
         dialog = QDialog()
         dialog.setWindowTitle('New User Creation')
         return dialog
+
+    def label_properties(self):
+        label = QLabel()
+        label.setText(
+            'Welcome to the Weight Tracker and Visualization tool!\n'
+            'Please input your personal details in the boxes below\n'
+            'These details will become the base of your history.\n'
+        )
+        return label
 
     def name_properties(self):
         """
@@ -540,8 +553,10 @@ class NewUserDialog:
         self.button_layout.addWidget(self.cancel)
 
     def main_layout(self):
+        self.layout.addWidget(self.label)
         self.layout.addWidget(self.name)
         self.layout.addWidget(self.weight)
         self.layout.addWidget(self.goal)
         self.layout.addWidget(self.height)
         self.layout.addLayout(self.button_layout)
+
