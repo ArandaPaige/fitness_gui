@@ -1,7 +1,9 @@
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
-import pyqtgraph as pg
 
+import datetime
+
+DATETODAY = datetime.date.today()
 
 def create_table_list(user_list):
     """
@@ -62,5 +64,26 @@ def graph_entries(sorted_list, list_end=None):
     return graph
 
 
-def lerp_weight(sorted_list):
-    pass
+def weight_delta_calculator(date_1, date_2, weight_start, weight_end):
+    time_delta = date_2 - date_1
+    weight = weight_start - weight_end
+    weight_delta = weight / time_delta.days
+    return weight_delta
+
+
+def lerp_weight(sorted_list, future_date, start_weight, goal_weight, weight_delta):
+    time_delta = future_date - DATETODAY
+    date_range = range(time_delta.days)
+    lerp_x_list = []
+    lerp_y_list = []
+    date = DATETODAY
+    for i, day in enumerate(date_range, 1):
+        weight = goal_weight + weight_delta * (start_weight - goal_weight)
+        start_weight = weight
+        date += i
+        lerp_x_list.append(weight)
+        lerp_y_list.append(date)
+    return lerp_x_list, lerp_y_list
+
+
+

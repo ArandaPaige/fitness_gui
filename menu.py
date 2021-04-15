@@ -533,6 +533,10 @@ class NewUserDialog:
             self.confirm.setEnabled(False)
 
     def confirm_event(self):
+        '''
+        Instantiates a user object and adds it to the database and then instantiates the main menu with the user
+        :return: None
+        '''
         user = User(str(self.name.text()), float(self.weight.text()), float(self.goal.text()), int(self.height.text()))
         database.insert_user(user)
         user = database.retrieve_user(user_id=1)
