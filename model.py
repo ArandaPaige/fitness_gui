@@ -5,6 +5,7 @@ import datetime
 
 DATETODAY = datetime.date.today()
 
+
 def create_table_list(user_list):
     """
     Sorts the user's weight history by date and then creates QTableWidget items for each ID, date, and weight entry.
@@ -71,7 +72,7 @@ def weight_delta_calculator(date_1, date_2, weight_start, weight_end):
     return weight_delta
 
 
-def lerp_weight(sorted_list, future_date, start_weight, goal_weight, weight_delta):
+def lerp_weight(future_date, start_weight, goal_weight, weight_delta):
     time_delta = future_date - DATETODAY
     date_range = range(time_delta.days)
     lerp_x_list = []
@@ -80,10 +81,7 @@ def lerp_weight(sorted_list, future_date, start_weight, goal_weight, weight_delt
     for i, day in enumerate(date_range, 1):
         weight = goal_weight + weight_delta * (start_weight - goal_weight)
         start_weight = weight
-        date += i
+        date += datetime.timedelta(days=i)
         lerp_x_list.append(weight)
         lerp_y_list.append(date)
     return lerp_x_list, lerp_y_list
-
-
-

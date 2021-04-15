@@ -60,6 +60,7 @@ class MainMenu(QWidget):
         self.setLayout(self.layout)
         self.show()
 
+
 class UserLayout(QLayout):
 
     def __init__(self, parent_window, user):
@@ -563,4 +564,3 @@ class NewUserDialog:
         self.layout.addWidget(self.goal)
         self.layout.addWidget(self.height)
         self.layout.addLayout(self.button_layout)
-
