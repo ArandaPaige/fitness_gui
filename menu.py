@@ -20,7 +20,6 @@ class GUIManager(QWidget):
     def __init__(self, user=None):
         """
         Initializes with an instance of the main menu and a user. It controls the state of the user interface.
-        :param app: an instance of the QtApplication class.
         :param user: an instance of a user object.
         """
         super().__init__()
@@ -84,6 +83,7 @@ class MainMenu(QWidget):
         self.graph_3_months_button = self.graph_3_months_btn()
         self.lerp_14_days_button = self.lerp_14_days_btn()
         self.lerp_28_days_button = self.lerp_28_days_btn()
+        self.graph_box = self.graph_box_properties()
         # Sets the properties for all widgets and their layouts
         self.set_widget_properties()
         self.user_history_table()
@@ -361,10 +361,20 @@ class MainMenu(QWidget):
         lerp_x_list, lerp_y_list = model.lerp_weight(future_date, end_entry[1], self.user.goal, weight_delta)
         self.user_graph.getPlotItem().addPoints(lerp_x_list, lerp_y_list, symbol='h')
 
-    def graph_label(self):
-        label = QLabel()
-        label.setText('Press a button to change the graph displayed.')
-        return label
+    def graph_box_properties(self):
+        box = QGroupBox(title='Press a button to change the graph displayed.')
+        box_layout = QHBoxLayout()
+        graph_layout = QVBoxLayout()
+        lerp_layout = QVBoxLayout()
+        graph_layout.addWidget(self.graph_14_days_button)
+        graph_layout.addWidget(self.graph_28_days_button)
+        graph_layout.addWidget(self.graph_3_months_button)
+        lerp_layout.addWidget(self.lerp_14_days_button)
+        lerp_layout.addWidget(self.lerp_28_days_button)
+        box_layout.addLayout(graph_layout)
+        box_layout.addLayout(lerp_layout)
+        box.setLayout(box_layout)
+        return box
 
     def graph_14_days_btn(self):
         button = QPushButton('14 Days')
@@ -378,17 +388,14 @@ class MainMenu(QWidget):
         button = QPushButton('3 Months')
         return button
 
-    def lerp_label(self):
-        label = QLabel()
-        label.setText('Press a button to change the graph to display an extrapolation of future results.')
-        return label
-
     def lerp_14_days_btn(self):
-        button = QPushButton('14 Days')
+        button = QPushButton('Lerp 14 Days')
+        button.setToolTip('See future weight progression based on past performance')
         return button
 
     def lerp_28_days_btn(self):
-        button = QPushButton('28 Days')
+        button = QPushButton('Lerp 28 Days')
+        button.setToolTip('See future weight progression based on past performance')
         return button
 
     def set_widget_properties(self):
@@ -419,13 +426,7 @@ class MainMenu(QWidget):
         :return: None
         """
         self.layout_right.addWidget(self.user_graph)
-        self.layout_right_graph_buttons.addWidget(self.graph_14_days_button)
-        self.layout_right_graph_buttons.addWidget(self.graph_28_days_button)
-        self.layout_right_graph_buttons.addWidget(self.graph_3_months_button)
-        self.layout_right_lerp_buttons.addWidget(self.lerp_14_days_button)
-        self.layout_right_lerp_buttons.addWidget(self.lerp_28_days_button)
-        self.layout_right.addLayout(self.layout_right_graph_buttons)
-        self.layout_right.addLayout(self.layout_right_lerp_buttons)
+        self.layout_right.addWidget(self.graph_box)
 
     def generate_master_layout(self):
         """
