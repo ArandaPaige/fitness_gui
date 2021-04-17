@@ -1,7 +1,7 @@
-from PyQt6.QtWidgets import *
-from PyQt6.QtCore import *
-
 import datetime
+
+from PyQt6.QtCore import *
+from PyQt6.QtWidgets import *
 
 DATETODAY = datetime.date.today()
 
@@ -65,9 +65,9 @@ def graph_entries(sorted_list, list_end=None):
     return graph
 
 
-def weight_delta_calculator(date_1, date_2, weight_start, weight_end):
-    time_delta = date_2 - date_1
-    weight = weight_start - weight_end
+def weight_delta_calculator(start_entry, end_entry):
+    time_delta = end_entry[0] - start_entry[0]
+    weight = start_entry[1] - end_entry[1]
     weight_delta = weight / time_delta.days
     return weight_delta
 
@@ -78,10 +78,10 @@ def lerp_weight(future_date, start_weight, goal_weight, weight_delta):
     lerp_x_list = []
     lerp_y_list = []
     date = DATETODAY
-    for i, day in enumerate(date_range, 1):
+    for day in date_range:
         weight = goal_weight + weight_delta * (start_weight - goal_weight)
         start_weight = weight
-        date += datetime.timedelta(days=i)
+        date += datetime.timedelta(days=1)
         lerp_x_list.append(weight)
         lerp_y_list.append(date)
     return lerp_x_list, lerp_y_list

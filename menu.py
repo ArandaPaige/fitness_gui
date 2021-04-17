@@ -17,17 +17,15 @@ DATETODAY = datetime.date.today()
 class GUIManager(QWidget):
     """Overall manager for all GUI objects and app UI functions."""
 
-    def __init__(self, app, user=None):
+    def __init__(self, user=None):
         """
-        Initializes with an instance of the main menu and a user. It controls the state of the main menu window.
+        Initializes with an instance of the main menu and a user. It controls the state of the user interface.
         :param app: an instance of the QtApplication class.
         :param user: an instance of a user object.
         """
         super().__init__()
         self.user = user
-        self.app = app
         self.active_window = self.user_check()
-        sys.exit(self.app.exec())
 
     def user_check(self):
         if self.user is None:
@@ -54,31 +52,17 @@ class MainMenu(QWidget):
         super().__init__()
         self.master = master
         self.user = user
-        # Window Properties
-        self.setWindowTitle("Main Menu")
-        self.layout = UserLayout(self, self.user)
-        self.setLayout(self.layout)
-        self.show()
-
-
-class UserLayout(QLayout):
-
-    def __init__(self, parent_window, user):
-        """
-        Creates a layout that displays user's personal metrics in text, table, and in graphical formats.
-        :param parent_window: The main window upon which the layout will be displayed.
-        :param user: a user object derived from the database.
-        """
-        super().__init__()
-        self.parent = parent_window
-        self.user = user
+        self.setWindowTitle('Main Menu')
         # Initializes the layouts with a master layout
-        self.layout = QHBoxLayout(self.parent)
+        self.layout = QHBoxLayout()
+        self.setLayout(self.layout)
         self.layout_left = QVBoxLayout()
         self.layout_center = QVBoxLayout()
         self.center_layout_left = QVBoxLayout()
         self.center_layout_right = QVBoxLayout()
         self.layout_right = QVBoxLayout()
+        self.layout_right_graph_buttons = QHBoxLayout()
+        self.layout_right_lerp_buttons = QHBoxLayout()
         # Initializes widgets to display user metrics
         self.user_name = self.user_name_properties()
         self.user_weight = self.user_weight_properties()
@@ -95,11 +79,17 @@ class UserLayout(QLayout):
         # Initializes the graph for visualizing weight history with buttons for modifying display
         self.graph_x, self.graph_y = model.create_graph_list(self.user.weight_history)
         self.user_graph = self.user_graph_properties()
+        self.graph_14_days_button = self.graph_14_days_btn()
+        self.graph_28_days_button = self.graph_28_days_btn()
+        self.graph_3_months_button = self.graph_3_months_btn()
+        self.lerp_14_days_button = self.lerp_14_days_btn()
+        self.lerp_28_days_button = self.lerp_28_days_btn()
         # Sets the properties for all widgets and their layouts
         self.set_widget_properties()
         self.user_history_table()
         self.generate_layout()
         self.update_graph()
+        self.show()
 
     def user_name_properties(self):
         """
@@ -268,23 +258,10 @@ class UserLayout(QLayout):
         """
         self.delete_entry.setText('Delete Entry')
         self.delete_entry.setEnabled(False)
-        self.delete_entry.clicked.connect(partial(self.confirm_delete_dialog, self.user_history.selectedItems()))
+        self.delete_entry.clicked.connect(self.delete_entry_dialog)
 
-    def confirm_delete_dialog(self, entry):
-        dialog = QDialog(self.parent)
-        dialog.open()
-        layout = QGridLayout(dialog)
-        confirm = QPushButton('Confirm')
-        confirm.setFixedSize(75, 35)
-        cancel = QPushButton('Cancel')
-        cancel.setFixedSize(75, 35)
-        label = QLabel()
-        label.setText(f'Are you sure you wish to delete these entries?')
-        layout.addWidget(label, 0, 0)
-        layout.addWidget(confirm, 1, 0, Qt.Alignment.AlignRight)
-        layout.addWidget(cancel, 1, 1, Qt.Alignment.AlignRight)
-        dialog.accepted.connect(partial(self.delete_entry_database, entry))
-        dialog.rejected.connect()
+    def delete_entry_dialog(self):
+        self.dialog = DeleteDialog(self, self.user_history.selectedItems())
 
     def delete_entry_trigger(self):
         """
@@ -296,14 +273,13 @@ class UserLayout(QLayout):
         else:
             self.delete_entry.setEnabled(False)
 
-    def delete_entry_database(self):
+    def delete_entry_database(self, entry):
         """
         Deletes the set of entries from the database.
         :return: None
         """
-        items = self.user_history.selectedItems()
         entries = set()
-        for item in items:
+        for item in entry:
             item_id = self.user_history.item(item.row(), 0)
             entries.add(item_id.data(0))
         for entry in entries:
@@ -380,6 +356,41 @@ class UserLayout(QLayout):
         else:
             return
 
+    def add_lerp_points(self, start_entry, end_entry, future_date):
+        weight_delta = model.weight_delta_calculator(start_entry, end_entry)
+        lerp_x_list, lerp_y_list = model.lerp_weight(future_date, end_entry[1], self.user.goal, weight_delta)
+        self.user_graph.getPlotItem().addPoints(lerp_x_list, lerp_y_list, symbol='h')
+
+    def graph_label(self):
+        label = QLabel()
+        label.setText('Press a button to change the graph displayed.')
+        return label
+
+    def graph_14_days_btn(self):
+        button = QPushButton('14 Days')
+        return button
+
+    def graph_28_days_btn(self):
+        button = QPushButton('28 Days')
+        return button
+
+    def graph_3_months_btn(self):
+        button = QPushButton('3 Months')
+        return button
+
+    def lerp_label(self):
+        label = QLabel()
+        label.setText('Press a button to change the graph to display an extrapolation of future results.')
+        return label
+
+    def lerp_14_days_btn(self):
+        button = QPushButton('14 Days')
+        return button
+
+    def lerp_28_days_btn(self):
+        button = QPushButton('28 Days')
+        return button
+
     def set_widget_properties(self):
         self.user_history_properties()
         self.weight_entry_edit()
@@ -408,6 +419,13 @@ class UserLayout(QLayout):
         :return: None
         """
         self.layout_right.addWidget(self.user_graph)
+        self.layout_right_graph_buttons.addWidget(self.graph_14_days_button)
+        self.layout_right_graph_buttons.addWidget(self.graph_28_days_button)
+        self.layout_right_graph_buttons.addWidget(self.graph_3_months_button)
+        self.layout_right_lerp_buttons.addWidget(self.lerp_14_days_button)
+        self.layout_right_lerp_buttons.addWidget(self.lerp_28_days_button)
+        self.layout_right.addLayout(self.layout_right_graph_buttons)
+        self.layout_right.addLayout(self.layout_right_lerp_buttons)
 
     def generate_master_layout(self):
         """
@@ -429,9 +447,58 @@ class UserLayout(QLayout):
         self.generate_master_layout()
 
 
-class NewUserDialog:
+class DeleteDialog(QDialog):
+
+    def __init__(self, parent_window, entry):
+        super().__init__()
+        self.parent = parent_window
+        self.entry = entry
+        self.layout = QVBoxLayout(self)
+        self.button_layout = QHBoxLayout()
+        self.label = self.deletion_label()
+        self.confirm = self.confirm_button()
+        self.cancel = self.cancel_button()
+        self.btn_layout()
+        self.main_layout()
+        self.open()
+
+    def deletion_label(self):
+        label = QLabel()
+        label.setText('Are you sure you want to delete these entries?\n')
+        return label
+
+    def confirm_button(self):
+        confirm = QPushButton('Confirm')
+        confirm.setFixedSize(75, 35)
+        confirm.clicked.connect(self.confirm_event)
+        return confirm
+
+    def cancel_button(self):
+        cancel = QPushButton('Cancel')
+        cancel.setFixedSize(75, 35)
+        cancel.clicked.connect(self.cancel_event)
+        return cancel
+
+    def confirm_event(self):
+        self.parent.delete_entry_database(self.entry)
+        self.close()
+
+    def cancel_event(self):
+        self.close()
+
+    def btn_layout(self):
+        self.button_layout.addWidget(self.confirm)
+        self.button_layout.addWidget(self.cancel)
+
+    def main_layout(self):
+        self.layout.addWidget(self.label)
+        self.layout.addLayout(self.button_layout)
+
+
+class NewUserDialog(QDialog):
 
     def __init__(self, master):
+        super().__init__()
         self.master = master
         self.user = User()
         self.dialog = self.create_dialog()
@@ -534,10 +601,10 @@ class NewUserDialog:
             self.confirm.setEnabled(False)
 
     def confirm_event(self):
-        '''
+        """
         Instantiates a user object and adds it to the database and then instantiates the main menu with the user
         :return: None
-        '''
+        """
         user = User(str(self.name.text()), float(self.weight.text()), float(self.goal.text()), int(self.height.text()))
         database.insert_user(user)
         user = database.retrieve_user(user_id=1)
