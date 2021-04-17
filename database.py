@@ -181,7 +181,6 @@ def insert_weight_entry(date, weight, person_id):
 
 def update_weight_entry(entry_id, weight, date):
     """
-
     :param entry_id: the ID of the entry.
     :param weight: the weight of the user
     :param date: the date in which the weight was recorded.
@@ -190,7 +189,10 @@ def update_weight_entry(entry_id, weight, date):
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''
-    UPDATE WEIGHT_HISTORY SET WEIGHT = ?, SET DATE = ? WHERE ID = ?''', (weight, date, entry_id))
+    UPDATE WEIGHT_HISTORY        
+        SET WEIGHT = ?,
+            DATE = ? 
+        WHERE ID = ?''', (weight, date, entry_id))
     db.commit()
     db.close()
 

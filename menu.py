@@ -244,7 +244,7 @@ class MainMenu(QWidget):
         item_id = self.user_history.item(entry.row(), 0)
         date, weight = self.calendar.selectedDate(), float(self.weight_entry.text())
         date = date.toString('yyyy-MM-dd')
-        database.update_weight_entry(item_id, weight, date)
+        database.update_weight_entry(item_id.data(0), weight, date)
         database.load_user_history(self.user)
         self.user_history.clearContents()
         self.user_history_table()
