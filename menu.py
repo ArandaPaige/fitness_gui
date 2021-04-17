@@ -90,6 +90,9 @@ class MainMenu(QWidget):
         self.lerp_14_days_button = self.lerp_14_days_btn()
         self.lerp_28_days_button = self.lerp_28_days_btn()
         self.graph_box = self.graph_box_properties()
+        # data for menu objects
+        self.sorted_weight_list = model.create_sorted_weight_history(self.user.weight_history)
+        self.weight_delta = model.weight_delta_calculator(self.sorted_weight_list)
         # Sets the properties for all widgets and their layouts
         self.set_widget_properties()
         self.user_history_table()
@@ -450,7 +453,6 @@ class MainMenu(QWidget):
         button = QPushButton('Lerp 28 Days')
         button.setToolTip('See future weight progression based on past performance')
         return button
-
 
     def set_widget_properties(self):
         self.user_history_properties()

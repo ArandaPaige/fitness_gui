@@ -35,6 +35,11 @@ def create_table_list(user_list):
     return id_date_weight_list
 
 
+def create_sorted_weight_history(weight_history, reverse=False):
+    sorted_list = sorted(weight_history, key=lambda x: x[1], reverse=reverse)
+    return sorted_list
+
+
 def create_graph_list(user_list):
     """
     Creates a list of weights that have been sorted by date in descending order
@@ -64,16 +69,24 @@ def graph_entries(sorted_list, list_end=None):
         graph = sorted_list
     return graph
 
-def average_weight_progression():
-    pass
 
-def time_to_goal():
-    pass
+def time_to_goal(current_weight, goal_weight, delta):
+    difference = current_weight - goal_weight
+    days = int(difference / delta)
+    end_date = DATETODAY + datetime.timedelta(days=days)
+    return end_date, days
 
-def weight_delta_calculator(start_entry, end_entry):
-    time_delta = end_entry[0] - start_entry[0]
-    weight = start_entry[1] - end_entry[1]
+
+def weight_delta_calculator(sorted_list):
+    # start and end date/weights slice from sorted list
+    start_date, end_date = sorted_list[0][1], sorted_list[-1][1]
+    start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
+    end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
+    start_weight, end_weight = sorted_list[0][2], sorted_list[-1][2]
+    time_delta = end_date - start_date
+    weight = start_weight - end_weight
     weight_delta = weight / time_delta.days
+    print(weight_delta)
     return weight_delta
 
 
