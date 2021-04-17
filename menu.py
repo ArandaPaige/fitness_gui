@@ -81,6 +81,7 @@ class MainMenu(QWidget):
         self.graph_14_days_button = self.graph_14_days_btn()
         self.graph_28_days_button = self.graph_28_days_btn()
         self.graph_3_months_button = self.graph_3_months_btn()
+        self.lerp_7_days_button = self.lerp_7_days_btn()
         self.lerp_14_days_button = self.lerp_14_days_btn()
         self.lerp_28_days_button = self.lerp_28_days_btn()
         self.graph_box = self.graph_box_properties()
@@ -369,6 +370,7 @@ class MainMenu(QWidget):
         graph_layout.addWidget(self.graph_14_days_button)
         graph_layout.addWidget(self.graph_28_days_button)
         graph_layout.addWidget(self.graph_3_months_button)
+        lerp_layout.addWidget(self.lerp_7_days_button)
         lerp_layout.addWidget(self.lerp_14_days_button)
         lerp_layout.addWidget(self.lerp_28_days_button)
         box_layout.addLayout(graph_layout)
@@ -378,14 +380,22 @@ class MainMenu(QWidget):
 
     def graph_14_days_btn(self):
         button = QPushButton('14 Days')
+        button.setToolTip('Display the last 14 days of your weight history')
         return button
 
     def graph_28_days_btn(self):
         button = QPushButton('28 Days')
+        button.setToolTip('Display the last 28 days of your weight history')
         return button
 
     def graph_3_months_btn(self):
         button = QPushButton('3 Months')
+        button.setToolTip('Display the last three months of your weight history')
+        return button
+
+    def lerp_7_days_btn(self):
+        button = QPushButton('Lerp 7 Days')
+        button.setToolTip('See future weight progression based on past performance')
         return button
 
     def lerp_14_days_btn(self):
@@ -397,6 +407,7 @@ class MainMenu(QWidget):
         button = QPushButton('Lerp 28 Days')
         button.setToolTip('See future weight progression based on past performance')
         return button
+
 
     def set_widget_properties(self):
         self.user_history_properties()
