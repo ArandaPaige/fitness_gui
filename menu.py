@@ -68,6 +68,11 @@ class MainMenu(QWidget):
         self.user_height = self.user_height_properties()
         self.user_bmi = self.user_bmi_properties()
         self.user_goal_weight = self.user_goal_weight_properties()
+        self.user_box = self.user_box_properties()
+        self.net_change = self.net_weight_change()
+        self.weight_average = self.average_weight_change()
+        self.time_goal = self.time_to_goal()
+        self.weight_box = self.weight_box_properties()
         # Initializes a tree for displaying all user's weight history and buttons for editing DB
         self.user_history = QTableWidget()
         self.add_entry = self.add_entry_button()
@@ -141,6 +146,44 @@ class MainMenu(QWidget):
         goal_weight.setText(f'Goal Weight: {self.user.goal} lbs')
         goal_weight.setReadOnly(True)
         return goal_weight
+
+    def user_box_properties(self):
+        box = QGroupBox('Personal information')
+        layout = QVBoxLayout()
+        layout.addWidget(self.user_name)
+        layout.addWidget(self.user_weight)
+        layout.addWidget(self.user_goal_weight)
+        layout.addWidget(self.user_bmi)
+        layout.addWidget(self.user_height)
+        box.setLayout(layout)
+        return box
+
+    def net_weight_change(self):
+        net = QLineEdit()
+        net.setText('Net change')
+        net.setReadOnly(True)
+        return net
+
+    def average_weight_change(self):
+        average = QLineEdit()
+        average.setText('Average')
+        average.setReadOnly(True)
+        return average
+
+    def time_to_goal(self):
+        time = QLineEdit()
+        time.setText('Time to goal')
+        time.setReadOnly(True)
+        return time
+
+    def weight_box_properties(self):
+        box = QGroupBox('Metrics for user weight progression')
+        layout = QVBoxLayout()
+        layout.addWidget(self.net_change)
+        layout.addWidget(self.weight_average)
+        layout.addWidget(self.time_goal)
+        box.setLayout(layout)
+        return box
 
     def user_history_properties(self):
         """
@@ -416,11 +459,8 @@ class MainMenu(QWidget):
         self.delete_entry_button()
 
     def generate_left_layout(self):
-        self.layout_left.addWidget(self.user_name)
-        self.layout_left.addWidget(self.user_weight)
-        self.layout_left.addWidget(self.user_goal_weight)
-        self.layout_left.addWidget(self.user_height)
-        self.layout_left.addWidget(self.user_bmi)
+        self.layout_left.addWidget(self.user_box)
+        self.layout_left.addWidget(self.weight_box)
 
     def generate_center_layout(self):
         self.layout_center.addWidget(self.user_history)

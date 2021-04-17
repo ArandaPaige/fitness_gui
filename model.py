@@ -64,6 +64,11 @@ def graph_entries(sorted_list, list_end=None):
         graph = sorted_list
     return graph
 
+def average_weight_progression():
+    pass
+
+def time_to_goal():
+    pass
 
 def weight_delta_calculator(start_entry, end_entry):
     time_delta = end_entry[0] - start_entry[0]
