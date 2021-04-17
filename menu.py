@@ -62,6 +62,10 @@ class MainMenu(QWidget):
         self.layout_right = QVBoxLayout()
         self.layout_right_graph_buttons = QHBoxLayout()
         self.layout_right_lerp_buttons = QHBoxLayout()
+        # data for objects
+        self.sorted_weight_list = model.create_sorted_weight_history(self.user.weight_history)
+        self.weight_delta = model.weight_delta_calculator(self.sorted_weight_list)
+        self.time_goal = model.time_to_goal(self.user.weight, self.user.goal, self.weight_delta)
         # Initializes widgets to display user metrics
         self.user_name = self.user_name_properties()
         self.user_weight = self.user_weight_properties()
@@ -90,9 +94,6 @@ class MainMenu(QWidget):
         self.lerp_14_days_button = self.lerp_14_days_btn()
         self.lerp_28_days_button = self.lerp_28_days_btn()
         self.graph_box = self.graph_box_properties()
-        # data for menu objects
-        self.sorted_weight_list = model.create_sorted_weight_history(self.user.weight_history)
-        self.weight_delta = model.weight_delta_calculator(self.sorted_weight_list)
         # Sets the properties for all widgets and their layouts
         self.set_widget_properties()
         self.user_history_table()
@@ -169,13 +170,13 @@ class MainMenu(QWidget):
 
     def average_weight_change(self):
         average = QLineEdit()
-        average.setText('Average')
+        average.setText(f'Average rate of weight loss: {self.weight_delta:.3F}')
         average.setReadOnly(True)
         return average
 
     def time_to_goal(self):
         time = QLineEdit()
-        time.setText('Time to goal')
+        time.setText(f'Days left until goal weight reached: {self.time_goal[1]}')
         time.setReadOnly(True)
         return time
 

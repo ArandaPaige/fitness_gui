@@ -86,12 +86,11 @@ def weight_delta_calculator(sorted_list):
     time_delta = end_date - start_date
     weight = start_weight - end_weight
     weight_delta = weight / time_delta.days
-    print(weight_delta)
     return weight_delta
 
 
 def lerp_weight(future_date, start_weight, goal_weight, weight_delta):
-    time_delta = future_date - DATETODAY
+    time_delta = datetime.datetime.strptime(future_date, '%Y-%m-%d') - DATETODAY
     date_range = range(time_delta.days)
     lerp_x_list = []
     lerp_y_list = []
