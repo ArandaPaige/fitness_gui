@@ -6,15 +6,19 @@ from PyQt6.QtWidgets import *
 DATETODAY = datetime.date.today()
 
 
-def create_table_list(user_list):
+def create_sorted_weight_history(weight_history, reverse=False):
+    sorted_list = sorted(weight_history, key=lambda x: x[1], reverse=reverse)
+    return sorted_list
+
+
+def create_table_list(sorted_list):
     """
     Sorts the user's weight history by date and then creates QTableWidget items for each ID, date, and weight entry.
-    :param user_list: user supplied weight history list
+    :param sorted_list: user supplied weight history list
     :return: List: a list of tuples containing ID, date, and weight items
     """
     id_date_weight_list = []
-    sorted_list = sorted(user_list, key=lambda x: x[1], reverse=True)
-    for entry in sorted_list:
+    for entry in reversed(sorted_list):
         id_item = QTableWidgetItem(0)
         date_item = QTableWidgetItem(1)
         weight_item = QTableWidgetItem(2)
@@ -35,11 +39,6 @@ def create_table_list(user_list):
     return id_date_weight_list
 
 
-def create_sorted_weight_history(weight_history, reverse=False):
-    sorted_list = sorted(weight_history, key=lambda x: x[1], reverse=reverse)
-    return sorted_list
-
-
 def create_graph_list(user_list):
     """
     Creates a list of weights that have been sorted by date in descending order
@@ -53,6 +52,24 @@ def create_graph_list(user_list):
         graph_x, graph_y = entry[2], i
         graph_ylist.append(graph_x)
         graph_xlist.append(graph_y)
+    return graph_xlist, graph_ylist
+
+
+def create_graph_listx(sorted_list, days=0):
+    """
+    Creates a list of weights that have been sorted by date in descending order
+    :param days:
+    :param sorted_list: a list from the user instance
+    :return: List
+    """
+    graph_xlist = []
+    graph_ylist = []
+    date_past = DATETODAY - datetime.timedelta(days=days)
+    for day in range(days):
+        date = DATETODAY - datetime.timedelta(days=1)
+        graph_ylist.append(date)
+    for entry in sorted_list:
+        weight = entry[2], datetime.datetime.strptime(entry[1], '%Y-%m-%d')
     return graph_xlist, graph_ylist
 
 
@@ -94,13 +111,12 @@ def weight_delta_calculator(sorted_list):
         return None
 
 
-def lerp_weight(future_date, start_weight, goal_weight, weight_delta):
-    time_delta = datetime.datetime.strptime(future_date, '%Y-%m-%d') - DATETODAY
-    date_range = range(time_delta.days)
+def lerp_weight(days, start_weight, goal_weight, weight_delta):
+    day_range = range(days)
     lerp_x_list = []
     lerp_y_list = []
     date = DATETODAY
-    for day in date_range:
+    for day in day_range:
         weight = goal_weight + weight_delta * (start_weight - goal_weight)
         start_weight = weight
         date += datetime.timedelta(days=1)

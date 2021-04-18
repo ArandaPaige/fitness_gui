@@ -64,6 +64,7 @@ class MainMenu(QWidget):
         self.layout_right_lerp_buttons = QHBoxLayout()
         # data for objects
         self.sorted_weight_list = model.create_sorted_weight_history(self.user.weight_history)
+        self.table_list = model.create_table_list(self.sorted_weight_list)
         self.weight_delta = model.weight_delta_calculator(self.sorted_weight_list)
         self.time_goal_data = model.time_to_goal(self.user.weight, self.user.goal, self.weight_delta)
         # Initializes widgets to display user metrics
@@ -97,10 +98,19 @@ class MainMenu(QWidget):
         # Sets the properties for all widgets and their layouts
         self.set_widget_properties()
         self.set_progress_metrics()
-        self.user_history_table()
+        self.user_history_table(self.table_list)
         self.generate_layout()
         self.update_graph()
         self.show()
+
+    def update_weight_history(self):
+        self.sorted_weight_list = model.create_sorted_weight_history(self.user.weight_history)
+
+    def update_weight_delta(self):
+        self.weight_delta = model.weight_delta_calculator(self.sorted_weight_list)
+
+    def update_time_delta(self):
+        self.time_goal_data = model.time_to_goal(self.user.weight, self.user.goal, self.weight_delta)
 
     def user_name_properties(self):
         """
@@ -233,19 +243,23 @@ class MainMenu(QWidget):
         '''
         self.user_history.setStyleSheet(style_sheet)
 
-    def user_history_table(self):
+    def user_history_table(self, sorted_list):
         """
         Sets the items of the user's weight history dynamically into the table.
         :return: None
         """
-        self.user_history.setRowCount(len(self.user.weight_history))
-        weight_history_items = model.create_table_list(self.user.weight_history)
-        for row, items in enumerate(weight_history_items):
+        self.user_history.setRowCount(len(self.sorted_weight_list))
+        for row, items in enumerate(sorted_list):
             self.user_history.setItem(row, 0, items[0])
             self.user_history.setItem(row, 1, items[1])
             self.user_history.setItem(row, 2, items[2])
         self.user_history.itemSelectionChanged.connect(self.modify_entry_trigger)
         self.user_history.itemSelectionChanged.connect(self.delete_entry_trigger)
+
+    def load_user_table(self):
+        self.table_list = model.create_table_list(self.sorted_weight_list)
+        self.user_history.clearContents()
+        self.user_history_table(self.table_list)
 
     def add_entry_button(self):
         """
@@ -269,9 +283,10 @@ class MainMenu(QWidget):
         date = date.toString('yyyy-MM-dd')
         database.insert_weight_entry(date, weight, self.user.user_id)
         database.load_user_history(self.user)
-        self.user_history.clearContents()
-        self.user_history_table()
+        self.update_weight_history()
+        self.load_user_table()
         self.weight_entry.clear()
+        self.set_progress_metrics()
         self.update_graph()
 
     def modify_entry_button(self):
@@ -306,8 +321,9 @@ class MainMenu(QWidget):
         date = date.toString('yyyy-MM-dd')
         database.update_weight_entry(item_id.data(0), weight, date)
         database.load_user_history(self.user)
-        self.user_history.clearContents()
-        self.user_history_table()
+        self.update_weight_history()
+        self.load_user_table()
+        self.set_progress_metrics()
         self.update_graph()
 
     def delete_entry_button(self):
@@ -345,8 +361,9 @@ class MainMenu(QWidget):
         for entry in entries:
             database.delete_weight_entry(entry)
         database.load_user_history(self.user)
-        self.user_history.clearContents()
-        self.user_history_table()
+        self.update_weight_history()
+        self.load_user_table()
+        self.set_progress_metrics()
         self.update_graph()
 
     def weight_entry_edit(self):
@@ -416,8 +433,11 @@ class MainMenu(QWidget):
         else:
             return
 
-    def add_lerp_points(self, start_entry, end_entry, future_date):
-        lerp_x_list, lerp_y_list = model.lerp_weight(future_date, end_entry[1], self.user.goal, self.weight_delta)
+    def add_lerp_points(self, days):
+        lerp_x_list, lerp_y_list = model.lerp_weight(
+            days, self.sorted_weight_list[-1][2],
+            self.user.goal, self.weight_delta
+        )
         self.user_graph.getPlotItem().addPoints(lerp_x_list, lerp_y_list, symbol='h')
 
     def graph_box_properties(self):
@@ -454,16 +474,19 @@ class MainMenu(QWidget):
     def lerp_7_days_btn(self):
         button = QPushButton('Lerp 7 Days')
         button.setToolTip('See future weight progression based on past performance')
+        button.clicked.connect(partial(self.add_lerp_points, 7))
         return button
 
     def lerp_14_days_btn(self):
         button = QPushButton('Lerp 14 Days')
         button.setToolTip('See future weight progression based on past performance')
+        button.clicked.connect(partial(self.add_lerp_points, 14))
         return button
 
     def lerp_28_days_btn(self):
         button = QPushButton('Lerp 28 Days')
         button.setToolTip('See future weight progression based on past performance')
+        button.clicked.connect(partial(self.add_lerp_points, 28))
         return button
 
     def set_widget_properties(self):
