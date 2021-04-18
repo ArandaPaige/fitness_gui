@@ -164,7 +164,7 @@ class MainMenu(QWidget):
 
     def net_weight_change(self):
         net = QLineEdit()
-        net.setText('Net change')
+        net.setText(f'Net change in weight: {(self.sorted_weight_list[0][2] - self.sorted_weight_list[-1][2]):.2F}')
         net.setReadOnly(True)
         return net
 
@@ -188,6 +188,20 @@ class MainMenu(QWidget):
         layout.addWidget(self.time_goal)
         box.setLayout(layout)
         return box
+
+    def update_progress_metrics(self):
+        if len(self.sorted_weight_list) > 0:
+            self.net_change.setText(
+                f'Net change in weight: {(self.sorted_weight_list[0][2] - self.sorted_weight_list[-1][2]):.2F}'
+            )
+        else:
+            self.net_change.setText(f'Insufficient entries to calculate net change in weight')
+        if self.weight_delta is not None:
+            self.weight_average.setText(f'Average rate of weight loss: {self.weight_delta:.3f}')
+            self.time_goal.setText(f'Days left until goal weight reached: {self.time_goal[1]}')
+        else:
+            self.weight_average.setText(f'Insufficient entries to calculate weight change delta.')
+            self.time_goal.setText(f'Insufficient entries to calculate time until goal reached.')
 
     def user_history_properties(self):
         """
@@ -405,8 +419,7 @@ class MainMenu(QWidget):
             return
 
     def add_lerp_points(self, start_entry, end_entry, future_date):
-        weight_delta = model.weight_delta_calculator(start_entry, end_entry)
-        lerp_x_list, lerp_y_list = model.lerp_weight(future_date, end_entry[1], self.user.goal, weight_delta)
+        lerp_x_list, lerp_y_list = model.lerp_weight(future_date, end_entry[1], self.user.goal, self.weight_delta)
         self.user_graph.getPlotItem().addPoints(lerp_x_list, lerp_y_list, symbol='h')
 
     def graph_box_properties(self):
