@@ -65,7 +65,7 @@ class MainMenu(QWidget):
         # data for objects
         self.sorted_weight_list = model.create_sorted_weight_history(self.user.weight_history)
         self.weight_delta = model.weight_delta_calculator(self.sorted_weight_list)
-        self.time_goal = model.time_to_goal(self.user.weight, self.user.goal, self.weight_delta)
+        self.time_goal_data = model.time_to_goal(self.user.weight, self.user.goal, self.weight_delta)
         # Initializes widgets to display user metrics
         self.user_name = self.user_name_properties()
         self.user_weight = self.user_weight_properties()
@@ -96,6 +96,7 @@ class MainMenu(QWidget):
         self.graph_box = self.graph_box_properties()
         # Sets the properties for all widgets and their layouts
         self.set_widget_properties()
+        self.set_progress_metrics()
         self.user_history_table()
         self.generate_layout()
         self.update_graph()
@@ -164,19 +165,16 @@ class MainMenu(QWidget):
 
     def net_weight_change(self):
         net = QLineEdit()
-        net.setText(f'Net change in weight: {(self.sorted_weight_list[0][2] - self.sorted_weight_list[-1][2]):.2F}')
         net.setReadOnly(True)
         return net
 
     def average_weight_change(self):
         average = QLineEdit()
-        average.setText(f'Average rate of weight loss: {self.weight_delta:.3F}')
         average.setReadOnly(True)
         return average
 
     def time_to_goal(self):
         time = QLineEdit()
-        time.setText(f'Days left until goal weight reached: {self.time_goal[1]}')
         time.setReadOnly(True)
         return time
 
@@ -189,7 +187,7 @@ class MainMenu(QWidget):
         box.setLayout(layout)
         return box
 
-    def update_progress_metrics(self):
+    def set_progress_metrics(self):
         if len(self.sorted_weight_list) > 0:
             self.net_change.setText(
                 f'Net change in weight: {(self.sorted_weight_list[0][2] - self.sorted_weight_list[-1][2]):.2F}'
@@ -197,8 +195,8 @@ class MainMenu(QWidget):
         else:
             self.net_change.setText(f'Insufficient entries to calculate net change in weight')
         if self.weight_delta is not None:
-            self.weight_average.setText(f'Average rate of weight loss: {self.weight_delta:.3f}')
-            self.time_goal.setText(f'Days left until goal weight reached: {self.time_goal[1]}')
+            self.weight_average.setText(f'Average rate of weight change: {self.weight_delta:.3f}')
+            self.time_goal.setText(f'Days left until goal weight reached: {self.time_goal_data[1]}')
         else:
             self.weight_average.setText(f'Insufficient entries to calculate weight change delta.')
             self.time_goal.setText(f'Insufficient entries to calculate time until goal reached.')
