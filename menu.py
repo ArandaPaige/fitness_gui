@@ -447,14 +447,14 @@ class MainMenu(QWidget):
             return
 
     def add_lerp_points(self, days):
-        lerp_x_list, lerp_y_list = model.lerp_weight(
-            days, self.sorted_weight_list[-1][2],
+        lerp_x_list, lerp_y_list = model.lerp_weight_entry(
+            days, self.graph_y, self.sorted_weight_list[-1][2],
             self.user.goal, self.weight_delta
         )
-        self.user_graph.plot((self.graph_x + lerp_x_list), (self.graph_y + lerp_y_list), symbol='h', clear=True)
+        self.user_graph.plot(lerp_x_list, lerp_y_list, symbol='h')
 
     def graph_box_properties(self):
-        box = QGroupBox(title='Press a button to change the graph displayed.')
+        box = QGroupBox('Press a button to change the graph displayed.')
         box_layout = QHBoxLayout()
         graph_layout = QVBoxLayout()
         lerp_layout = QVBoxLayout()

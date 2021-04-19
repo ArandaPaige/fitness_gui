@@ -90,7 +90,7 @@ def graph_entries(sorted_list, list_end=None):
 def time_to_goal(current_weight, goal_weight, delta):
     if delta is not None:
         difference = current_weight - goal_weight
-        days = int(difference / delta)
+        days = abs(int(difference / delta))
         end_date = DATETODAY + datetime.timedelta(days=days)
         return end_date, days
     else:
@@ -105,7 +105,10 @@ def weight_delta_calculator(sorted_list):
         start_weight, end_weight = sorted_list[0][2], sorted_list[-1][2]
         time_delta = end_date - start_date
         weight = start_weight - end_weight
-        weight_delta = weight / time_delta.days
+        if weight <= 0:
+            weight_delta = weight / time_delta.days
+        else:
+            weight_delta = -(weight / time_delta.days)
         return weight_delta
     else:
         return None
@@ -122,6 +125,17 @@ def lerp_weight(days, start_weight, goal_weight, weight_delta):
         date += (datetime.timedelta(days=1))
         lerp_x_list.append(weight)
         lerp_y_list.append(date)
+    return lerp_x_list, lerp_y_list
+
+def lerp_weight_entry(days, y_list, start_weight, goal_weight, weight_delta):
+    day_range = range(days, (len(y_list) + days))
+    lerp_x_list = []
+    lerp_y_list = []
+    for day in day_range:
+        weight = start_weight + weight_delta
+        start_weight = weight
+        lerp_x_list.append(weight)
+        lerp_y_list.append(day)
     return lerp_x_list, lerp_y_list
 
 
