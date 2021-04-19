@@ -119,7 +119,17 @@ def lerp_weight(days, start_weight, goal_weight, weight_delta):
     for day in day_range:
         weight = goal_weight + weight_delta * (start_weight - goal_weight)
         start_weight = weight
-        date += datetime.timedelta(days=1)
+        date += (datetime.timedelta(days=1))
         lerp_x_list.append(weight)
         lerp_y_list.append(date)
     return lerp_x_list, lerp_y_list
+
+
+def convert_height_metric(height):
+    height_metric = height * 2.54
+    return height_metric
+
+
+def convert_weight_metric(weight):
+    weight_metric = weight * 0.45359237
+    return weight_metric

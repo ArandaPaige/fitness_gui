@@ -122,6 +122,18 @@ class MainMenu(QWidget):
         name.setReadOnly(True)
         return name
 
+    def set_name(self, p_string):
+        self.user_name.setText(f'Name: {p_string}')
+
+    def set_weight(self, p_float):
+        self.user_weight.setText(f'Current weight: {p_float}')
+
+    def set_goal(self, p_float):
+        self.user_goal_weight.setText(f'Goal weight: {p_float}')
+
+    def set_height(self, p_integer):
+        self.user_height.setText(f'Height: {p_integer}')
+
     def user_weight_properties(self):
         """
         Sets the default properties of the weight QLineEdit object.
@@ -243,13 +255,13 @@ class MainMenu(QWidget):
         '''
         self.user_history.setStyleSheet(style_sheet)
 
-    def user_history_table(self, sorted_list):
+    def user_history_table(self, table_list):
         """
         Sets the items of the user's weight history dynamically into the table.
         :return: None
         """
         self.user_history.setRowCount(len(self.sorted_weight_list))
-        for row, items in enumerate(sorted_list):
+        for row, items in enumerate(table_list):
             self.user_history.setItem(row, 0, items[0])
             self.user_history.setItem(row, 1, items[1])
             self.user_history.setItem(row, 2, items[2])
@@ -429,7 +441,8 @@ class MainMenu(QWidget):
     def update_graph(self):
         self.graph_x, self.graph_y = model.create_graph_list(self.user.weight_history)
         if len(self.graph_x) > 0:
-            self.user_graph.getPlotItem().plot(self.graph_x, self.graph_y, symbol='o', clear=True)
+            self.user_graph.plot(self.graph_x, self.graph_y, symbol='o', clear=True)
+            item = self.user_graph.listDataItems()[0]
         else:
             return
 
@@ -438,7 +451,7 @@ class MainMenu(QWidget):
             days, self.sorted_weight_list[-1][2],
             self.user.goal, self.weight_delta
         )
-        self.user_graph.getPlotItem().addPoints(lerp_x_list, lerp_y_list, symbol='h')
+        self.user_graph.plot((self.graph_x + lerp_x_list), (self.graph_y + lerp_y_list), symbol='h', clear=True)
 
     def graph_box_properties(self):
         box = QGroupBox(title='Press a button to change the graph displayed.')

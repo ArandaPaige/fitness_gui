@@ -62,11 +62,3 @@ class User:
         :return: None
         """
         self.weight_history = weight_history
-
-    def convert_height_metric(self):
-        height_metric = self.height * 2.54
-        return height_metric
-
-    def convert_weight_metric(self):
-        weight_metric = self.weight * 0.45359237
-        return weight_metric
