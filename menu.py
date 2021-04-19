@@ -77,6 +77,7 @@ class MainMenu(QWidget):
         self.net_change = self.net_weight_change()
         self.weight_average = self.average_weight_change()
         self.time_goal = self.time_to_goal()
+        self.end_date = self.end_date_properties()
         self.weight_box = self.weight_box_properties()
         # Initializes a tree for displaying all user's weight history and buttons for editing DB
         self.user_history = QTableWidget()
@@ -200,12 +201,18 @@ class MainMenu(QWidget):
         time.setReadOnly(True)
         return time
 
+    def end_date_properties(self):
+        end_date = QLineEdit()
+        end_date.setReadOnly(True)
+        return end_date
+
     def weight_box_properties(self):
         box = QGroupBox('Metrics for user weight progression')
         layout = QVBoxLayout()
         layout.addWidget(self.net_change)
         layout.addWidget(self.weight_average)
         layout.addWidget(self.time_goal)
+        layout.addWidget(self.end_date)
         box.setLayout(layout)
         return box
 
@@ -219,9 +226,11 @@ class MainMenu(QWidget):
         if self.weight_delta is not None:
             self.weight_average.setText(f'Average rate of weight change: {self.weight_delta:.3f}')
             self.time_goal.setText(f'Days left until goal weight reached: {self.time_goal_data[1]}')
+            self.end_date.setText(f'End date: {self.time_goal_data[0]}')
         else:
             self.weight_average.setText(f'Insufficient entries to calculate weight change delta.')
             self.time_goal.setText(f'Insufficient entries to calculate time until goal reached.')
+            self.end_date.setText(f'Insufficient entries to calculate end date.')
 
     def user_history_properties(self):
         """
