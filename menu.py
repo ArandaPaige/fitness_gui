@@ -104,15 +104,6 @@ class MainMenu(QWidget):
         self.update_graph()
         self.show()
 
-    def update_weight_history(self):
-        self.sorted_weight_list = model.create_sorted_weight_history(self.user.weight_history)
-
-    def update_weight_delta(self):
-        self.weight_delta = model.weight_delta_calculator(self.sorted_weight_list)
-
-    def update_time_delta(self):
-        self.time_goal_data = model.time_to_goal(self.user.weight, self.user.goal, self.weight_delta)
-
     def user_name_properties(self):
         """
         Sets the default properties of the name QLineEdit object.
@@ -307,6 +298,7 @@ class MainMenu(QWidget):
         self.update_weight_history()
         self.load_user_table()
         self.weight_entry.clear()
+        self.update_data()
         self.set_progress_metrics()
         self.update_graph()
 
@@ -344,6 +336,7 @@ class MainMenu(QWidget):
         database.load_user_history(self.user)
         self.update_weight_history()
         self.load_user_table()
+        self.update_data()
         self.set_progress_metrics()
         self.update_graph()
 
@@ -384,6 +377,7 @@ class MainMenu(QWidget):
         database.load_user_history(self.user)
         self.update_weight_history()
         self.load_user_table()
+        self.update_data()
         self.set_progress_metrics()
         self.update_graph()
 
@@ -460,7 +454,7 @@ class MainMenu(QWidget):
             days, self.graph_y, self.sorted_weight_list[-1][2],
             self.user.goal, self.weight_delta
         )
-        self.user_graph.plot(lerp_x_list, lerp_y_list, symbol='h')
+        self.user_graph.plot(lerp_x_list, lerp_y_list, symbol='h', symbolBrush='r')
 
     def graph_box_properties(self):
         box = QGroupBox('Press a button to change the graph displayed.')
@@ -556,6 +550,20 @@ class MainMenu(QWidget):
         self.generate_center_layout()
         self.generate_right_layout()
         self.generate_master_layout()
+
+    def update_weight_history(self):
+        self.sorted_weight_list = model.create_sorted_weight_history(self.user.weight_history)
+
+    def update_weight_delta(self):
+        self.weight_delta = model.weight_delta_calculator(self.sorted_weight_list)
+
+    def update_time_delta(self):
+        self.time_goal_data = model.time_to_goal(self.user.weight, self.user.goal, self.weight_delta)
+
+    def update_data(self):
+        self.update_weight_history()
+        self.update_weight_delta()
+        self.update_time_delta()
 
 
 class DeleteDialog(QDialog):

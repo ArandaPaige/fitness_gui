@@ -127,15 +127,16 @@ def lerp_weight(days, start_weight, goal_weight, weight_delta):
         lerp_y_list.append(date)
     return lerp_x_list, lerp_y_list
 
+
 def lerp_weight_entry(days, y_list, start_weight, goal_weight, weight_delta):
-    day_range = range(days, (len(y_list) + days))
+    day_range = range(len(y_list), (len(y_list) + days))
     lerp_x_list = []
     lerp_y_list = []
     for day in day_range:
         weight = start_weight + weight_delta
         start_weight = weight
-        lerp_x_list.append(weight)
-        lerp_y_list.append(day)
+        lerp_x_list.append(day)
+        lerp_y_list.append(weight)
     return lerp_x_list, lerp_y_list
 
 
