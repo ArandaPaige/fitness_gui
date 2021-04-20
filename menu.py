@@ -496,6 +496,16 @@ class MainMenu(QWidget):
 
     def graph_box_properties(self):
         box = QGroupBox('Press a button to change the graph displayed.')
+        box.setStyleSheet("""
+        QGroupBox {
+        font-size: 16px;
+        font-weight: bold;
+        }
+
+        QLabel {
+        font: bold 14px
+        }
+        """)
         box_layout = QHBoxLayout()
         graph_layout = QVBoxLayout()
         lerp_layout = QVBoxLayout()
