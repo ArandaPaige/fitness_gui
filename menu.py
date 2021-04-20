@@ -110,7 +110,7 @@ class MainMenu(QWidget):
         :return: None
         """
         name = QLineEdit()
-        name.setText(f'Name: {self.user.name}')
+        name.setText(f'{self.user.name}')
         name.setReadOnly(True)
         return name
 
@@ -132,7 +132,7 @@ class MainMenu(QWidget):
         :return: None
         """
         weight = QLineEdit()
-        weight.setText(f'Weight: {self.user.weight} lbs')
+        weight.setText(f'{self.user.weight} lbs')
         weight.setReadOnly(True)
         return weight
 
@@ -142,7 +142,7 @@ class MainMenu(QWidget):
         :return: None
         """
         height = QLineEdit()
-        height.setText(f'Height: {self.user.height} inches')
+        height.setText(f'{self.user.height} inches')
         height.setReadOnly(True)
         return height
 
@@ -152,7 +152,7 @@ class MainMenu(QWidget):
         :return: None
         """
         bmi = QLineEdit()
-        bmi.setText(f'Body Mass Index: {(self.user.weight / self.user.height ** 2 * 703):.1f}')
+        bmi.setText(f'{(self.user.weight / self.user.height ** 2 * 703):.1f}')
         bmi.setReadOnly(True)
         return bmi
 
@@ -162,18 +162,28 @@ class MainMenu(QWidget):
         :return: None
         """
         goal_weight = QLineEdit()
-        goal_weight.setText(f'Goal Weight: {self.user.goal} lbs')
+        goal_weight.setText(f'{self.user.goal} lbs')
         goal_weight.setReadOnly(True)
         return goal_weight
 
     def user_box_properties(self):
         box = QGroupBox('Personal information')
-        layout = QVBoxLayout()
-        layout.addWidget(self.user_name)
-        layout.addWidget(self.user_weight)
-        layout.addWidget(self.user_goal_weight)
-        layout.addWidget(self.user_bmi)
-        layout.addWidget(self.user_height)
+        layout = QGridLayout()
+        name_label = QLabel('NAME')
+        weight_label = QLabel('WEIGHT')
+        goal_label = QLabel('GOAL WEIGHT')
+        bmi_label = QLabel('BODY MASS INDEX')
+        height_label = QLabel('HEIGHT')
+        layout.addWidget(name_label, 0, 0)
+        layout.addWidget(self.user_name, 0, 1)
+        layout.addWidget(weight_label, 1, 0)
+        layout.addWidget(self.user_weight, 1, 1)
+        layout.addWidget(goal_label, 2, 0)
+        layout.addWidget(self.user_goal_weight, 2, 1)
+        layout.addWidget(bmi_label, 3, 0)
+        layout.addWidget(self.user_bmi, 3, 1)
+        layout.addWidget(height_label, 4, 0)
+        layout.addWidget(self.user_height, 4, 1)
         box.setLayout(layout)
         return box
 
@@ -199,25 +209,33 @@ class MainMenu(QWidget):
 
     def weight_box_properties(self):
         box = QGroupBox('Metrics for user weight progression')
-        layout = QVBoxLayout()
-        layout.addWidget(self.net_change)
-        layout.addWidget(self.weight_average)
-        layout.addWidget(self.time_goal)
-        layout.addWidget(self.end_date)
+        layout = QGridLayout()
+        net_change_label = QLabel('NET CHANGE')
+        average_label = QLabel('WEIGHT CHANGE')
+        days_label = QLabel('DAYS UNTIL GOAL REACHED:')
+        date_label = QLabel('END DATE')
+        layout.addWidget(net_change_label, 0, 0)
+        layout.addWidget(self.net_change, 0, 1)
+        layout.addWidget(average_label, 1, 0)
+        layout.addWidget(self.weight_average, 1, 1)
+        layout.addWidget(days_label, 2, 0)
+        layout.addWidget(self.time_goal, 2, 1)
+        layout.addWidget(date_label, 3, 0)
+        layout.addWidget(self.end_date, 3, 1)
         box.setLayout(layout)
         return box
 
     def set_progress_metrics(self):
         if len(self.sorted_weight_list) > 0:
             self.net_change.setText(
-                f'Net change in weight: {(self.sorted_weight_list[0][2] - self.sorted_weight_list[-1][2]):.2F}'
+                f'{(self.sorted_weight_list[0][2] - self.sorted_weight_list[-1][2]):.2F}'
             )
         else:
             self.net_change.setText(f'Insufficient entries to calculate net change in weight')
         if self.weight_delta is not None:
-            self.weight_average.setText(f'Average rate of weight change: {self.weight_delta:.3f}')
-            self.time_goal.setText(f'Days left until goal weight reached: {self.time_goal_data[1]}')
-            self.end_date.setText(f'End date: {self.time_goal_data[0]}')
+            self.weight_average.setText(f'{self.weight_delta:.3f}')
+            self.time_goal.setText(f'{self.time_goal_data[1]}')
+            self.end_date.setText(f'{self.time_goal_data[0]}')
         else:
             self.weight_average.setText(f'Insufficient entries to calculate weight change delta.')
             self.time_goal.setText(f'Insufficient entries to calculate time until goal reached.')
