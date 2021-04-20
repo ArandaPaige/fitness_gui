@@ -115,16 +115,16 @@ class MainMenu(QWidget):
         return name
 
     def set_name(self, p_string):
-        self.user_name.setText(f'Name: {p_string}')
+        self.user_name.setText(f'{p_string}')
 
     def set_weight(self, p_float):
-        self.user_weight.setText(f'Current weight: {p_float}')
+        self.user_weight.setText(f'{p_float}')
 
     def set_goal(self, p_float):
-        self.user_goal_weight.setText(f'Goal weight: {p_float}')
+        self.user_goal_weight.setText(f'{p_float}')
 
     def set_height(self, p_integer):
-        self.user_height.setText(f'Height: {p_integer}')
+        self.user_height.setText(f'{p_integer}')
 
     def user_weight_properties(self):
         """
@@ -168,6 +168,16 @@ class MainMenu(QWidget):
 
     def user_box_properties(self):
         box = QGroupBox('Personal information')
+        box.setStyleSheet("""
+        QGroupBox {
+        font-size: 16px;
+        font-weight: bold;
+        }
+
+        QLabel {
+        font: bold 14px
+        }
+        """)
         layout = QGridLayout()
         name_label = QLabel('NAME')
         weight_label = QLabel('WEIGHT')
@@ -209,6 +219,16 @@ class MainMenu(QWidget):
 
     def weight_box_properties(self):
         box = QGroupBox('Metrics for user weight progression')
+        box.setStyleSheet("""
+        QGroupBox {
+        font-size: 16px;
+        font-weight: bold;
+        }
+        
+        QLabel {
+        font: bold 14px
+        }
+        """)
         layout = QGridLayout()
         net_change_label = QLabel('NET CHANGE')
         average_label = QLabel('WEIGHT CHANGE')
