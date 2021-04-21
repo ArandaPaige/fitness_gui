@@ -39,23 +39,24 @@ def create_table_list(sorted_list):
     return id_date_weight_list
 
 
-def create_graph_list(user_list):
+def create_graph_list(user_list, days=0):
     """
     Creates a list of weights that have been sorted by date in descending order
+    :param days: list slice by entry
     :param user_list: a list from the user instance
     :return: List
     """
     graph_xlist = []
     graph_ylist = []
     sorted_list = sorted(user_list, key=lambda x: x[1])
-    for i, entry in enumerate(sorted_list):
+    for i, entry in enumerate(sorted_list[days:]):
         graph_x, graph_y = entry[2], i
         graph_ylist.append(graph_x)
         graph_xlist.append(graph_y)
     return graph_xlist, graph_ylist
 
 
-def create_graph_listx(sorted_list, days=0):
+def create_graph_date_list(sorted_list, days=0):
     """
     Creates a list of weights that have been sorted by date in descending order
     :param days:
