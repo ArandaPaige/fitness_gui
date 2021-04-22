@@ -88,16 +88,6 @@ def graph_entries(sorted_list, list_end=None):
     return graph
 
 
-def time_to_goal(current_weight, goal_weight, delta):
-    if delta is not None:
-        difference = current_weight - goal_weight
-        days = abs(int(difference / delta))
-        end_date = DATETODAY + datetime.timedelta(days=days)
-        return end_date, days
-    else:
-        return None
-
-
 def weight_delta_calculator(sorted_list):
     if len(sorted_list) > 1:
         start_date, end_date = sorted_list[0][1], sorted_list[-1][1]
@@ -111,6 +101,16 @@ def weight_delta_calculator(sorted_list):
         else:
             weight_delta = -(weight / time_delta.days)
         return weight_delta
+    else:
+        return None
+
+
+def time_to_goal(current_weight, goal_weight, delta):
+    if delta is not None:
+        difference = current_weight - goal_weight
+        days = abs(int(difference / delta))
+        end_date = DATETODAY + datetime.timedelta(days=days)
+        return end_date, days
     else:
         return None
 

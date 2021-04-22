@@ -484,8 +484,8 @@ class MainMenu(QWidget):
         else:
             return
 
-    def add_lerp_points(self, lerp_days, days=0):
-        self.update_graph(days)
+    def add_lerp_points(self, lerp_days):
+        self.update_graph()
         lerp_x_list, lerp_y_list = model.lerp_weight_entry(
             lerp_days, self.graph_y, self.sorted_weight_list[-1][2],
             self.user.goal, self.weight_delta
