@@ -149,3 +149,8 @@ def convert_height_metric(height):
 def convert_weight_metric(weight):
     weight_metric = weight * 0.45359237
     return weight_metric
+
+
+def convert_stones(weight):
+    weight_stone = weight / 14
+    return weight_stone

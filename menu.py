@@ -114,18 +114,6 @@ class MainMenu(QWidget):
         name.setReadOnly(True)
         return name
 
-    def set_name(self, p_string):
-        self.user_name.setText(f'{p_string}')
-
-    def set_weight(self, p_float):
-        self.user_weight.setText(f'{p_float}')
-
-    def set_goal(self, p_float):
-        self.user_goal_weight.setText(f'{p_float}')
-
-    def set_height(self, p_integer):
-        self.user_height.setText(f'{p_integer}')
-
     def user_weight_properties(self):
         """
         Sets the default properties of the weight QLineEdit object.
@@ -166,6 +154,21 @@ class MainMenu(QWidget):
         goal_weight.setReadOnly(True)
         return goal_weight
 
+    def set_name(self, p_string):
+        self.user_name.setText(f'{p_string} {self.units}')
+
+    def set_weight(self, p_float):
+        self.user_weight.setText(f'{p_float} {self.units}')
+
+    def set_goal(self, p_float):
+        self.user_goal_weight.setText(f'{p_float} {self.units}')
+
+    def set_bmi(self):
+        self.user_bmi.setText(f'{(self.user.weight / self.user.height ** 2 * 703):.1f}')
+
+    def set_height(self, p_integer):
+        self.user_height.setText(f'{p_integer} {self.units}')
+
     def user_box_properties(self):
         box = QGroupBox('Personal information')
         box.setStyleSheet("""
@@ -200,21 +203,33 @@ class MainMenu(QWidget):
     def net_weight_change(self):
         net = QLineEdit()
         net.setReadOnly(True)
+        net.setToolTip('The total weight change you have experienced.')
         return net
 
     def average_weight_change(self):
         average = QLineEdit()
         average.setReadOnly(True)
+        average.setToolTip('The average weight loss you have experienced per entry.')
         return average
 
     def time_to_goal(self):
         time = QLineEdit()
         time.setReadOnly(True)
+        time.setToolTip(
+                f'The amounts of days left until you reach your goal '
+                f'should the trajectory of your weight progression '
+                f'remain the same.'
+                )
         return time
 
     def end_date_properties(self):
         end_date = QLineEdit()
         end_date.setReadOnly(True)
+        end_date.setToolTip(
+            f'The date upon which you will reach your end goal '
+            f'should the trajectory of your weight progression'
+            f'remain the same.'
+        )
         return end_date
 
     def weight_box_properties(self):
