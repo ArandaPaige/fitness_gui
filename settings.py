@@ -46,10 +46,7 @@ class Settings:
             self.write_settings_file()
         else:
             with fread:
-                settings = {}
-                for line in fread:
-                    k, v = line.rstrip().split(':', 1)
-                    settings[k] = v
+                settings = {k: v for k, v in [line.rstrip().split(':', 1) for line in fread]}
                 return settings
 
     def set_measurement_system(self, system='Imperial'):
@@ -65,7 +62,7 @@ class Settings:
         self.graph_entry_default = default
 
     def set_graph_future_default(self, default='None'):
-        self.graph_lerp_default = default
+        self.graph_future_default = default
 
     def create_settings_dictionary(self):
         settings = {
@@ -76,3 +73,6 @@ class Settings:
             'Default Graph Future Range': self.graph_future_default
         }
         return settings
+
+    def map_settings_to_attributes(self):
+        pass
