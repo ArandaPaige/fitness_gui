@@ -18,7 +18,9 @@ class Settings:
 
     def check_settings(self):
         if INI_PATH.exists():
-            self.read_settings_file()
+            settings = self.read_settings_file()
+            self.settings = settings
+            return
         else:
             self.create_settings_file()
 
@@ -44,7 +46,11 @@ class Settings:
             self.write_settings_file()
         else:
             with fread:
-                pass
+                settings = {}
+                for line in fread:
+                    k, v = line.rstrip().split(':', 1)
+                    settings[k] = v
+                return settings
 
     def set_measurement_system(self, system='Imperial'):
         self.measurement_system = system
