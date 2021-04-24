@@ -1,5 +1,12 @@
 # python_fitness
 
-This is a sister app to my Django fitness project. It is intended to be a pure Python implementation of the fitness app I'm creating with Django. 
-There are a few reasons as to why I'm doing this: first and foremost, it will be a great way to hash out my implementation free of worrying about the web app framework. 
-Secondly, I wanted to do a pure Python implementation to see what I could create without the use of a frontend to extend its functionality. 
+This is an application for tracking and visualizing weight progression. It provides numerous metrics for accomplishing
+this task. The application maintains a history of the user's weight. And allows the user to set a goal weight they
+wish to achieve. With this data, it is able to ascertain numerous aspects of their weight progression. Key features
+of the application are listed below:
+
+* Calculate net change in weight
+* Calculate the rate of change
+* Calculate the amount of days left until the user reaches their goal
+* Graphing the progression of their weight history
+* Extrapolating where the user's weight will be based upon past results and graping it.
