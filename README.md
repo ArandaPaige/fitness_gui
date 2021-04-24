@@ -1,4 +1,4 @@
-# python_fitness
+# Weight Tracker and Visualiser
 
 This is an application for tracking and visualizing weight progression. It provides numerous metrics for accomplishing
 this task. The application maintains a history of the user's weight. And allows the user to set a goal weight they
