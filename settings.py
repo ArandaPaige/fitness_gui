@@ -8,13 +8,11 @@ INI_PATH = BASE_DIR / INI_FILE
 class Settings:
 
     def __init__(self):
+        self.settings = None
         self.check_settings()
-        self.measurement_system = None
-        self.date_system = None
-        self.theme = None
-        self.graph_entry_default = None
-        self.graph_future_default = None
-        self.settings = self.create_settings_dictionary()
+
+    def __repr__(self):
+        return f'{self.settings}'
 
     def check_settings(self):
         if INI_PATH.exists():
@@ -23,16 +21,22 @@ class Settings:
             return
         else:
             self.create_settings_file()
+            self.settings = self.create_settings_dictionary()
+            self.write_settings_file()
 
     def create_settings_file(self):
-        with open(INI_FILE, 'x', encoding='utf-8') as fout:
-            pass
+        try:
+            fcreate = open(INI_FILE, 'x', encoding='utf-8')
+        except FileExistsError:
+            return
+        else:
+            fcreate.close()
 
     def write_settings_file(self):
         try:
             fwrite = open(INI_FILE, 'w', encoding='utf-8')
         except FileNotFoundError:
-            self.create_settings_file()
+            self.check_settings()
         else:
             with fwrite:
                 for k, v in self.settings.items():
@@ -42,37 +46,33 @@ class Settings:
         try:
             fread = open(INI_FILE, 'r')
         except FileNotFoundError:
-            self.create_settings_file()
-            self.write_settings_file()
+            self.check_settings()
         else:
             with fread:
-                settings = {k: v for k, v in [line.rstrip().split(':', 1) for line in fread]}
+                settings = {k: v for k, v in [line.strip().split(':', 1) for line in fread]}
                 return settings
-
-    def set_measurement_system(self, system='Imperial'):
-        self.measurement_system = system
-
-    def set_date_system(self, system='ISO'):
-        self.date_system = system
-
-    def set_theme(self, theme='Light'):
-        self.theme = theme
-
-    def set_graph_entry_default(self, default='All'):
-        self.graph_entry_default = default
-
-    def set_graph_future_default(self, default='None'):
-        self.graph_future_default = default
 
     def create_settings_dictionary(self):
         settings = {
-            'Measurement System': self.measurement_system,
-            'Date System': self.date_system,
-            'Theme': self.theme,
-            'Default Graph Entry Range': self.graph_entry_default,
-            'Default Graph Future Range': self.graph_future_default
+            'Measurement System': 'Imperial',
+            'Date System': 'ISO',
+            'Theme': 'Light',
+            'Default Graph Entry Range': 'All',
+            'Default Graph Future Range': 'None'
         }
         return settings
 
-    def map_settings_to_attributes(self):
-        pass
+    def set_measurement_system(self, system='Imperial'):
+        self.settings['Measurement System'] = system
+
+    def set_date_system(self, system='ISO'):
+        self.settings['Date System'] = system
+
+    def set_theme(self, theme='Light'):
+        self.settings['Theme'] = theme
+
+    def set_graph_entry_default(self, default='All'):
+        self.settings['Default Graph Entry Range'] = default
+
+    def set_graph_future_default(self, default='None'):
+        self.settings['Default Graph Future Range'] = default

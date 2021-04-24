@@ -121,6 +121,7 @@ class MainMenu(QWidget):
         """
         weight = QLineEdit()
         weight.setText(f'{self.user.weight} lbs')
+        weight.setToolTip('Your current weight.')
         weight.setReadOnly(True)
         return weight
 
@@ -140,6 +141,7 @@ class MainMenu(QWidget):
         :return: None
         """
         bmi = QLineEdit()
+        bmi.setToolTip('BMI is a ')
         bmi.setText(f'{(self.user.weight / self.user.height ** 2 * 703):.1f}')
         bmi.setReadOnly(True)
         return bmi
@@ -150,6 +152,7 @@ class MainMenu(QWidget):
         :return: None
         """
         goal_weight = QLineEdit()
+        goal_weight.setToolTip('The goal weight you are trying to achieve.')
         goal_weight.setText(f'{self.user.goal} lbs')
         goal_weight.setReadOnly(True)
         return goal_weight
