@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import *
 
 import database
 import model
+from settings import Settings
 from user import User
 
 DATETODAY = datetime.date.today()
@@ -63,6 +64,7 @@ class MainMenu(QWidget):
         self.layout_right_graph_buttons = QHBoxLayout()
         self.layout_right_lerp_buttons = QHBoxLayout()
         # data for objects
+        self.settings = Settings()
         self.sorted_weight_list = model.create_sorted_weight_history(self.user.weight_history)
         self.table_list = model.create_table_list(self.sorted_weight_list)
         self.weight_delta = model.weight_delta_calculator(self.sorted_weight_list)
@@ -104,6 +106,10 @@ class MainMenu(QWidget):
         self.update_graph()
         self.show()
 
+    def menu_bar(self):
+        bar = QMenuBar()
+        return bar
+
     def user_name_properties(self):
         """
         Sets the default properties of the name QLineEdit object.
@@ -124,6 +130,9 @@ class MainMenu(QWidget):
         weight.setToolTip('Your current weight.')
         weight.setReadOnly(True)
         return weight
+
+    def user_weight_edit_button(self):
+        pass
 
     def user_height_properties(self):
         """
@@ -157,20 +166,29 @@ class MainMenu(QWidget):
         goal_weight.setReadOnly(True)
         return goal_weight
 
-    def set_name(self, p_string):
-        self.user_name.setText(f'{p_string} {self.units}')
+    def set_name(self):
+        self.user_name.setText(f'{self.user.name}')
 
-    def set_weight(self, p_float):
-        self.user_weight.setText(f'{p_float} {self.units}')
+    def set_weight(self):
+        if len(self.sorted_weight_list) > 0:
+            self.user_weight.setText(f'{self.sorted_weight_list[-1][2]} {self.units}')
+        else:
+            self.user_weight.setText(f'Not available.')
 
-    def set_goal(self, p_float):
-        self.user_goal_weight.setText(f'{p_float} {self.units}')
+    def set_goal(self):
+        if self.user.goal is not None:
+            self.user_goal_weight.setText(f'{self.user.goal} {self.units}')
+        else:
+            self.user_goal_weight.setText(f'Please update your goal weight.')
 
     def set_bmi(self):
-        self.user_bmi.setText(f'{(self.user.weight / self.user.height ** 2 * 703):.1f}')
+        if len(self.sorted_weight_list) > 0:
+            self.user_bmi.setText(f'{(self.sorted_weight_list[-1][2] / self.user.height ** 2 * 703):.1f}')
+        else:
+            self.user_bmi.setText(f'Not available.')
 
-    def set_height(self, p_integer):
-        self.user_height.setText(f'{p_integer} {self.units}')
+    def set_height(self):
+        self.user_height.setText(f'{self.user.height} {self.units}')
 
     def user_box_properties(self):
         box = QGroupBox('Personal information')

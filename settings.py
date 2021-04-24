@@ -49,7 +49,7 @@ class Settings:
             self.check_settings()
         else:
             with fread:
-                settings = {k: v for k, v in [line.strip().split(':', 1) for line in fread]}
+                settings = {k: v for k, v in [line.rstrip().split(':', 1) for line in fread]}
                 return settings
 
     def create_settings_dictionary(self):
