@@ -15,6 +15,12 @@ class Settings:
         return f'{self.settings}'
 
     def check_settings(self):
+        """Checks for settings file and updates instance attribute
+
+        Checks to see if a settings.ini file already exists and reads it. If the file does not exist, it is created
+        with the default settings of the application.
+        :return: None
+        """
         if INI_PATH.exists():
             self.settings = self.read_settings_file()
             return
@@ -24,6 +30,7 @@ class Settings:
             self.write_settings_file()
 
     def create_settings_file(self):
+        """Creates the settings.ini file. Raises exception if it exists and returns None."""
         try:
             fcreate = open(INI_FILE, 'x', encoding='utf-8')
         except FileExistsError:
@@ -32,6 +39,13 @@ class Settings:
             fcreate.close()
 
     def write_settings_file(self):
+        """Writes the settings dictionary to the settings.ini.
+
+        The contents of the settings dictionary are written to the settings.ini file line by line. An exception is
+        raised if the file does not exist. It will then create a new settings.ini file with a default implementation of
+        the application settings.
+        :return: None
+        """
         try:
             fwrite = open(INI_FILE, 'w', encoding='utf-8')
         except FileNotFoundError:
@@ -42,6 +56,13 @@ class Settings:
                     fwrite.write(f'{k}:{v} \n')
 
     def read_settings_file(self):
+        """Reads the contents of the settings.ini file.
+
+        The contents of the settings.ini are read and constructed as a dictionary. An exception is raised if the file
+        does not exist. It will then create a new settings.ini file with a default implementation of the application
+        settings.
+        :return: dictionary
+        """
         try:
             fread = open(INI_FILE, 'r')
         except FileNotFoundError:
@@ -55,7 +76,6 @@ class Settings:
         """Creates a dictionary with key-value pairs that correspond to the default program values and returns None"""
         settings = {
             'Measurement System': 'Imperial',
-            'Date System': 'ISO',
             'Theme': 'Light',
             'Default Graph Entry Range': 'All',
             'Default Graph Future Range': 'None'
@@ -65,10 +85,6 @@ class Settings:
     def set_measurement_system(self, system='Imperial'):
         """Sets the dictionary value to the measurement system provided and returns None."""
         self.settings['Measurement System'] = system
-
-    def set_date_system(self, system='ISO'):
-        """Sets the dictionary value to the date system provided and returns None."""
-        self.settings['Date System'] = system
 
     def set_theme(self, theme='Light'):
         """Sets the dictionary value to the theme provided and returns None."""

@@ -723,7 +723,6 @@ class SettingsMenu(QWidget):
         self.graph_future_none = self.future_none_radio()
         # containers for buttons
         self.measurement_system_group = self.weight_system_box()
-        self.date_system_group = self.date_system_box()
         self.theme_group = self.theme_box()
         self.graph_group = self.graph_entry_box()
         self.graph_future_group = self.graph_future_box()
@@ -761,21 +760,6 @@ class SettingsMenu(QWidget):
 
     def select_measurement_system(self, system):
         self.settings.set_measurement_system(system)
-
-    def date_system_box(self):
-        box = QGroupBox('Select a Date System')
-        box.setStyleSheet("""
-        QGroupBox {
-        font-size: 14px;
-        font-weight: bold;
-        }
-        """)
-        layout = QVBoxLayout()
-        box.setLayout(layout)
-        return box
-
-    def select_date_system(self, system):
-        self.settings.set_date_system(system)
 
     def theme_box(self):
         box = QGroupBox('Select a menu theme')
@@ -888,7 +872,6 @@ class SettingsMenu(QWidget):
 
     def vertical_layout_1_properties(self):
         self.v_layout_1.addWidget(self.measurement_system_group)
-        self.v_layout_1.addWidget(self.date_system_group)
         self.v_layout_1.addWidget(self.theme_group)
 
     def vertical_layout_2_properties(self):
@@ -986,12 +969,14 @@ class NewUserDialog(QDialog):
         return height
 
     def confirm_button(self):
+        """Creates a button that submits a user object to the database when it is clicked."""
         confirm = QPushButton('Confirm')
         confirm.setEnabled(False)
         confirm.clicked.connect(self.confirm_event)
         return confirm
 
     def cancel_button(self):
+        """Creates a button that closes the application if it is clicked."""
         cancel = QPushButton('Cancel')
         cancel.clicked.connect(self.cancel_event)
         return cancel
