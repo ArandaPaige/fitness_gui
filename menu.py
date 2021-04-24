@@ -233,10 +233,10 @@ class MainMenu(QWidget):
         time = QLineEdit()
         time.setReadOnly(True)
         time.setToolTip(
-                f'The amounts of days left until you reach your goal '
-                f'should the trajectory of your weight progression '
-                f'remain the same.'
-                )
+            f'The amounts of days left until you reach your goal '
+            f'should the trajectory of your weight progression '
+            f'remain the same.'
+        )
         return time
 
     def end_date_properties(self):
@@ -701,6 +701,9 @@ class SettingsMenu(QWidget):
         super().__init__()
         self.parent = parent_window
         self.settings = self.parent.settings
+        self.master_layout = QHBoxLayout()
+        self.v_layout_1 = QVBoxLayout()
+        self.v_layout_2 = QVBoxLayout()
         # weight measurement radio buttons
         self.imperial_button = self.imperial_radio()
         self.metric_button = self.metric_radio()
@@ -725,6 +728,7 @@ class SettingsMenu(QWidget):
         self.graph_group = self.graph_entry_box()
         self.graph_future_group = self.graph_future_box()
 
+
     def measurement_system_box(self):
         box = QGroupBox('Select a Measurement System')
         box.setStyleSheet("""
@@ -742,14 +746,17 @@ class SettingsMenu(QWidget):
 
     def imperial_radio(self):
         button = QRadioButton('Imperial')
+        button.isChecked.connect(partial(self.select_measurement_system, 'Imperial'))
         return button
 
     def metric_radio(self):
         button = QRadioButton('Metric')
+        button.isChecked.connect(partial(self.select_measurement_system, 'Metric'))
         return button
 
     def british_radio(self):
         button = QRadioButton('British Imperial')
+        button.isChecked.connect(partial(self.select_measurement_system, 'British Imperial'))
         return button
 
     def select_measurement_system(self, system):
@@ -786,10 +793,12 @@ class SettingsMenu(QWidget):
 
     def light_radio(self):
         button = QRadioButton('Light')
+        button.isChecked.connect(partial(self.select_theme, "Light"))
         return button
 
     def dark_radio(self):
         button = QRadioButton('Dark')
+        button.isChecked.connect(partial(self.select_theme, "Dark"))
         return button
 
     def select_theme(self, theme):
@@ -813,18 +822,22 @@ class SettingsMenu(QWidget):
 
     def graph_7_radio(self):
         button = QRadioButton('7 Entries')
+        button.isChecked.connect(partial(self.set_graphing_range, '7'))
         return button
 
     def graph_15_radio(self):
         button = QRadioButton('15 Entries')
+        button.isChecked.connect(partial(self.set_graphing_range, '15'))
         return button
 
     def graph_30_radio(self):
         button = QRadioButton('30 Entries')
+        button.isChecked.connect(partial(self.set_graphing_range, '30'))
         return button
 
     def graph_90_radio(self):
         button = QRadioButton('90 Entries')
+        button.isChecked.connect(partial(self.set_graphing_range, '90'))
         return button
 
     def set_graphing_range(self, entries):
@@ -848,22 +861,44 @@ class SettingsMenu(QWidget):
 
     def future_7_radio(self):
         button = QRadioButton('7 Entries')
+        button.isChecked.connect(partial(self.set_future_graphing_range, '7'))
         return button
 
     def future_14_radio(self):
         button = QRadioButton('14 Entries')
+        button.isChecked.connect(partial(self.set_future_graphing_range, '14'))
         return button
 
     def future_28_radio(self):
         button = QRadioButton('28 Entries')
+        button.isChecked.connect(partial(self.set_future_graphing_range, '28'))
         return button
 
     def future_none_radio(self):
         button = QRadioButton('Off')
+        button.isChecked.connect(partial(self.set_future_graphing_range, 'Off'))
         return button
 
     def set_future_graphing_range(self, entries):
         self.settings.set_graph_future_default(entries)
+
+    def master_layout_properties(self):
+        self.master_layout.addLayout(self.v_layout_1)
+        self.master_layout.addLayout(self.v_layout_2)
+
+    def vertical_layout_1_properties(self):
+        self.v_layout_1.addWidget(self.measurement_system_group)
+        self.v_layout_1.addWidget(self.date_system_group)
+        self.v_layout_1.addWidget(self.theme_group)
+
+    def vertical_layout_2_properties(self):
+        self.v_layout_2.addWidget(self.graph_group)
+        self.v_layout_2.addWidget(self.graph_future_group)
+
+    def generate_layout(self):
+        self.vertical_layout_1_properties()
+        self.vertical_layout_2_properties()
+
 
 class NewUserDialog(QDialog):
 
