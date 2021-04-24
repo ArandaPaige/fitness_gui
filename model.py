@@ -128,15 +128,18 @@ def lerp_weight_entry(days, y_list, start_weight, goal_weight, weight_delta):
 
 
 def convert_height_metric(height):
+    """Converts user's height from Imperial to metric and returns a float"""
     height_metric = height * 2.54
     return height_metric
 
 
 def convert_weight_metric(weight):
+    """Converts user's weight from Imperial to metric and returns a float"""
     weight_metric = weight * 0.45359237
     return weight_metric
 
 
 def convert_stones(weight):
+    """Converts user's weight from Imperial to British Imperial stones and returns a float."""
     weight_stone = weight / 14
     return weight_stone
