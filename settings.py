@@ -16,8 +16,7 @@ class Settings:
 
     def check_settings(self):
         if INI_PATH.exists():
-            settings = self.read_settings_file()
-            self.settings = settings
+            self.settings = self.read_settings_file()
             return
         else:
             self.create_settings_file()

@@ -74,20 +74,6 @@ def create_graph_date_list(sorted_list, days=0):
     return graph_xlist, graph_ylist
 
 
-def graph_entries(sorted_list, list_end=None):
-    """
-    Creates a tuple of x, y values based on the sorted list. The length of the list is determined by the user's input.
-    :param sorted_list:
-    :param list_end:
-    :return: List
-    """
-    if list_end is not None:
-        graph = sorted_list[:list_end]
-    else:
-        graph = sorted_list
-    return graph
-
-
 def weight_delta_calculator(sorted_list):
     if len(sorted_list) > 1:
         start_date, end_date = sorted_list[0][1], sorted_list[-1][1]
