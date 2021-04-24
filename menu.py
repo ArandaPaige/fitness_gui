@@ -106,10 +106,6 @@ class MainMenu(QWidget):
         self.update_graph()
         self.show()
 
-    def menu_bar(self):
-        bar = QMenuBar()
-        return bar
-
     def user_name_properties(self):
         """
         Sets the default properties of the name QLineEdit object.
@@ -698,6 +694,89 @@ class DeleteDialog(QDialog):
         self.layout.addWidget(self.label)
         self.layout.addLayout(self.button_layout)
 
+
+class SettingsMenu(QWidget):
+
+    def __init__(self, parent_window):
+        super().__init__()
+        self.parent = parent_window
+
+    def weight_system_box(self):
+        box = QGroupBox('Select a Measurement System')
+        layout = QVBoxLayout()
+        return box
+
+    def imperial_radio(self):
+        button = QRadioButton('Imperial')
+        return button
+
+    def metric_radio(self):
+        button = QRadioButton('Metric')
+        return button
+
+    def british_radio(self):
+        button = QRadioButton('British Imperial')
+        return button
+
+    def date_system_box(self):
+        box = QGroupBox('Select a Date System')
+        layout = QVBoxLayout()
+        return box
+
+    def theme_box(self):
+        box = QGroupBox('Select a menu theme')
+        layout = QVBoxLayout()
+        return box
+
+    def light_radio(self):
+        button = QRadioButton('Light')
+        return button
+
+    def dark_radio(self):
+        button = QRadioButton('Dark')
+        return button
+
+    def graph_entry_box(self):
+        box = QGroupBox('Select the default graphing range to display')
+        layout = QVBoxLayout()
+        return box
+
+    def graph_7_radio(self):
+        button = QRadioButton('7 Entries')
+        return button
+
+    def graph_15_radio(self):
+        button = QRadioButton('15 Entries')
+        return button
+
+    def graph_30_radio(self):
+        button = QRadioButton('30 Entries')
+        return button
+
+    def graph_90_radio(self):
+        button = QRadioButton('90 Entries')
+        return button
+
+    def graph_future_box(self):
+        box = QGroupBox('Select the default behavior for graphing future entries')
+        layout = QVBoxLayout()
+        return box
+
+    def future_7_radio(self):
+        button = QRadioButton('7 Entries')
+        return button
+
+    def future_14_radio(self):
+        button = QRadioButton('14 Entries')
+        return button
+
+    def future_28_radio(self):
+        button = QRadioButton('28 Entries')
+        return button
+
+    def future_none_radio(self):
+        button = QRadioButton('Off')
+        return button
 
 class NewUserDialog(QDialog):
 
