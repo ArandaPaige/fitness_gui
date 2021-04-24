@@ -700,10 +700,38 @@ class SettingsMenu(QWidget):
     def __init__(self, parent_window):
         super().__init__()
         self.parent = parent_window
+        self.settings = self.parent.settings
+        # weight measurement radio buttons
+        self.imperial_button = self.imperial_radio()
+        self.metric_button = self.metric_radio()
+        self.british_button = self.british_radio()
+        # UI theme radio buttons
+        self.light_button = self.light_radio()
+        self.dark_button = self.dark_radio()
+        # graph range radio buttons
+        self.graph_7_button = self.graph_7_radio()
+        self.graph_15_button = self.graph_15_radio()
+        self.graph_30_button = self.graph_30_radio()
+        self.graph_90_button = self.graph_90_radio()
+        # graph future radio buttons
+        self.graph_future_7 = self.future_7_radio()
+        self.graph_future_14 = self.future_14_radio()
+        self.graph_future_28 = self.future_28_radio()
+        self.graph_future_none = self.future_none_radio()
+        # containers for buttons
+        self.measurement_system_group = self.weight_system_box()
+        self.date_system_group = self.date_system_box()
+        self.theme_group = self.theme_box()
+        self.graph_group = self.graph_entry_box()
+        self.graph_future_group = self.graph_future_box()
 
-    def weight_system_box(self):
+    def measurement_system_box(self):
         box = QGroupBox('Select a Measurement System')
         layout = QVBoxLayout()
+        layout.addWidget(self.imperial_button)
+        layout.addWidget(self.metric_button)
+        layout.addWidget(self.british_button)
+        box.setLayout(layout)
         return box
 
     def imperial_radio(self):
@@ -721,11 +749,15 @@ class SettingsMenu(QWidget):
     def date_system_box(self):
         box = QGroupBox('Select a Date System')
         layout = QVBoxLayout()
+        box.setLayout(layout)
         return box
 
     def theme_box(self):
         box = QGroupBox('Select a menu theme')
         layout = QVBoxLayout()
+        layout.addWidget(self.light_button)
+        layout.addWidget(self.dark_button)
+        box.setLayout(layout)
         return box
 
     def light_radio(self):
@@ -739,6 +771,11 @@ class SettingsMenu(QWidget):
     def graph_entry_box(self):
         box = QGroupBox('Select the default graphing range to display')
         layout = QVBoxLayout()
+        layout.addWidget(self.graph_7_button)
+        layout.addWidget(self.graph_15_button)
+        layout.addWidget(self.graph_30_button)
+        layout.addWidget(self.graph_90_button)
+        box.setLayout(layout)
         return box
 
     def graph_7_radio(self):
@@ -760,6 +797,11 @@ class SettingsMenu(QWidget):
     def graph_future_box(self):
         box = QGroupBox('Select the default behavior for graphing future entries')
         layout = QVBoxLayout()
+        layout.addWidget(self.graph_future_7)
+        layout.addWidget(self.graph_future_14)
+        layout.addWidget(self.graph_future_28)
+        layout.addWidget(self.graph_future_none)
+        box.setLayout(layout)
         return box
 
     def future_7_radio(self):
