@@ -727,6 +727,12 @@ class SettingsMenu(QWidget):
 
     def measurement_system_box(self):
         box = QGroupBox('Select a Measurement System')
+        box.setStyleSheet("""
+        QGroupBox {
+        font-size: 14px;
+        font-weight: bold;
+        }
+        """)
         layout = QVBoxLayout()
         layout.addWidget(self.imperial_button)
         layout.addWidget(self.metric_button)
@@ -746,14 +752,32 @@ class SettingsMenu(QWidget):
         button = QRadioButton('British Imperial')
         return button
 
+    def select_measurement_system(self, system):
+        self.settings.set_measurement_system(system)
+
     def date_system_box(self):
         box = QGroupBox('Select a Date System')
+        box.setStyleSheet("""
+        QGroupBox {
+        font-size: 14px;
+        font-weight: bold;
+        }
+        """)
         layout = QVBoxLayout()
         box.setLayout(layout)
         return box
 
+    def select_date_system(self, system):
+        self.settings.set_date_system(system)
+
     def theme_box(self):
         box = QGroupBox('Select a menu theme')
+        box.setStyleSheet("""
+        QGroupBox {
+        font-size: 14px;
+        font-weight: bold;
+        }
+        """)
         layout = QVBoxLayout()
         layout.addWidget(self.light_button)
         layout.addWidget(self.dark_button)
@@ -768,8 +792,17 @@ class SettingsMenu(QWidget):
         button = QRadioButton('Dark')
         return button
 
+    def select_theme(self, theme):
+        self.settings.set_theme(theme)
+
     def graph_entry_box(self):
         box = QGroupBox('Select the default graphing range to display')
+        box.setStyleSheet("""
+        QGroupBox {
+        font-size: 14px;
+        font-weight: bold;
+        }
+        """)
         layout = QVBoxLayout()
         layout.addWidget(self.graph_7_button)
         layout.addWidget(self.graph_15_button)
@@ -794,8 +827,17 @@ class SettingsMenu(QWidget):
         button = QRadioButton('90 Entries')
         return button
 
+    def set_graphing_range(self, entries):
+        self.settings.set_graph_entry_default(entries)
+
     def graph_future_box(self):
         box = QGroupBox('Select the default behavior for graphing future entries')
+        box.setStyleSheet("""
+        QGroupBox {
+        font-size: 14px;
+        font-weight: bold;
+        }
+        """)
         layout = QVBoxLayout()
         layout.addWidget(self.graph_future_7)
         layout.addWidget(self.graph_future_14)
@@ -819,6 +861,9 @@ class SettingsMenu(QWidget):
     def future_none_radio(self):
         button = QRadioButton('Off')
         return button
+
+    def set_future_graphing_range(self, entries):
+        self.settings.set_graph_future_default(entries)
 
 class NewUserDialog(QDialog):
 
