@@ -139,7 +139,7 @@ def convert_weight_metric(weight):
     return weight_metric
 
 
-def convert_stones(weight):
+def convert_weight_stone(weight):
     """Converts user's weight from Imperial to British Imperial stones and returns a float."""
     weight_stone = weight / 14
     return weight_stone

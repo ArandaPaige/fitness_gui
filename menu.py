@@ -158,7 +158,7 @@ class MainMenu(QWidget):
         """
         goal_weight = QLineEdit()
         goal_weight.setToolTip('The goal weight you are trying to achieve.')
-        goal_weight.setText(f'{self.user.goal} lbs')
+        goal_weight.setText(f'{self.user.goal} {self.settings.units}')
         goal_weight.setReadOnly(True)
         return goal_weight
 
@@ -167,13 +167,13 @@ class MainMenu(QWidget):
 
     def set_weight(self):
         if len(self.sorted_weight_list) > 0:
-            self.user_weight.setText(f'{self.sorted_weight_list[-1][2]} {self.units}')
+            self.user_weight.setText(f'{self.sorted_weight_list[-1][2]} {self.settings.units}')
         else:
             self.user_weight.setText(f'Not available.')
 
     def set_goal(self):
         if self.user.goal is not None:
-            self.user_goal_weight.setText(f'{self.user.goal} {self.units}')
+            self.user_goal_weight.setText(f'{self.user.goal} {self.self.settings.units}')
         else:
             self.user_goal_weight.setText(f'Please update your goal weight.')
 
@@ -701,9 +701,6 @@ class SettingsMenu(QWidget):
         super().__init__()
         self.parent = parent_window
         self.settings = self.parent.settings
-        self.master_layout = QHBoxLayout()
-        self.v_layout_1 = QVBoxLayout()
-        self.v_layout_2 = QVBoxLayout()
         # weight measurement radio buttons
         self.imperial_button = self.imperial_radio()
         self.metric_button = self.metric_radio()
@@ -726,6 +723,10 @@ class SettingsMenu(QWidget):
         self.theme_group = self.theme_box()
         self.graph_group = self.graph_entry_box()
         self.graph_future_group = self.graph_future_box()
+        # layouts
+        self.v_layout_1 = self.create_vertical_layout_1()
+        self.v_layout_2 = self.create_vertical_layout_2()
+        self.master_layout = self.create_master_layout()
 
 
     def measurement_system_box(self):
@@ -866,21 +867,23 @@ class SettingsMenu(QWidget):
     def set_future_graphing_range(self, entries):
         self.settings.set_graph_future_default(entries)
 
-    def master_layout_properties(self):
-        self.master_layout.addLayout(self.v_layout_1)
-        self.master_layout.addLayout(self.v_layout_2)
+    def create_vertical_layout_1(self):
+        layout = QVBoxLayout()
+        layout.addWidget(self.measurement_system_group)
+        layout.addWidget(self.theme_group)
+        return layout
 
-    def vertical_layout_1_properties(self):
-        self.v_layout_1.addWidget(self.measurement_system_group)
-        self.v_layout_1.addWidget(self.theme_group)
+    def create_vertical_layout_2(self):
+        layout = QVBoxLayout()
+        layout.addWidget(self.graph_group)
+        layout.addWidget(self.graph_future_group)
+        return layout
 
-    def vertical_layout_2_properties(self):
-        self.v_layout_2.addWidget(self.graph_group)
-        self.v_layout_2.addWidget(self.graph_future_group)
-
-    def generate_layout(self):
-        self.vertical_layout_1_properties()
-        self.vertical_layout_2_properties()
+    def create_master_layout(self):
+        layout = QHBoxLayout()
+        layout.addLayout(self.v_layout_1)
+        layout.addLayout(self.v_layout_2)
+        return layout
 
 
 class NewUserDialog(QDialog):

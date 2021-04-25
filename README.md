@@ -9,4 +9,4 @@ of the application are listed below:
 * Calculate the rate of change
 * Calculate the amount of days left until the user reaches their goal
 * Graphing the progression of their weight history
-* Extrapolating where the user's weight will be based upon past results and graping it.
+* Extrapolating where the user's weight will be based upon past results and graphing it.

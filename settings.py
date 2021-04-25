@@ -10,6 +10,7 @@ class Settings:
     def __init__(self):
         self.settings = None
         self.check_settings()
+        self.units = self.set_units()
 
     def __repr__(self):
         return f'{self.settings}'
@@ -97,3 +98,11 @@ class Settings:
     def set_graph_future_default(self, default='None'):
         """Sets the dictionary value to the range provided and returns None."""
         self.settings['Default Graph Future Range'] = default
+
+    def set_units(self):
+        if self.settings['Measurement System'] == 'Imperial':
+            return 'lbs'
+        if self.settings['Measurement System'] == 'Metric':
+            return 'kg'
+        if self.settings['Measurement System'] == 'British Imperial':
+            return 'stones'
