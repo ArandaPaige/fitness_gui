@@ -53,16 +53,6 @@ class MainMenu(QWidget):
         self.master = master
         self.user = user
         self.setWindowTitle('Main Menu')
-        # Initializes the layouts with a master layout
-        self.layout = QHBoxLayout()
-        self.setLayout(self.layout)
-        self.layout_left = QVBoxLayout()
-        self.layout_center = QVBoxLayout()
-        self.center_layout_left = QVBoxLayout()
-        self.center_layout_right = QVBoxLayout()
-        self.layout_right = QVBoxLayout()
-        self.layout_right_graph_buttons = QHBoxLayout()
-        self.layout_right_lerp_buttons = QHBoxLayout()
         # data for objects
         self.settings = Settings()
         self.sorted_weight_list = model.create_sorted_weight_history(self.user.weight_history)
@@ -102,7 +92,12 @@ class MainMenu(QWidget):
         self.set_widget_properties()
         self.set_progress_metrics()
         self.user_history_table(self.table_list)
-        self.generate_layout()
+        # Initializes the layouts with a master layout
+        self.layout_left = self.generate_left_layout()
+        self.layout_center = self.generate_center_layout()
+        self.layout_right = self.generate_right_layout()
+        self.master_layout = self.generate_master_layout()
+        self.setLayout(self.master_layout)
         self.update_graph()
         self.show()
 
@@ -593,44 +588,33 @@ class MainMenu(QWidget):
         self.delete_entry_button()
 
     def generate_left_layout(self):
-        self.layout_left.addWidget(self.user_box)
-        self.layout_left.addWidget(self.weight_box)
+        layout = QVBoxLayout()
+        layout.addWidget(self.user_box)
+        layout.addWidget(self.weight_box)
+        return layout
 
     def generate_center_layout(self):
-        self.layout_center.addWidget(self.user_history)
-        self.center_layout_left.addWidget(self.add_entry)
-        self.center_layout_left.addWidget(self.modify_entry)
-        self.center_layout_left.addWidget(self.delete_entry)
-        self.center_layout_right.addWidget(self.weight_entry)
-        self.center_layout_right.addWidget(self.calendar)
-        self.layout_center.addLayout(self.center_layout_left)
-        self.layout_center.addLayout(self.center_layout_right)
+        layout = QVBoxLayout()
+        layout.addWidget(self.user_history)
+        layout.addWidget(self.add_entry)
+        layout.addWidget(self.modify_entry)
+        layout.addWidget(self.delete_entry)
+        layout.addWidget(self.weight_entry)
+        layout.addWidget(self.calendar)
+        return layout
 
     def generate_right_layout(self):
-        """
-        :return: None
-        """
-        self.layout_right.addWidget(self.user_graph)
-        self.layout_right.addWidget(self.graph_box)
+        layout = QVBoxLayout()
+        layout.addWidget(self.user_graph)
+        layout.addWidget(self.graph_box)
+        return layout
 
     def generate_master_layout(self):
-        """
-        Adds all the child layouts to the master layout.
-        :return: None
-        """
-        self.layout.addLayout(self.layout_left, 1)
-        self.layout.addLayout(self.layout_center, 1)
-        self.layout.addLayout(self.layout_right, 1)
-
-    def generate_layout(self):
-        """
-        Calls all layout property setting functions and generates the layout.
-        :return: None
-        """
-        self.generate_left_layout()
-        self.generate_center_layout()
-        self.generate_right_layout()
-        self.generate_master_layout()
+        layout = QHBoxLayout()
+        layout.addLayout(self.layout_left, 1)
+        layout.addLayout(self.layout_center, 1)
+        layout.addLayout(self.layout_right, 1)
+        return layout
 
     def update_weight_history(self):
         self.sorted_weight_list = model.create_sorted_weight_history(self.user.weight_history)
@@ -693,6 +677,12 @@ class DeleteDialog(QDialog):
     def main_layout(self):
         self.layout.addWidget(self.label)
         self.layout.addLayout(self.button_layout)
+
+
+class MainMenuMenuBar:
+
+    def __init__(self, parent):
+        self.parent = parent
 
 
 class SettingsMenu(QWidget):
@@ -880,7 +870,7 @@ class SettingsMenu(QWidget):
         return layout
 
     def create_master_layout(self):
-        layout = QHBoxLayout()
+        layout = QHBoxLayout(self)
         layout.addLayout(self.v_layout_1)
         layout.addLayout(self.v_layout_2)
         return layout
