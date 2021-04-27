@@ -79,7 +79,7 @@ class Settings:
             'Measurement System': 'Imperial',
             'Theme': 'Light',
             'Default Graph Entry Range': 'All',
-            'Default Graph Future Range': 'None'
+            'Default Graph Future Range': 'Off'
         }
         return settings
 
@@ -95,7 +95,7 @@ class Settings:
         """Sets the dictionary value to the range provided and returns None."""
         self.settings['Default Graph Entry Range'] = default
 
-    def set_graph_future_default(self, default='None'):
+    def set_graph_future_default(self, default='Off'):
         """Sets the dictionary value to the range provided and returns None."""
         self.settings['Default Graph Future Range'] = default
 

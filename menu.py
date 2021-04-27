@@ -179,7 +179,11 @@ class MainWidget(QWidget):
         :return: None
         """
         bmi = QLineEdit()
-        bmi.setToolTip('BMI is a ')
+        bmi.setToolTip(
+            f'BMI is a convenient rule of thumb for categorizing a person as underweight, normal, overweight, or obese.'
+            f'\nWhile helpful broadly across the population, it can fail to account for a person that is very athletic.'
+            f'\nA person with a lot of muscle may skew towards being overweight or even obese.'
+        )
         bmi.setReadOnly(True)
         return bmi
 
@@ -718,7 +722,7 @@ class SettingsMenu(QWidget):
         self.light_button = self.light_radio()
         self.dark_button = self.dark_radio()
         # graph range radio buttons
-        self.graph_7_button = self.graph_7_radio()
+        self.graph_all_button = self.graph_all_radio()
         self.graph_15_button = self.graph_15_radio()
         self.graph_30_button = self.graph_30_radio()
         self.graph_90_button = self.graph_90_radio()
@@ -755,16 +759,22 @@ class SettingsMenu(QWidget):
 
     def imperial_radio(self):
         button = QRadioButton('Imperial')
+        if self.settings.settings['Measurement System'] == 'Imperial':
+            button.setChecked(True)
         button.toggled.connect(partial(self.select_measurement_system, 'Imperial'))
         return button
 
     def metric_radio(self):
         button = QRadioButton('Metric')
+        if self.settings.settings['Measurement System'] == 'Metric':
+            button.setChecked(True)
         button.toggled.connect(partial(self.select_measurement_system, 'Metric'))
         return button
 
     def british_radio(self):
         button = QRadioButton('British Imperial')
+        if self.settings.settings['Measurement System'] == 'British Imperial':
+            button.setChecked(True)
         button.toggled.connect(partial(self.select_measurement_system, 'British Imperial'))
         return button
 
@@ -787,11 +797,15 @@ class SettingsMenu(QWidget):
 
     def light_radio(self):
         button = QRadioButton('Light')
+        if self.settings.settings['Theme'] == 'Light':
+            button.setChecked(True)
         button.toggled.connect(partial(self.select_theme, "Light"))
         return button
 
     def dark_radio(self):
         button = QRadioButton('Dark')
+        if self.settings.settings['Theme'] == 'Dark':
+            button.setChecked(True)
         button.toggled.connect(partial(self.select_theme, "Dark"))
         return button
 
@@ -807,31 +821,39 @@ class SettingsMenu(QWidget):
         }
         """)
         layout = QVBoxLayout()
-        layout.addWidget(self.graph_7_button)
         layout.addWidget(self.graph_15_button)
         layout.addWidget(self.graph_30_button)
         layout.addWidget(self.graph_90_button)
+        layout.addWidget(self.graph_all_button)
         box.setLayout(layout)
         return box
 
-    def graph_7_radio(self):
-        button = QRadioButton('7 Entries')
-        button.toggled.connect(partial(self.set_graphing_range, '7'))
-        return button
-
     def graph_15_radio(self):
         button = QRadioButton('15 Entries')
+        if self.settings.settings['Default Graph Entry Range'] == '15':
+            button.setChecked(True)
         button.toggled.connect(partial(self.set_graphing_range, '15'))
         return button
 
     def graph_30_radio(self):
         button = QRadioButton('30 Entries')
+        if self.settings.settings['Default Graph Entry Range'] == '30':
+            button.setChecked(True)
         button.toggled.connect(partial(self.set_graphing_range, '30'))
         return button
 
     def graph_90_radio(self):
         button = QRadioButton('90 Entries')
+        if self.settings.settings['Default Graph Entry Range'] == '90':
+            button.setChecked(True)
         button.toggled.connect(partial(self.set_graphing_range, '90'))
+        return button
+
+    def graph_all_radio(self):
+        button = QRadioButton('All')
+        if self.settings.settings['Default Graph Entry Range'] == 'All':
+            button.setChecked(True)
+        button.toggled.connect(partial(self.set_graphing_range, 'All'))
         return button
 
     def set_graphing_range(self, entries):
@@ -855,21 +877,29 @@ class SettingsMenu(QWidget):
 
     def future_7_radio(self):
         button = QRadioButton('7 Entries')
+        if self.settings.settings['Default Graph Future Range'] == '7':
+            button.setChecked(True)
         button.toggled.connect(partial(self.set_future_graphing_range, '7'))
         return button
 
     def future_14_radio(self):
         button = QRadioButton('14 Entries')
+        if self.settings.settings['Default Graph Future Range'] == '14':
+            button.setChecked(True)
         button.toggled.connect(partial(self.set_future_graphing_range, '14'))
         return button
 
     def future_28_radio(self):
         button = QRadioButton('28 Entries')
+        if self.settings.settings['Default Graph Future Range'] == '28':
+            button.setChecked(True)
         button.toggled.connect(partial(self.set_future_graphing_range, '28'))
         return button
 
     def future_none_radio(self):
         button = QRadioButton('Off')
+        if self.settings.settings['Default Graph Future Range'] == 'Off':
+            button.setChecked(True)
         button.toggled.connect(partial(self.set_future_graphing_range, 'Off'))
         return button
 
