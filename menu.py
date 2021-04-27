@@ -32,14 +32,51 @@ class GUIManager(QWidget):
             window = NewUserDialog(self)
             return window
         else:
-            window = MainMenu(self, self.user)
+            window = MainMenu(self.user)
             return window
 
     def create_main_menu(self, user):
-        self.active_window = MainMenu(self, user)
+        self.active_window = MainMenu(user)
 
 
-class MainMenu(QWidget):
+class MainMenu(QMainWindow):
+
+    def __init__(self, user):
+        super().__init__()
+        self.user = user
+        self.settings = Settings()
+        self.setWindowTitle('Weight Progression Tracker and Visualizer')
+        self.menu = MainMenuMenuBar(self)
+        self.main_widget = MainWidget(self, self.user)
+        self.setMenuBar(self.menu)
+        self.setCentralWidget(self.main_widget)
+        self.show()
+
+
+class MainMenuMenuBar(QMenuBar):
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+        # file menu and actions
+        self.file_menu = QMenu('File')
+        self.file_menu.addAction('Settings', self.settings_slot)
+        # about menu and actions
+        self.help_menu = QMenu('Help')
+        self.help_menu.addAction('About', self.about_slot)
+        # set menu state
+        self.addMenu(self.file_menu)
+        self.addMenu(self.help_menu)
+        self.dialog = None
+
+    def settings_slot(self):
+        self.dialog = SettingsMenu(self.parent)
+
+    def about_slot(self):
+        self.dialog = AboutMenu(self.parent)
+
+
+class MainWidget(QWidget):
     """The main menu is the main window of the application. It manages the layouts that constitute the GUI."""
 
     def __init__(self, master, user):
@@ -52,13 +89,12 @@ class MainMenu(QWidget):
         super().__init__()
         self.master = master
         self.user = user
-        self.setWindowTitle('Main Menu')
+        self.settings = self.master.settings
         # data for objects
-        self.settings = Settings()
         self.sorted_weight_list = model.create_sorted_weight_history(self.user.weight_history)
         self.table_list = model.create_table_list(self.sorted_weight_list)
         self.weight_delta = model.weight_delta_calculator(self.sorted_weight_list)
-        self.time_goal_data = model.time_to_goal(self.user.weight, self.user.goal, self.weight_delta)
+        self.time_goal_data = model.time_to_goal(self.sorted_weight_list[-1][2], self.user.goal, self.weight_delta)
         # Initializes widgets to display user metrics
         self.user_name = self.user_name_properties()
         self.user_weight = self.user_weight_properties()
@@ -90,6 +126,10 @@ class MainMenu(QWidget):
         self.graph_box = self.graph_box_properties()
         # Sets the properties for all widgets and their layouts
         self.set_widget_properties()
+        self.set_weight()
+        self.set_goal()
+        self.set_bmi()
+        self.set_height()
         self.set_progress_metrics()
         self.user_history_table(self.table_list)
         # Initializes the layouts with a master layout
@@ -117,7 +157,6 @@ class MainMenu(QWidget):
         :return: None
         """
         weight = QLineEdit()
-        weight.setText(f'{self.user.weight} lbs')
         weight.setToolTip('Your current weight.')
         weight.setReadOnly(True)
         return weight
@@ -131,7 +170,6 @@ class MainMenu(QWidget):
         :return: None
         """
         height = QLineEdit()
-        height.setText(f'{self.user.height} inches')
         height.setReadOnly(True)
         return height
 
@@ -142,7 +180,6 @@ class MainMenu(QWidget):
         """
         bmi = QLineEdit()
         bmi.setToolTip('BMI is a ')
-        bmi.setText(f'{(self.user.weight / self.user.height ** 2 * 703):.1f}')
         bmi.setReadOnly(True)
         return bmi
 
@@ -153,7 +190,6 @@ class MainMenu(QWidget):
         """
         goal_weight = QLineEdit()
         goal_weight.setToolTip('The goal weight you are trying to achieve.')
-        goal_weight.setText(f'{self.user.goal} {self.settings.units}')
         goal_weight.setReadOnly(True)
         return goal_weight
 
@@ -167,10 +203,7 @@ class MainMenu(QWidget):
             self.user_weight.setText(f'Not available.')
 
     def set_goal(self):
-        if self.user.goal is not None:
-            self.user_goal_weight.setText(f'{self.user.goal} {self.self.settings.units}')
-        else:
-            self.user_goal_weight.setText(f'Please update your goal weight.')
+        self.user_goal_weight.setText(f'{self.user.goal} {self.settings.units}')
 
     def set_bmi(self):
         if len(self.sorted_weight_list) > 0:
@@ -179,7 +212,7 @@ class MainMenu(QWidget):
             self.user_bmi.setText(f'Not available.')
 
     def set_height(self):
-        self.user_height.setText(f'{self.user.height} {self.units}')
+        self.user_height.setText(f'{self.user.height}')
 
     def user_box_properties(self):
         box = QGroupBox('Personal information')
@@ -307,15 +340,6 @@ class MainMenu(QWidget):
                 border-radius:20px;
                 font-size:20px;
                 font-weight:bold;
-            }
-            QTableCornerButton::section {
-                border-radius:14px;
-                font-size:10px;
-                font-weight:bold;
-            }
-            QTableWidget::item {
-                border-radius:12px;
-                font-size:16px;
             }
         '''
         self.user_history.setStyleSheet(style_sheet)
@@ -679,18 +703,13 @@ class DeleteDialog(QDialog):
         self.layout.addLayout(self.button_layout)
 
 
-class MainMenuMenuBar:
-
-    def __init__(self, parent):
-        self.parent = parent
-
-
 class SettingsMenu(QWidget):
 
     def __init__(self, parent_window):
         super().__init__()
         self.parent = parent_window
         self.settings = self.parent.settings
+        self.setWindowTitle('Settings')
         # weight measurement radio buttons
         self.imperial_button = self.imperial_radio()
         self.metric_button = self.metric_radio()
@@ -709,7 +728,7 @@ class SettingsMenu(QWidget):
         self.graph_future_28 = self.future_28_radio()
         self.graph_future_none = self.future_none_radio()
         # containers for buttons
-        self.measurement_system_group = self.weight_system_box()
+        self.measurement_system_group = self.measurement_system_box()
         self.theme_group = self.theme_box()
         self.graph_group = self.graph_entry_box()
         self.graph_future_group = self.graph_future_box()
@@ -717,7 +736,7 @@ class SettingsMenu(QWidget):
         self.v_layout_1 = self.create_vertical_layout_1()
         self.v_layout_2 = self.create_vertical_layout_2()
         self.master_layout = self.create_master_layout()
-
+        self.show()
 
     def measurement_system_box(self):
         box = QGroupBox('Select a Measurement System')
@@ -736,17 +755,17 @@ class SettingsMenu(QWidget):
 
     def imperial_radio(self):
         button = QRadioButton('Imperial')
-        button.isChecked.connect(partial(self.select_measurement_system, 'Imperial'))
+        button.toggled.connect(partial(self.select_measurement_system, 'Imperial'))
         return button
 
     def metric_radio(self):
         button = QRadioButton('Metric')
-        button.isChecked.connect(partial(self.select_measurement_system, 'Metric'))
+        button.toggled.connect(partial(self.select_measurement_system, 'Metric'))
         return button
 
     def british_radio(self):
         button = QRadioButton('British Imperial')
-        button.isChecked.connect(partial(self.select_measurement_system, 'British Imperial'))
+        button.toggled.connect(partial(self.select_measurement_system, 'British Imperial'))
         return button
 
     def select_measurement_system(self, system):
@@ -768,12 +787,12 @@ class SettingsMenu(QWidget):
 
     def light_radio(self):
         button = QRadioButton('Light')
-        button.isChecked.connect(partial(self.select_theme, "Light"))
+        button.toggled.connect(partial(self.select_theme, "Light"))
         return button
 
     def dark_radio(self):
         button = QRadioButton('Dark')
-        button.isChecked.connect(partial(self.select_theme, "Dark"))
+        button.toggled.connect(partial(self.select_theme, "Dark"))
         return button
 
     def select_theme(self, theme):
@@ -797,22 +816,22 @@ class SettingsMenu(QWidget):
 
     def graph_7_radio(self):
         button = QRadioButton('7 Entries')
-        button.isChecked.connect(partial(self.set_graphing_range, '7'))
+        button.toggled.connect(partial(self.set_graphing_range, '7'))
         return button
 
     def graph_15_radio(self):
         button = QRadioButton('15 Entries')
-        button.isChecked.connect(partial(self.set_graphing_range, '15'))
+        button.toggled.connect(partial(self.set_graphing_range, '15'))
         return button
 
     def graph_30_radio(self):
         button = QRadioButton('30 Entries')
-        button.isChecked.connect(partial(self.set_graphing_range, '30'))
+        button.toggled.connect(partial(self.set_graphing_range, '30'))
         return button
 
     def graph_90_radio(self):
         button = QRadioButton('90 Entries')
-        button.isChecked.connect(partial(self.set_graphing_range, '90'))
+        button.toggled.connect(partial(self.set_graphing_range, '90'))
         return button
 
     def set_graphing_range(self, entries):
@@ -836,22 +855,22 @@ class SettingsMenu(QWidget):
 
     def future_7_radio(self):
         button = QRadioButton('7 Entries')
-        button.isChecked.connect(partial(self.set_future_graphing_range, '7'))
+        button.toggled.connect(partial(self.set_future_graphing_range, '7'))
         return button
 
     def future_14_radio(self):
         button = QRadioButton('14 Entries')
-        button.isChecked.connect(partial(self.set_future_graphing_range, '14'))
+        button.toggled.connect(partial(self.set_future_graphing_range, '14'))
         return button
 
     def future_28_radio(self):
         button = QRadioButton('28 Entries')
-        button.isChecked.connect(partial(self.set_future_graphing_range, '28'))
+        button.toggled.connect(partial(self.set_future_graphing_range, '28'))
         return button
 
     def future_none_radio(self):
         button = QRadioButton('Off')
-        button.isChecked.connect(partial(self.set_future_graphing_range, 'Off'))
+        button.toggled.connect(partial(self.set_future_graphing_range, 'Off'))
         return button
 
     def set_future_graphing_range(self, entries):
@@ -874,6 +893,20 @@ class SettingsMenu(QWidget):
         layout.addLayout(self.v_layout_1)
         layout.addLayout(self.v_layout_2)
         return layout
+
+
+class AboutMenu(QWidget):
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+        self.setWindowTitle('About')
+
+    def information_box(self):
+        box = QGroupBox('About the App')
+        layout = QVBoxLayout()
+        box.setLayout(layout)
+        return box
 
 
 class NewUserDialog(QDialog):
