@@ -31,7 +31,7 @@ def create_sorted_weight_history(weight_history, reverse=False):
 
 
 def convert_weight_history(weight_history, measurement_system):
-    """Converts the provided weight history list to the measurement system specified and returns a list"""
+    """Converts and sorts the provided weight history list to the measurement system specified and returns a list"""
     entry_list = []
     if measurement_system == 'Metric':
         for entry in weight_history:

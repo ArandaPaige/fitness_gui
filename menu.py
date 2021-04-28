@@ -1,5 +1,6 @@
 import datetime
 import sys
+from pathlib import Path
 from functools import partial
 
 import pyqtgraph as pg
@@ -12,6 +13,8 @@ import model
 from settings import Settings
 from user import User
 
+BASE_DIR = Path().resolve()
+MEDIA_DIR = BASE_DIR / 'media'
 DATETODAY = datetime.date.today()
 
 
@@ -52,6 +55,9 @@ class MainMenu(QMainWindow):
         self.setCentralWidget(self.main_widget)
         self.show()
 
+    def load_settings(self):
+        self.settings = Settings()
+
 
 class MainMenuMenuBar(QMenuBar):
 
@@ -60,7 +66,9 @@ class MainMenuMenuBar(QMenuBar):
         self.parent = parent
         # file menu and actions
         self.file_menu = QMenu('File')
-        self.file_menu.addAction('Settings', self.settings_slot)
+        icon = QIcon(QPixmap('media/wrench.png'))
+        self.file_menu.addAction(icon, 'Settings', self.settings_slot)
+        self.file_menu.addAction('Close', self.close_slot)
         # about menu and actions
         self.help_menu = QMenu('Help')
         self.help_menu.addAction('About', self.about_slot)
@@ -71,6 +79,9 @@ class MainMenuMenuBar(QMenuBar):
 
     def settings_slot(self):
         self.dialog = SettingsMenu(self.parent)
+
+    def close_slot(self):
+        sys.exit()
 
     def about_slot(self):
         self.dialog = AboutMenu(self.parent)
@@ -91,7 +102,9 @@ class MainWidget(QWidget):
         self.user = user
         self.settings = self.master.settings
         # data for objects
-        self.sorted_weight_list = model.create_sorted_weight_history(self.user.weight_history)
+        self.sorted_weight_list = model.convert_weight_history(
+            self.user.weight_history, self.settings.settings['Measurement System']
+        )
         self.table_list = model.create_table_list(self.sorted_weight_list)
         self.weight_delta = model.weight_delta_calculator(self.sorted_weight_list)
         self.time_goal_data = model.time_to_goal(self.sorted_weight_list[-1][2], self.user.goal, self.weight_delta)
@@ -644,8 +657,13 @@ class MainWidget(QWidget):
         layout.addLayout(self.layout_right, 1)
         return layout
 
+    def load_settings(self):
+        self.settings = self.master.settings
+
     def update_weight_history(self):
-        self.sorted_weight_list = model.create_sorted_weight_history(self.user.weight_history)
+        self.sorted_weight_list = model.convert_weight_history(
+            self.user.weight_history, self.settings.settings['Measurement System']
+        )
 
     def update_weight_delta(self):
         self.weight_delta = model.weight_delta_calculator(self.sorted_weight_list)
@@ -741,6 +759,11 @@ class SettingsMenu(QWidget):
         self.v_layout_2 = self.create_vertical_layout_2()
         self.master_layout = self.create_master_layout()
         self.show()
+
+    def closeEvent(self, event):
+        self.settings.write_settings_file()
+        self.parent.load_settings()
+        event.accept()
 
     def measurement_system_box(self):
         box = QGroupBox('Select a Measurement System')
@@ -931,6 +954,12 @@ class AboutMenu(QWidget):
         super().__init__(parent)
         self.parent = parent
         self.setWindowTitle('About')
+
+    def image_author(self):
+        label = QLabel()
+        image = QPixmap('media/Programmer.png')
+        label.setPixmap(image)
+        return label
 
     def information_box(self):
         box = QGroupBox('About the App')
