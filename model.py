@@ -6,8 +6,44 @@ from PyQt6.QtWidgets import *
 DATETODAY = datetime.date.today()
 
 
+def convert_height_metric(height):
+    """Converts user's height from Imperial to metric and returns a float"""
+    height_metric = height * 2.54
+    return height_metric
+
+
+def convert_weight_metric(weight):
+    """Converts user's weight from Imperial to metric and returns a float"""
+    weight_metric = weight * 0.45359237
+    return weight_metric
+
+
+def convert_weight_stone(weight):
+    """Converts user's weight from Imperial to British Imperial stones and returns a float."""
+    weight_stone = weight / 14
+    return weight_stone
+
+
 def create_sorted_weight_history(weight_history, reverse=False):
+    """Sorts the provided history by date and returns a list"""
     sorted_list = sorted(weight_history, key=lambda x: x[1], reverse=reverse)
+    return sorted_list
+
+
+def convert_weight_history(weight_history, measurement_system):
+    """Converts the provided weight history list to the measurement system specified and returns a list"""
+    entry_list = []
+    if measurement_system == 'Metric':
+        for entry in weight_history:
+            weight = convert_weight_metric(entry[2])
+            entry_list.append((entry[0], entry[1], weight))
+    elif measurement_system == 'British Imperial':
+        for entry in weight_history:
+            weight = convert_weight_stone(entry[2])
+            entry_list.append((entry[0], entry[1], weight))
+    else:
+        entry_list = weight_history
+    sorted_list = create_sorted_weight_history(entry_list)
     return sorted_list
 
 
@@ -125,21 +161,3 @@ def lerp_weight_entry(days, y_list, start_weight, goal_weight, weight_delta):
         lerp_x_list.append(day)
         lerp_y_list.append(weight)
     return lerp_x_list, lerp_y_list
-
-
-def convert_height_metric(height):
-    """Converts user's height from Imperial to metric and returns a float"""
-    height_metric = height * 2.54
-    return height_metric
-
-
-def convert_weight_metric(weight):
-    """Converts user's weight from Imperial to metric and returns a float"""
-    weight_metric = weight * 0.45359237
-    return weight_metric
-
-
-def convert_weight_stone(weight):
-    """Converts user's weight from Imperial to British Imperial stones and returns a float."""
-    weight_stone = weight / 14
-    return weight_stone
