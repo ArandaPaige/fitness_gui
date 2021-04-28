@@ -10,6 +10,28 @@ DATABASE_PATH = BASE_DIR / DATABASE
 DATE_TODAY = str(datetime.date.today())
 
 
+def create_connection():
+    try:
+        connection = sqlite3.connect(DATABASE)
+    except sqlite3.DatabaseError as error:
+        print(error)
+    else:
+        return connection
+    return
+
+
+def execute_sql_statement(connection, sql_statement):
+    try:
+        cursor = connection.cursor()
+    except sqlite3.Error as error:
+        print(error)
+    else:
+        cursor.execute(sql_statement)
+    finally:
+        connection.commit()
+        connection.close()
+
+
 def create_user_tables():
     """
     Constructs two SQLite tables: USER and WEIGHT_HISTORY. USER stores user personal metrics.
@@ -66,25 +88,15 @@ def insert_user(user):
     :param user: a user object
     :return: None
     """
-    try:
-        db = sqlite3.connect(DATABASE)
-        cur = db.cursor()
-    except sqlite3.DatabaseError as db_error:
-        create_user_tables()
-    finally:
-        db = sqlite3.connect(DATABASE)
-        cur = db.cursor()
-    try:
-        cur.execute('''
-        INSERT INTO USER (NAME,WEIGHT,GOAL,HEIGHT) 
-            VALUES (?,?,?,?)''', (user.name, user.weight, user.goal, user.height))
-        cur.execute('''
-        INSERT INTO WEIGHT_HISTORY (DATE, WEIGHT, PERSON_ID)
-            VALUES (?,?,?)''', (DATE_TODAY, user.weight, user.user_id))
-    except sqlite3.ProgrammingError as error_program:
-        db.rollback()
-    except sqlite3.IntegrityError as integrity_error:
-        db.rollback()
+
+    db = sqlite3.connect(DATABASE)
+    cur = db.cursor()
+    cur.execute('''
+    INSERT INTO USER (NAME,WEIGHT,GOAL,HEIGHT) 
+        VALUES (?,?,?,?)''', (user.name, user.weight, user.goal, user.height))
+    cur.execute('''
+    INSERT INTO WEIGHT_HISTORY (DATE, WEIGHT, PERSON_ID)
+        VALUES (?,?,?)''', (DATE_TODAY, user.weight, user.user_id))
     db.commit()
     db.close()
 
@@ -208,3 +220,6 @@ def delete_weight_entry(entry_id):
     cur.execute('''DELETE from WEIGHT_HISTORY where ID = ?''', (entry_id,))
     db.commit()
     db.close()
+
+def insert_column():
+    pass
