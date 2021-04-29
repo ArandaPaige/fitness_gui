@@ -25,22 +25,28 @@ LOG_CONFIG = {
     'handlers': {
         'file_logger': {
             'class': 'FileHandler',
-            'formatter': 'detailed'
+            'level': 'ERROR',
+            'formatter': 'detailed',
+            'filename': 'tracker.log',
+            'mode': 'a',
+            'encoding': 'utf-8',
         },
         'console_logger': {
             'class': 'StreamHandler',
+            'level': 'WARNING',
             'formatter': 'basic',
+            'stream': 'ext://sys.stdout'
         }
     },
     'loggers': {
         '__main__': {
-            'handlers': ['file_logger'],
+            'handlers': ['file_logger', 'console_logger'],
             'level': 'WARNING',
             'propagate': False
         },
         'menu.py': {
-            'handlers': ['file_logger'],
-            'level': 'ERROR',
+            'handlers': ['file_logger', 'console_logger'],
+            'level': 'WARNING',
             'propagate': False
         },
         'model.py': {
