@@ -18,6 +18,8 @@ BASE_DIR = Path().resolve()
 MEDIA_DIR = BASE_DIR / 'media'
 DATETODAY = datetime.date.today()
 
+logger = logging.getLogger(__name__)
+
 
 class GUIManager(QWidget):
     """Overall manager for all GUI objects and app UI functions."""

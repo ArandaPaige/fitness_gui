@@ -1,9 +1,11 @@
 from pathlib import Path
-
+import logging
 
 BASE_DIR = Path().resolve()
 INI_FILE = 'settings.ini'
 INI_PATH = BASE_DIR / INI_FILE
+
+logger = logging.getLogger(__name__)
 
 
 class Settings:

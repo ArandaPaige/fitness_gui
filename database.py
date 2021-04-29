@@ -1,6 +1,7 @@
 import datetime
 import sqlite3
 from pathlib import Path
+import logging
 
 
 from user import User
@@ -9,6 +10,8 @@ BASE_DIR = Path().resolve()
 DATABASE = 'user.db'
 DATABASE_PATH = BASE_DIR / DATABASE
 DATE_TODAY = str(datetime.date.today())
+
+logger = logging.getLogger(__name__)
 
 
 def create_connection():

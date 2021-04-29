@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-import logging
+import logging.config
 
 from PyQt6.QtWidgets import QApplication
 
@@ -12,7 +12,7 @@ DATABASE = 'user.db'
 DATABASE_PATH = BASE_DIR / DATABASE
 
 LOG_CONFIG = {
-    'version': '1',
+    'version': 1,
     'formatters': {
         'detailed':    {
             'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -24,7 +24,7 @@ LOG_CONFIG = {
     },
     'handlers': {
         'file_logger': {
-            'class': 'FileHandler',
+            'class': 'logging.FileHandler',
             'level': 'ERROR',
             'formatter': 'detailed',
             'filename': 'tracker.log',
@@ -32,13 +32,18 @@ LOG_CONFIG = {
             'encoding': 'utf-8',
         },
         'console_logger': {
-            'class': 'StreamHandler',
+            'class': 'logging.StreamHandler',
             'level': 'WARNING',
             'formatter': 'basic',
             'stream': 'ext://sys.stdout'
         }
     },
     'loggers': {
+        '': {
+            'handlers': ['file_logger', 'console_logger'],
+            'level': 'WARNING',
+            'propagate': False
+        },
         '__main__': {
             'handlers': ['file_logger', 'console_logger'],
             'level': 'WARNING',
@@ -66,6 +71,8 @@ LOG_CONFIG = {
         },
     }
 }
+
+logging.config.dictConfig(LOG_CONFIG)
 
 QTAPP = QApplication(sys.argv)
 

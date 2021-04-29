@@ -1,9 +1,12 @@
 import datetime
+import logging
 
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
 
 DATETODAY = datetime.date.today()
+
+logger = logging.getLogger(__name__)
 
 
 def convert_height_metric(height):
