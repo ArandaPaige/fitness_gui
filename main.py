@@ -14,28 +14,58 @@ DATABASE_PATH = BASE_DIR / DATABASE
 LOG_CONFIG = {
     'version': '1',
     'formatters': {
-        'basic':    {
+        'detailed':    {
             'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
             'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+        'basic':    {
+            'format': '%(name)s %(message)s'
         }
     },
     'handlers': {
         'file_logger': {
             'class': 'FileHandler',
-            'formatter': 'basic'
+            'formatter': 'detailed'
+        },
+        'console_logger': {
+            'class': 'StreamHandler',
+            'formatter': 'basic',
         }
     },
     'loggers': {
-
+        '__main__': {
+            'handlers': ['file_logger'],
+            'level': 'WARNING',
+            'propagate': False
+        },
+        'menu.py': {
+            'handlers': ['file_logger'],
+            'level': 'ERROR',
+            'propagate': False
+        },
+        'model.py': {
+            'handlers': ['file_logger'],
+            'level': 'ERROR',
+            'propagate': False
+        },
+        'database.py': {
+            'handlers': ['file_logger'],
+            'level': 'ERROR',
+            'propagate': False
+        },
+        'settings.py': {
+            'handlers': ['file_logger'],
+            'level': 'ERROR',
+            'propagate': False
+        },
     }
-
 }
 
 QTAPP = QApplication(sys.argv)
 
 
 def main():
-    if DATABASE_PATH.exists() == False:
+    if DATABASE_PATH.exists() is False:
         database.create_user_tables()
         user = None
     else:

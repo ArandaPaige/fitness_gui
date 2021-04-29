@@ -221,6 +221,3 @@ def delete_weight_entry(entry_id):
     cur.execute('''DELETE from WEIGHT_HISTORY where ID = ?''', (entry_id,))
     db.commit()
     db.close()
-
-def insert_column():
-    pass
