@@ -2,6 +2,7 @@ import datetime
 import sqlite3
 from pathlib import Path
 
+
 from user import User
 
 BASE_DIR = Path().resolve()

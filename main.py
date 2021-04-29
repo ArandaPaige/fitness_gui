@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+import logging
 
 from PyQt6.QtWidgets import QApplication
 
@@ -9,6 +10,26 @@ from menu import GUIManager
 BASE_DIR = Path().resolve()
 DATABASE = 'user.db'
 DATABASE_PATH = BASE_DIR / DATABASE
+
+LOG_CONFIG = {
+    'version': '1',
+    'formatters': {
+        'basic':    {
+            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        }
+    },
+    'handlers': {
+        'file_logger': {
+            'class': 'FileHandler',
+            'formatter': 'basic'
+        }
+    },
+    'loggers': {
+
+    }
+
+}
 
 QTAPP = QApplication(sys.argv)
 

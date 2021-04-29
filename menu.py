@@ -2,6 +2,7 @@ import datetime
 import sys
 from pathlib import Path
 from functools import partial
+import logging
 
 import pyqtgraph as pg
 from PyQt6.QtCore import *
@@ -195,7 +196,7 @@ class MainWidget(QWidget):
         bmi.setToolTip(
             f'BMI is a convenient rule of thumb for categorizing a person as underweight, normal, overweight, or obese.'
             f'\nWhile helpful broadly across the population, it can fail to account for a person that is very athletic.'
-            f'\nA person with a lot of muscle may skew towards being overweight or even obese.'
+            f'\nA person with a lot of muscle may skew towards being overweight or even obese on the BMI scale.'
         )
         bmi.setReadOnly(True)
         return bmi
@@ -271,14 +272,14 @@ class MainWidget(QWidget):
     def average_weight_change(self):
         average = QLineEdit()
         average.setReadOnly(True)
-        average.setToolTip('The average weight loss you have experienced per entry.')
+        average.setToolTip('The average weight change you have experienced per entry.')
         return average
 
     def time_to_goal(self):
         time = QLineEdit()
         time.setReadOnly(True)
         time.setToolTip(
-            f'The amounts of days left until you reach your goal '
+            f'The amount of days left until you reach your goal '
             f'should the trajectory of your weight progression '
             f'remain the same.'
         )
