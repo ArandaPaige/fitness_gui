@@ -1,8 +1,8 @@
 import datetime
-import sys
-from pathlib import Path
-from functools import partial
 import logging
+import sys
+from functools import partial
+from pathlib import Path
 
 import pyqtgraph as pg
 from PyQt6.QtCore import *

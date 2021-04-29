@@ -1,6 +1,6 @@
+import logging.config
 import sys
 from pathlib import Path
-import logging.config
 
 from PyQt6.QtWidgets import QApplication
 
@@ -13,12 +13,13 @@ DATABASE_PATH = BASE_DIR / DATABASE
 
 LOG_CONFIG = {
     'version': 1,
+    'disable_existing_loggers': False,
     'formatters': {
-        'detailed':    {
+        'detailed': {
             'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
             'datefmt': '%Y-%m-%d %H:%M:%S'
         },
-        'basic':    {
+        'basic': {
             'format': '%(name)s %(message)s'
         }
     },
@@ -39,40 +40,40 @@ LOG_CONFIG = {
         }
     },
     'loggers': {
-        '': {
-            'handlers': ['file_logger', 'console_logger'],
-            'level': 'WARNING',
-            'propagate': False
-        },
         '__main__': {
             'handlers': ['file_logger', 'console_logger'],
             'level': 'WARNING',
             'propagate': False
         },
-        'menu.py': {
+        'menu': {
             'handlers': ['file_logger', 'console_logger'],
             'level': 'WARNING',
             'propagate': False
         },
-        'model.py': {
+        'model': {
             'handlers': ['file_logger'],
             'level': 'ERROR',
             'propagate': False
         },
-        'database.py': {
+        'database': {
             'handlers': ['file_logger'],
             'level': 'ERROR',
             'propagate': False
         },
-        'settings.py': {
+        'settings': {
             'handlers': ['file_logger'],
             'level': 'ERROR',
             'propagate': False
         },
+    },
+    'root': {
+        'handlers': ['file_logger'],
+        'level': 'ERROR',
     }
 }
 
 logging.config.dictConfig(LOG_CONFIG)
+logger = logging.getLogger(__name__)
 
 QTAPP = QApplication(sys.argv)
 
