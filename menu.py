@@ -555,6 +555,10 @@ class MainWidget(QWidget):
         self.graph_x, self.graph_y = model.create_graph_list(self.sorted_weight_list, days)
         if len(self.graph_x) > 0:
             if lerp is None:
+                self.viewbox_set_limits(
+                    xMin=-1, xMax=(max(self.graph_x) + 1),
+                    yMin=(min(self.graph_y) - 10), yMax=(max(self.graph_y) + 10)
+                )
                 self.user_graph.setYRange((max(self.graph_y) + 10), (min(self.graph_y) - 10))
                 self.user_graph.plot(self.graph_x, self.graph_y, symbol='o', clear=True)
             else:
