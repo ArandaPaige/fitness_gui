@@ -78,16 +78,10 @@ def create_table_list(sorted_list):
     return id_date_weight_list
 
 
-def create_graph_list(user_list, days=0):
-    """
-    Creates a list of weights that have been sorted by date in descending order
-    :param days: list slice by entry
-    :param user_list: a list from the user instance
-    :return: List
-    """
+def create_graph_list(sorted_list, days=0):
+    """Creates a list of weights that have been sorted by date in descending order."""
     graph_xlist = []
     graph_ylist = []
-    sorted_list = sorted(user_list, key=lambda x: x[1])
     for i, entry in enumerate(sorted_list[days:]):
         graph_x, graph_y = entry[2], i
         graph_ylist.append(graph_x)
@@ -154,7 +148,7 @@ def lerp_weight(days, start_weight, goal_weight, weight_delta):
     return lerp_x_list, lerp_y_list
 
 
-def lerp_weight_entry(days, y_list, start_weight, goal_weight, weight_delta):
+def lerp_weight_entry(days, y_list, start_weight, weight_delta):
     day_range = range(len(y_list), (len(y_list) + days))
     lerp_x_list = []
     lerp_y_list = []

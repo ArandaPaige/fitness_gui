@@ -552,29 +552,26 @@ class MainWidget(QWidget):
         self.user_graph.getViewBox().setLimits(xMin=xMin, xMax=xMax, yMin=yMin, yMax=yMax)
 
     def update_graph(self, days=0, lerp=None):
-        item = self.user_graph.listDataItems()[0]
-        self.graph_x, self.graph_y = model.create_graph_list(self.user.weight_history, days)
+        self.graph_x, self.graph_y = model.create_graph_list(self.sorted_weight_list, days)
         if len(self.graph_x) > 0:
             if lerp is None:
-                self.user_graph.setYRange((max(self.graph_y) + 15), (min(self.graph_y) - 15))
+                self.user_graph.setYRange((max(self.graph_y) + 10), (min(self.graph_y) - 10))
                 self.user_graph.plot(self.graph_x, self.graph_y, symbol='o', clear=True)
             else:
+                lerp_x, lerp_y = model.lerp_weight_entry(
+                    lerp, self.graph_y, self.sorted_weight_list[-1][2], self.weight_delta)
+                self.viewbox_set_limits(
+                    xMin=-1, xMax=(len((self.graph_x + lerp_x))),
+                    yMin=(min(self.graph_y + lerp_y) - 10), yMax=(max(self.graph_y + lerp_y) + 10)
+                )
                 self.user_graph.setYRange(
-                    (max(self.graph_y + lerp[0]) + (self.weight_delta * days + 1)),
-                    (min(self.graph_y + lerp[0]) - (self.weight_delta * days + 1))
+                    (max(self.graph_y + lerp_y) + (self.weight_delta * days + 1)),
+                    (min(self.graph_y + lerp_y) - (self.weight_delta * days + 1))
                 )
                 self.user_graph.plot(self.graph_x, self.graph_y, symbol='o', clear=True)
-                self.user_graph.plot(lerp[0], lerp[1], symbol='h', symbolBrush='r')
+                self.user_graph.plot(lerp_x, lerp_y, symbol='h', symbolBrush='r')
         else:
             return
-
-    def add_lerp_points(self, lerp_days):
-        self.update_graph()
-        lerp_x_list, lerp_y_list = model.lerp_weight_entry(
-            lerp_days, self.graph_y, self.sorted_weight_list[-1][2],
-            self.user.goal, self.weight_delta
-        )
-        self.user_graph.plot(lerp_x_list, lerp_y_list, symbol='h', symbolBrush='r')
 
     def graph_box_properties(self):
         box = QGroupBox('Press a button to change the graph displayed.')
@@ -605,37 +602,37 @@ class MainWidget(QWidget):
     def graph_14_days_btn(self):
         button = QPushButton('Last 15 Entries')
         button.setToolTip('Display the last 15 entries of your weight history')
-        button.clicked.connect(partial(self.update_graph, -15))
+        button.clicked.connect(partial(self.update_graph, days=-15))
         return button
 
     def graph_28_days_btn(self):
         button = QPushButton('Last 30 Entries')
         button.setToolTip('Display the last 30 entries of your weight history')
-        button.clicked.connect(partial(self.update_graph, -28))
+        button.clicked.connect(partial(self.update_graph, days=-28))
         return button
 
     def graph_3_months_btn(self):
         button = QPushButton('Last 60 Entries')
         button.setToolTip('Display the last 60 entries of your weight history')
-        button.clicked.connect(partial(self.update_graph, -84))
+        button.clicked.connect(partial(self.update_graph, days=-84))
         return button
 
     def lerp_7_days_btn(self):
         button = QPushButton('Future 7 Days')
         button.setToolTip('See the next week of your weight progression based on your history')
-        button.clicked.connect(partial(self.add_lerp_points, 7))
+        button.clicked.connect(partial(self.update_graph, days=-90, lerp=7))
         return button
 
     def lerp_14_days_btn(self):
         button = QPushButton('Future 14 Days')
         button.setToolTip('See the next 2 weeks of your weight progression based on your history')
-        button.clicked.connect(partial(self.add_lerp_points, 14))
+        button.clicked.connect(partial(self.update_graph, days=-90, lerp=14))
         return button
 
     def lerp_28_days_btn(self):
         button = QPushButton('Future 28 Days')
         button.setToolTip('See the next 4 weeks of your weight progression based on your history')
-        button.clicked.connect(partial(self.add_lerp_points, 28))
+        button.clicked.connect(partial(self.update_graph, days=-90, lerp=28))
         return button
 
     def set_widget_properties(self):
