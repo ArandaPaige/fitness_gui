@@ -536,7 +536,6 @@ class MainWidget(QWidget):
         )
         axis_bottom.showLabel(show=True)
         viewbox = pg.ViewBox()
-        viewbox.autoRange(padding=.01)
         user_graph = pg.PlotWidget(
             viewbox=viewbox,
             axisItems={
@@ -554,23 +553,28 @@ class MainWidget(QWidget):
     def update_graph(self, days=0, lerp=None):
         self.graph_x, self.graph_y = model.create_graph_list(self.sorted_weight_list, days)
         if len(self.graph_x) > 0:
+            x_max = max(self.graph_x)
+            y_min = min(self.graph_y)
+            y_max = max(self.graph_y)
             if lerp is None:
                 self.viewbox_set_limits(
-                    xMin=-1, xMax=(max(self.graph_x) + 1),
-                    yMin=(min(self.graph_y) - 10), yMax=(max(self.graph_y) + 10)
+                    xMin=-1, xMax=(x_max + 1),
+                    yMin=(y_min - 10), yMax=(y_max + 10)
                 )
-                self.user_graph.setYRange((max(self.graph_y) + 10), (min(self.graph_y) - 10))
+                self.user_graph.setYRange((y_max + 10), (y_min - 10))
                 self.user_graph.plot(self.graph_x, self.graph_y, symbol='o', clear=True)
             else:
                 lerp_x, lerp_y = model.lerp_weight_entry(
                     lerp, self.graph_y, self.sorted_weight_list[-1][2], self.weight_delta)
+                lerp_y_min = min(self.graph_y + lerp_y)
+                lerp_y_max = max(self.graph_y + lerp_y)
                 self.viewbox_set_limits(
                     xMin=-1, xMax=(len((self.graph_x + lerp_x))),
-                    yMin=(min(self.graph_y + lerp_y) - 10), yMax=(max(self.graph_y + lerp_y) + 10)
+                    yMin=(lerp_y_min - 10), yMax=(lerp_y_max + 10)
                 )
                 self.user_graph.setYRange(
-                    (max(self.graph_y + lerp_y) + (self.weight_delta * days + 1)),
-                    (min(self.graph_y + lerp_y) - (self.weight_delta * days + 1))
+                    (lerp_y_max + (self.weight_delta * days + 1)),
+                    (lerp_y_min - (self.weight_delta * days + 1))
                 )
                 self.user_graph.plot(self.graph_x, self.graph_y, symbol='o', clear=True)
                 self.user_graph.plot(lerp_x, lerp_y, symbol='h', symbolBrush='r')
@@ -612,31 +616,31 @@ class MainWidget(QWidget):
     def graph_28_days_btn(self):
         button = QPushButton('Last 30 Entries')
         button.setToolTip('Display the last 30 entries of your weight history')
-        button.clicked.connect(partial(self.update_graph, days=-28))
+        button.clicked.connect(partial(self.update_graph, days=-30))
         return button
 
     def graph_3_months_btn(self):
         button = QPushButton('Last 60 Entries')
         button.setToolTip('Display the last 60 entries of your weight history')
-        button.clicked.connect(partial(self.update_graph, days=-84))
+        button.clicked.connect(partial(self.update_graph, days=-60))
         return button
 
     def lerp_7_days_btn(self):
         button = QPushButton('Future 7 Days')
         button.setToolTip('See the next week of your weight progression based on your history')
-        button.clicked.connect(partial(self.update_graph, days=-90, lerp=7))
+        button.clicked.connect(partial(self.update_graph, days=-15, lerp=7))
         return button
 
     def lerp_14_days_btn(self):
         button = QPushButton('Future 14 Days')
         button.setToolTip('See the next 2 weeks of your weight progression based on your history')
-        button.clicked.connect(partial(self.update_graph, days=-90, lerp=14))
+        button.clicked.connect(partial(self.update_graph, days=-15, lerp=14))
         return button
 
     def lerp_28_days_btn(self):
         button = QPushButton('Future 28 Days')
         button.setToolTip('See the next 4 weeks of your weight progression based on your history')
-        button.clicked.connect(partial(self.update_graph, days=-90, lerp=28))
+        button.clicked.connect(partial(self.update_graph, days=-15, lerp=28))
         return button
 
     def set_widget_properties(self):
