@@ -536,6 +536,7 @@ class MainWidget(QWidget):
         )
         axis_bottom.showLabel(show=True)
         viewbox = pg.ViewBox()
+        viewbox.autoRange(padding=.01)
         user_graph = pg.PlotWidget(
             viewbox=viewbox,
             axisItems={
@@ -544,14 +545,26 @@ class MainWidget(QWidget):
                 'bottom': axis_bottom
             }
         )
+
         return user_graph
 
-    def update_graph(self, days=0):
+    def viewbox_set_limits(self, xMin=None, xMax=None, yMin=None, yMax=None):
+        self.user_graph.getViewBox().setLimits(xMin=xMin, xMax=xMax, yMin=yMin, yMax=yMax)
+
+    def update_graph(self, days=0, lerp=None):
+        item = self.user_graph.listDataItems()[0]
         self.graph_x, self.graph_y = model.create_graph_list(self.user.weight_history, days)
         if len(self.graph_x) > 0:
-            self.user_graph.setYRange((max(self.graph_y) + 20), (min(self.graph_y) - 20))
-            self.user_graph.plot(self.graph_x, self.graph_y, symbol='o', clear=True)
-            item = self.user_graph.listDataItems()[0]
+            if lerp is None:
+                self.user_graph.setYRange((max(self.graph_y) + 15), (min(self.graph_y) - 15))
+                self.user_graph.plot(self.graph_x, self.graph_y, symbol='o', clear=True)
+            else:
+                self.user_graph.setYRange(
+                    (max(self.graph_y + lerp[0]) + (self.weight_delta * days + 1)),
+                    (min(self.graph_y + lerp[0]) - (self.weight_delta * days + 1))
+                )
+                self.user_graph.plot(self.graph_x, self.graph_y, symbol='o', clear=True)
+                self.user_graph.plot(lerp[0], lerp[1], symbol='h', symbolBrush='r')
         else:
             return
 
@@ -592,7 +605,7 @@ class MainWidget(QWidget):
     def graph_14_days_btn(self):
         button = QPushButton('Last 15 Entries')
         button.setToolTip('Display the last 15 entries of your weight history')
-        button.clicked.connect(partial(self.update_graph, -14))
+        button.clicked.connect(partial(self.update_graph, -15))
         return button
 
     def graph_28_days_btn(self):
@@ -958,18 +971,19 @@ class AboutMenu(QWidget):
         self.parent = parent
         self.setWindowTitle('About')
 
-    def image_author(self):
-        label = QLabel()
-        image = QPixmap('media/Programmer.png')
-        label.setPixmap(image)
-        return label
-
     def information_box(self):
         box = QGroupBox('About the App')
         layout = QVBoxLayout()
         box.setLayout(layout)
         return box
 
+    def author_info(self):
+        label = QLabel()
+        label.setText(
+            f'Thank you for using the program! I hope it meets your needs.\n '
+            f'If you have any questions or if you run into any errors, please use the contact information below to get answers.'
+        )
+        return label
 
 class NewUserDialog(QDialog):
 

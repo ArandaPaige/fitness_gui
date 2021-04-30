@@ -1,8 +1,7 @@
 import datetime
+import logging
 import sqlite3
 from pathlib import Path
-import logging
-
 
 from user import User
 
@@ -15,29 +14,34 @@ logger = logging.getLogger(__name__)
 
 
 def create_connection():
+    """Creates connection to the provided database and returns it. Exception logged if connection cannot be formed."""
     try:
         connection = sqlite3.connect(DATABASE)
-    except sqlite3.DatabaseError as error:
-        print(error)
+    except sqlite3.DatabaseError:
+        logger.exception('Exception occurred.')
     else:
         return connection
-    return
+    return None
 
 
 def execute_sql_statement(connection, sql_statement):
-    try:
-        cursor = connection.cursor()
-    except sqlite3.Error as error:
-        print(error)
-    else:
-        cursor.execute(sql_statement)
-    finally:
-        connection.commit()
-        connection.close()
+    """Executes SQL statement with database connection. Exception logged if execution cannot be performed."""
+    if connection is not None:
+        try:
+            cursor = connection.cursor()
+        except sqlite3.Error:
+            logger.exception('Exception occurred.')
+        else:
+            cursor.execute(sql_statement)
+            connection.commit()
+        finally:
+            connection.close()
+    return
 
 
 def create_user_tables():
-    """
+    """Constructs USER and WEIGHT_HISTORY SQLite tables.
+
     Constructs two SQLite tables: USER and WEIGHT_HISTORY. USER stores user personal metrics.
     WEIGHT_HISTORY foreign keys USER by ID and stores the USER's weight entry history.
     :return: None
@@ -87,12 +91,7 @@ def retrieve_user(user_id):
 
 
 def insert_user(user):
-    """
-    Inserts the user object into the database with the object's attributes as parameters
-    :param user: a user object
-    :return: None
-    """
-
+    """Inserts the user object into the database with the object's attributes as parameters."""
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''
@@ -106,11 +105,7 @@ def insert_user(user):
 
 
 def load_user_history(user):
-    """
-    Loads the user's weight history as an attribute of the user instance.
-    :param user: a user object
-    :return: None
-    """
+    """Loads the user's weight history as an attribute of the user instance."""
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     user_history = cur.execute("SELECT ID, DATE, WEIGHT from WEIGHT_HISTORY where PERSON_ID = ?", (user.user_id,))
@@ -119,12 +114,7 @@ def load_user_history(user):
 
 
 def update_user_name(name, user_id):
-    """
-    Updates the user's name in the USER table.
-    :param name: The personal name of the user
-    :param user_id: The user's ID in the database
-    :return: None
-    """
+    """Updates the user's name in the USER table."""
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''
@@ -134,12 +124,7 @@ def update_user_name(name, user_id):
 
 
 def update_user_weight(weight, user_id):
-    """
-    Updates the user's weight in the USER table.
-    :param weight: the weight of the user
-    :param user_id: the user's ID in the database
-    :return: None
-    """
+    """Updates the user's weight in the USER table."""
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''
@@ -149,12 +134,7 @@ def update_user_weight(weight, user_id):
 
 
 def update_user_goal(goal, user_id):
-    """
-    Updates the user's goal weight in the USER table.
-    :param goal: the user's goal weight in the USER table.
-    :param user_id: the user's ID in the database
-    :return: None
-    """
+    """Updates the user's goal weight in the USER table."""
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''
@@ -164,12 +144,7 @@ def update_user_goal(goal, user_id):
 
 
 def update_user_height(height, user_id):
-    """
-    Updates the user's height in the USER table.
-    :param height: the user's height in the USER table.
-    :param user_id: the user's ID in the database
-    :return: None
-    """
+    """Updates the user's height in the USER table."""
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''
@@ -179,13 +154,7 @@ def update_user_height(height, user_id):
 
 
 def insert_weight_entry(date, weight, person_id):
-    """
-    Inserts a new entry into the WEIGHT_HISTORY table.
-    :param date: the date in which the weight was recorded.
-    :param weight: the user's weight.
-    :param person_id: the ID of the user in the WEIGHT_HISTORY table.
-    :return: None
-    """
+    """Inserts a new entry into the database with the date and weight provided."""
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''
@@ -196,12 +165,7 @@ def insert_weight_entry(date, weight, person_id):
 
 
 def update_weight_entry(entry_id, weight, date):
-    """
-    :param entry_id: the ID of the entry.
-    :param weight: the weight of the user
-    :param date: the date in which the weight was recorded.
-    :return: None
-    """
+    """Updates the entry in the database with new weight and date provided."""
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''
@@ -214,11 +178,7 @@ def update_weight_entry(entry_id, weight, date):
 
 
 def delete_weight_entry(entry_id):
-    """
-    Deletes the entry in the WEIGHT_HISTORY table that matches the ID parameter.
-    :param entry_id: the ID of the entry.
-    :return: None
-    """
+    """Deletes the entry in the WEIGHT_HISTORY table that matches the ID parameter."""
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
     cur.execute('''DELETE from WEIGHT_HISTORY where ID = ?''', (entry_id,))
