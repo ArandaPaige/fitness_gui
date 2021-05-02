@@ -24,7 +24,7 @@ def create_connection():
     return None
 
 
-def execute_sql_statement(connection, sql_statement):
+def execute_sql_statement(connection, sql_statement, params):
     """Executes SQL statement with database connection. Exception logged if execution cannot be performed."""
     if connection is not None:
         try:
@@ -32,8 +32,17 @@ def execute_sql_statement(connection, sql_statement):
         except sqlite3.Error:
             logger.exception('Exception occurred.')
         else:
-            cursor.execute(sql_statement)
-            connection.commit()
+            try:
+                data = cursor.execute(sql_statement, params)
+            except sqlite3.ProgrammingError:
+                logger.exception('Database programming exception occurred.')
+            except sqlite3.IntegrityError:
+                logger.exception('Database integrity exception occurred.')
+            else:
+                if data is None:
+                    connection.commit()
+                else:
+                    return data
         finally:
             connection.close()
     return
