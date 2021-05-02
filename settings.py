@@ -38,6 +38,7 @@ class Settings:
         try:
             fcreate = open(INI_FILE, 'x', encoding='utf-8')
         except FileExistsError:
+            logger.exception('File exists exception occurred.')
             return
         else:
             fcreate.close()
@@ -53,6 +54,7 @@ class Settings:
         try:
             fwrite = open(INI_FILE, 'w', encoding='utf-8')
         except FileNotFoundError:
+            logger.exception('File not found exception occurred.')
             self.check_settings()
         else:
             with fwrite:
@@ -70,6 +72,7 @@ class Settings:
         try:
             fread = open(INI_FILE, 'r')
         except FileNotFoundError:
+            logger.exception('File not found exception occurred.')
             self.check_settings()
         else:
             with fread:
