@@ -165,6 +165,11 @@ class MainWidget(QWidget):
         name = QLineEdit()
         name.setText(f'{self.user.name}')
         name.setReadOnly(True)
+        sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        name.setMinimumSize(75, 15)
+        name.setMaximumSize(150, 25)
+        name.setSizePolicy(sizepolicy)
+        name.setAlignment(Qt.Alignment.AlignCenter)
         return name
 
     def user_weight_properties(self):
@@ -175,6 +180,11 @@ class MainWidget(QWidget):
         weight = QLineEdit()
         weight.setToolTip('Your current weight.')
         weight.setReadOnly(True)
+        sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        weight.setMinimumSize(75, 15)
+        weight.setMaximumSize(150, 25)
+        weight.setSizePolicy(sizepolicy)
+        weight.setAlignment(Qt.Alignment.AlignCenter)
         return weight
 
     def user_weight_edit_button(self):
@@ -187,6 +197,11 @@ class MainWidget(QWidget):
         """
         height = QLineEdit()
         height.setReadOnly(True)
+        sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        height.setMinimumSize(75, 15)
+        height.setMaximumSize(150, 25)
+        height.setSizePolicy(sizepolicy)
+        height.setAlignment(Qt.Alignment.AlignCenter)
         return height
 
     def user_bmi_properties(self):
@@ -201,6 +216,11 @@ class MainWidget(QWidget):
             f'\nA person with a lot of muscle may skew towards being overweight or even obese on the BMI scale.'
         )
         bmi.setReadOnly(True)
+        sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        bmi.setMinimumSize(75, 15)
+        bmi.setMaximumSize(150, 25)
+        bmi.setSizePolicy(sizepolicy)
+        bmi.setAlignment(Qt.Alignment.AlignCenter)
         return bmi
 
     def user_goal_weight_properties(self):
@@ -211,6 +231,11 @@ class MainWidget(QWidget):
         goal_weight = QLineEdit()
         goal_weight.setToolTip('The goal weight you are trying to achieve.')
         goal_weight.setReadOnly(True)
+        sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        goal_weight.setMinimumSize(75, 15)
+        goal_weight.setMaximumSize(150, 25)
+        goal_weight.setSizePolicy(sizepolicy)
+        goal_weight.setAlignment(Qt.Alignment.AlignCenter)
         return goal_weight
 
     def set_name(self):
@@ -247,11 +272,27 @@ class MainWidget(QWidget):
         }
         """)
         layout = QGridLayout()
+        sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         name_label = QLabel('NAME')
+        name_label.setMinimumSize(75, 15)
+        name_label.setMaximumSize(150, 25)
+        name_label.setSizePolicy(sizepolicy)
         weight_label = QLabel('WEIGHT')
+        weight_label.setMinimumSize(75, 15)
+        weight_label.setMaximumSize(150, 25)
+        weight_label.setSizePolicy(sizepolicy)
         goal_label = QLabel('GOAL WEIGHT')
+        goal_label.setMinimumSize(75, 15)
+        goal_label.setMaximumSize(150, 25)
+        goal_label.setSizePolicy(sizepolicy)
         bmi_label = QLabel('BODY MASS INDEX')
+        bmi_label.setMinimumSize(75, 15)
+        bmi_label.setMaximumSize(150, 25)
+        bmi_label.setSizePolicy(sizepolicy)
         height_label = QLabel('HEIGHT')
+        height_label.setMinimumSize(75, 15)
+        height_label.setMaximumSize(150, 25)
+        height_label.setSizePolicy(sizepolicy)
         layout.addWidget(name_label, 0, 0)
         layout.addWidget(self.user_name, 0, 1)
         layout.addWidget(weight_label, 1, 0)
@@ -269,12 +310,22 @@ class MainWidget(QWidget):
         net = QLineEdit()
         net.setReadOnly(True)
         net.setToolTip('The total weight change you have experienced.')
+        sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        net.setMinimumSize(75, 15)
+        net.setMaximumSize(150, 25)
+        net.setSizePolicy(sizepolicy)
+        net.setAlignment(Qt.Alignment.AlignCenter)
         return net
 
     def average_weight_change(self):
         average = QLineEdit()
         average.setReadOnly(True)
         average.setToolTip('The average weight change you have experienced per entry.')
+        sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        average.setMinimumSize(75, 15)
+        average.setMaximumSize(150, 25)
+        average.setSizePolicy(sizepolicy)
+        average.setAlignment(Qt.Alignment.AlignCenter)
         return average
 
     def time_to_goal(self):
@@ -285,6 +336,11 @@ class MainWidget(QWidget):
             f'should the trajectory of your weight progression '
             f'remain the same.'
         )
+        sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        time.setMinimumSize(75, 15)
+        time.setMaximumSize(150, 25)
+        time.setSizePolicy(sizepolicy)
+        time.setAlignment(Qt.Alignment.AlignCenter)
         return time
 
     def end_date_properties(self):
@@ -295,6 +351,11 @@ class MainWidget(QWidget):
             f'should the trajectory of your weight progression'
             f'remain the same.'
         )
+        sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        end_date.setMinimumSize(75, 15)
+        end_date.setMaximumSize(150, 25)
+        end_date.setSizePolicy(sizepolicy)
+        end_date.setAlignment(Qt.Alignment.AlignCenter)
         return end_date
 
     def weight_box_properties(self):
@@ -310,11 +371,24 @@ class MainWidget(QWidget):
         }
         """)
         layout = QGridLayout()
+        sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         net_change_label = QLabel('NET CHANGE')
+        net_change_label.setMinimumSize(75, 15)
+        net_change_label.setMaximumSize(150, 25)
+        net_change_label.setSizePolicy(sizepolicy)
         average_label = QLabel('WEIGHT CHANGE')
-        days_label = QLabel('DAYS UNTIL GOAL REACHED:')
+        average_label.setMinimumSize(75, 15)
+        average_label.setMaximumSize(150, 25)
+        average_label.setSizePolicy(sizepolicy)
+        days_label = QLabel('DAYS UNTIL GOAL REACHED')
+        days_label.setMinimumSize(75, 15)
+        days_label.setMaximumSize(150, 25)
+        days_label.setSizePolicy(sizepolicy)
         date_label = QLabel('END DATE')
-        layout.addWidget(net_change_label, 0, 0)
+        date_label.setMinimumSize(75, 15)
+        date_label.setMaximumSize(150, 25)
+        date_label.setSizePolicy(sizepolicy)
+        layout.addWidget(net_change_label, 0, 0,)
         layout.addWidget(self.net_change, 0, 1)
         layout.addWidget(average_label, 1, 0)
         layout.addWidget(self.weight_average, 1, 1)
@@ -328,13 +402,13 @@ class MainWidget(QWidget):
     def set_progress_metrics(self):
         if len(self.sorted_weight_list) > 0:
             self.net_change.setText(
-                f'{(self.sorted_weight_list[0][2] - self.sorted_weight_list[-1][2]):.2F}'
+                f'{(self.sorted_weight_list[0][2] - self.sorted_weight_list[-1][2]):.2F} {self.settings.units}'
             )
         else:
             self.net_change.setText(f'Insufficient entries to calculate net change in weight')
         if self.weight_delta is not None:
-            self.weight_average.setText(f'{self.weight_delta:.3f}')
-            self.time_goal.setText(f'{self.time_goal_data[1]}')
+            self.weight_average.setText(f'{self.weight_delta:.3f} {self.settings.units}')
+            self.time_goal.setText(f'{self.time_goal_data[1]} days')
             self.end_date.setText(f'{self.time_goal_data[0]}')
         else:
             self.weight_average.setText(f'Insufficient entries to calculate weight change delta.')
