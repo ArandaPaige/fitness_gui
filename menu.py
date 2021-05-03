@@ -114,11 +114,8 @@ class MainWidget(QWidget):
         # Initializes widgets to display user metrics
         self.user_name = self.user_name_properties()
         self.user_weight = self.user_weight_properties()
-        self.edit_start_button = self.user_startweight_edit_button()
         self.user_goal_weight = self.user_goal_weight_properties()
-        self.edit_goal_button = self.user_goal_edit()
         self.user_height = self.user_height_properties()
-        self.edit_height_button = self.user_height_edit()
         self.user_bmi = self.user_bmi_properties()
         self.user_box = self.user_box_properties()
         self.net_change = self.net_weight_change()
@@ -170,7 +167,7 @@ class MainWidget(QWidget):
         name.setReadOnly(True)
         sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         name.setMinimumSize(50, 15)
-        name.setMaximumSize(90, 25)
+        name.setMaximumSize(150, 25)
         name.setSizePolicy(sizepolicy)
         name.setAlignment(Qt.Alignment.AlignCenter)
         return name
@@ -180,7 +177,7 @@ class MainWidget(QWidget):
         Sets the default properties of the weight QLineEdit object.
         :return: None
         """
-        weight = QLineEdit()
+        weight = QLineSub()
         weight.setToolTip(
             'The weight at which you started tracking. This value can be updated to reflect dietary changes'
         )
@@ -189,24 +186,11 @@ class MainWidget(QWidget):
         weight.setReadOnly(True)
         sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         weight.setMinimumSize(50, 15)
-        weight.setMaximumSize(90, 25)
+        weight.setMaximumSize(150, 25)
         weight.setSizePolicy(sizepolicy)
         weight.setAlignment(Qt.Alignment.AlignCenter)
         weight.editingFinished.connect(partial(self.update_startweight_db, weight))
         return weight
-
-    def user_startweight_edit_button(self):
-        button = QPushButton('Update')
-        sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        button.setMinimumSize(40, 15)
-        button.setMaximumSize(50, 25)
-        button.setSizePolicy(sizepolicy)
-        button.clicked.connect(partial(self.disable_read_only, self.user_weight))
-        return button
-
-    def disable_read_only(self, qline):
-        qline.setReadOnly(False)
-        qline.setText(str(qline.text().split()[0]))
 
     def update_startweight_db(self, qline):
         database.update_user_weight((float(qline.text()), self.user.user_id))
@@ -219,7 +203,7 @@ class MainWidget(QWidget):
         Sets the default properties of the weight goal QLineEdit object.
         :return: None
         """
-        goal_weight = QLineEdit()
+        goal_weight = QLineSub()
         goal_weight.setToolTip(
             'The goal weight you are trying to achieve. This can be edited to reflect changes in your dietary goals.'
         )
@@ -228,20 +212,11 @@ class MainWidget(QWidget):
         goal_weight.setValidator(validator)
         sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         goal_weight.setMinimumSize(50, 15)
-        goal_weight.setMaximumSize(90, 25)
+        goal_weight.setMaximumSize(150, 25)
         goal_weight.setSizePolicy(sizepolicy)
         goal_weight.setAlignment(Qt.Alignment.AlignCenter)
         goal_weight.editingFinished.connect(partial(self.update_goalweight_db, goal_weight))
         return goal_weight
-
-    def user_goal_edit(self):
-        button = QPushButton('Update')
-        sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        button.setMinimumSize(40, 15)
-        button.setMaximumSize(50, 25)
-        button.setSizePolicy(sizepolicy)
-        button.clicked.connect(partial(self.disable_read_only, self.user_goal_weight))
-        return button
 
     def update_goalweight_db(self, qline):
         database.update_user_goal((float(qline.text()), self.user.user_id))
@@ -256,7 +231,7 @@ class MainWidget(QWidget):
         Sets the default properties of the height QLineEdit object.
         :return: None
         """
-        height = QLineEdit()
+        height = QLineSub()
         height.setReadOnly(True)
         height.setToolTip(
             'Your height, which is utilized to calculate BMI. It can be changed to reflect changes in your height'
@@ -265,20 +240,11 @@ class MainWidget(QWidget):
         height.setValidator(validator)
         sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         height.setMinimumSize(50, 15)
-        height.setMaximumSize(90, 25)
+        height.setMaximumSize(150, 25)
         height.setSizePolicy(sizepolicy)
         height.setAlignment(Qt.Alignment.AlignCenter)
         height.editingFinished.connect(partial(self.update_height_db, height))
         return height
-
-    def user_height_edit(self):
-        button = QPushButton('Update')
-        sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        button.setMinimumSize(40, 15)
-        button.setMaximumSize(50, 25)
-        button.setSizePolicy(sizepolicy)
-        button.clicked.connect(partial(self.disable_read_only, self.user_height))
-        return button
 
     def update_height_db(self, qline):
         database.update_user_height((int(qline.text()), self.user.user_id))
@@ -300,7 +266,7 @@ class MainWidget(QWidget):
         bmi.setReadOnly(True)
         sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         bmi.setMinimumSize(50, 15)
-        bmi.setMaximumSize(90, 25)
+        bmi.setMaximumSize(150, 25)
         bmi.setSizePolicy(sizepolicy)
         bmi.setAlignment(Qt.Alignment.AlignCenter)
         return bmi
@@ -361,13 +327,10 @@ class MainWidget(QWidget):
         layout.addWidget(self.user_name, 0, 1)
         layout.addWidget(weight_label, 1, 0)
         layout.addWidget(self.user_weight, 1, 1)
-        layout.addWidget(self.edit_start_button, 1, 2)
         layout.addWidget(goal_label, 2, 0)
         layout.addWidget(self.user_goal_weight, 2, 1)
-        layout.addWidget(self.edit_goal_button, 2, 2)
         layout.addWidget(height_label, 3, 0)
         layout.addWidget(self.user_height, 3, 1)
-        layout.addWidget(self.edit_height_button, 3, 2)
         layout.addWidget(bmi_label, 4, 0)
         layout.addWidget(self.user_bmi, 4, 1)
         box.setLayout(layout)
@@ -716,7 +679,6 @@ class MainWidget(QWidget):
                     (lerp_y_max + (self.weight_delta * days + 1)),
                     (lerp_y_min - (self.weight_delta * days + 1))
                 )
-                self.user_graph.setYRange((lerp_y_max + 5), (lerp_y_min - 5))
                 self.user_graph.plot(self.graph_x, self.graph_y, symbol='o', clear=True)
                 self.user_graph.plot(lerp_x, lerp_y, symbol='h', symbolBrush='r')
         else:
@@ -885,6 +847,16 @@ class DeleteDialog(QDialog):
     def main_layout(self):
         self.layout.addWidget(self.label)
         self.layout.addLayout(self.button_layout)
+
+
+class QLineSub(QLineEdit):
+
+    def __init__(self):
+        super().__init__()
+
+    def mouseDoubleClickEvent(self, mouse_event):
+        self.setReadOnly(False)
+        self.setText(self.text().split()[0])
 
 
 class SettingsMenu(QWidget):
