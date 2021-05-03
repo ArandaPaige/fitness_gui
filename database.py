@@ -33,8 +33,8 @@ def execute_sql_statement(connection, sql_statement, params):
             logger.exception('Exception occurred.')
         else:
             try:
-                data = cursor.execute(sql_statement, params)
-                if len(data.fetchall()) == 0:
+                data = cursor.execute(sql_statement, params).fetchall()
+                if len(data) == 0:
                     connection.commit()
                 else:
                     return data
@@ -117,13 +117,28 @@ def insert_user(user):
     db.close()
 
 
-def load_user_history(user):
+def dupinsert_user(user):
+    """Inserts the user object into the database with the object's attributes as parameters."""
+    sql_statement = (''' INSERT INTO USER 
+                         (NAME,WEIGHT,GOAL,HEIGHT) 
+                         VALUES (?,?,?,?)'''
+                     )
+    execute_sql_statement(create_connection(), sql_statement, (user.name, user.weight, user.goal, user.height))
+    sql_statement = (''' INSERT INTO WEIGHT_HISTORY 
+                         (DATE, WEIGHT, PERSON_ID)
+                         VALUES (?,?,?)'''
+                     )
+    execute_sql_statement(create_connection(), sql_statement, (DATE_TODAY, user.weight, user.user_id))
+
+
+def upload_user_history(user):
     """Loads the user's weight history as an attribute of the user instance."""
-    db = sqlite3.connect(DATABASE)
-    cur = db.cursor()
-    user_history = cur.execute("SELECT ID, DATE, WEIGHT from WEIGHT_HISTORY where PERSON_ID = ?", (user.user_id,))
-    row_history = user_history.fetchall()
-    user.set_weight_history(row_history)
+    sql_statement = (''' SELECT 
+                         ID, DATE, WEIGHT from WEIGHT_HISTORY 
+                         where PERSON_ID = ?'''
+                     )
+    data = execute_sql_statement(create_connection(), sql_statement, (user.user_id,))
+    user.set_weight_history(data)
 
 
 def update_user_name(params):
@@ -159,32 +174,27 @@ def update_user_height(params):
 
 def insert_weight_entry(date, weight, person_id):
     """Inserts a new entry into the database with the date and weight provided."""
-    db = sqlite3.connect(DATABASE)
-    cur = db.cursor()
-    cur.execute('''
-    INSERT INTO WEIGHT_HISTORY (DATE, WEIGHT, PERSON_ID) 
-        VALUES (?,?,?)''', (date, weight, person_id))
-    db.commit()
-    db.close()
+    sql_statement = (''' INSERT INTO WEIGHT_HISTORY 
+                         (DATE, WEIGHT, PERSON_ID) 
+                         VALUES (?,?,?)'''
+                     )
+    execute_sql_statement(create_connection(), sql_statement, (date, weight, person_id))
 
 
 def update_weight_entry(entry_id, weight, date):
     """Updates the entry in the database with new weight and date provided."""
-    db = sqlite3.connect(DATABASE)
-    cur = db.cursor()
-    cur.execute(''' UPDATE WEIGHT_HISTORY        
-                    SET WEIGHT = ?,
-                        DATE = ? 
-                    WHERE ID = ?''', (weight, date, entry_id))
-    db.commit()
-    db.close()
+    sql_statement = (''' UPDATE WEIGHT_HISTORY        
+                         SET WEIGHT = ?,
+                            DATE = ? 
+                         WHERE ID = ?'''
+                     )
+    execute_sql_statement(create_connection(), sql_statement, (entry_id, weight, date))
 
 
-def delete_weight_entry(entry_id):
+def delete_weight_entry(entries):
     """Deletes the entry in the WEIGHT_HISTORY table that matches the ID parameter."""
-    db = sqlite3.connect(DATABASE)
-    cur = db.cursor()
-    cur.execute(''' DELETE from WEIGHT_HISTORY 
-                    WHERE ID = ?''', (entry_id,))
-    db.commit()
-    db.close()
+    sql_statement = (''' DELETE from WEIGHT_HISTORY 
+                         WHERE ID = ?'''
+                     )
+    for entry in entries:
+        execute_sql_statement(create_connection(), sql_statement, (entry,))
