@@ -245,7 +245,7 @@ class MainWidget(QWidget):
     def update_goalweight_db(self, qline):
         database.update_user_goal((float(qline.text()), self.user.user_id))
         qline.setReadOnly(True)
-        self.set_weight()
+        self.set_goal()
 
     def user_height_properties(self):
         """
