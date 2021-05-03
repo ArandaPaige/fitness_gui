@@ -539,7 +539,7 @@ class MainWidget(QWidget):
         date, weight = self.calendar.selectedDate(), float(self.weight_entry.text())
         date = date.toString('yyyy-MM-dd')
         database.insert_weight_entry(date, weight, self.user.user_id)
-        database.upload_user_history(self.user)
+        database.load_user_history(self.user)
         self.update_weight_history()
         self.load_user_table()
         self.weight_entry.clear()
@@ -825,7 +825,7 @@ class MainWidget(QWidget):
         self.weight_delta = model.weight_delta_calculator(self.sorted_weight_list)
 
     def update_time_delta(self):
-        self.time_goal_data = model.time_to_goal(self.user.weight, self.user.goal, self.weight_delta)
+        self.time_goal_data = model.time_to_goal(self.sorted_weight_list[-1][2], self.user.goal, self.weight_delta)
 
     def update_data(self):
         self.update_weight_history()

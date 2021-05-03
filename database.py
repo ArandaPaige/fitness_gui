@@ -121,54 +121,51 @@ def dupinsert_user(user):
     """Inserts the user object into the database with the object's attributes as parameters."""
     sql_statement = (''' INSERT INTO USER 
                          (NAME,WEIGHT,GOAL,HEIGHT) 
-                         VALUES (?,?,?,?)'''
-                     )
+                         VALUES (?,?,?,?)''')
     execute_sql_statement(create_connection(), sql_statement, (user.name, user.weight, user.goal, user.height))
     sql_statement = (''' INSERT INTO WEIGHT_HISTORY 
                          (DATE, WEIGHT, PERSON_ID)
-                         VALUES (?,?,?)'''
-                     )
+                         VALUES (?,?,?)''')
     execute_sql_statement(create_connection(), sql_statement, (DATE_TODAY, user.weight, user.user_id))
 
 
-def upload_user_history(user):
+def load_user_history(user):
     """Loads the user's weight history as an attribute of the user instance."""
     sql_statement = (''' SELECT 
                          ID, DATE, WEIGHT from WEIGHT_HISTORY 
-                         where PERSON_ID = ?'''
-                     )
+                         where PERSON_ID = ?''')
     data = execute_sql_statement(create_connection(), sql_statement, (user.user_id,))
     user.set_weight_history(data)
 
 
 def update_user_name(params):
     """Updates the user's name in the USER table."""
-    sql_statement = ''' UPDATE USER 
+    sql_statement = (''' UPDATE USER 
                         SET NAME = ? 
-                        WHERE USER_ID = ?'''
+                        WHERE USER_ID = ?''')
     execute_sql_statement(create_connection(), sql_statement, params)
 
 
 def update_user_weight(params):
-    sql_statement = ''' UPDATE USER 
-                        SET WEIGHT = ? 
-                        WHERE USER_ID = ?'''
+    sql_statement = (''' UPDATE USER 
+                         SET WEIGHT = ? 
+                         WHERE USER_ID = ?''')
     execute_sql_statement(create_connection(), sql_statement, params)
 
 
 def update_user_goal(params):
     """Updates the user's goal weight in the USER table."""
-    sql_statement = ''' UPDATE USER 
+    sql_statement = (''' UPDATE USER 
                         SET GOAL = ? 
-                        WHERE USER_ID = ?'''
+                        WHERE USER_ID = ?''')
     execute_sql_statement(create_connection(), sql_statement, params)
 
 
 def update_user_height(params):
     """Updates the user's height in the USER table."""
-    sql_statement = ''' UPDATE USER 
+    sql_statement = (''' UPDATE USER 
                         SET HEIGHT = ? 
-                        WHERE USER_ID = ?'''
+                        WHERE USER_ID = ?''')
     execute_sql_statement(create_connection(), sql_statement, params)
 
 
@@ -176,8 +173,7 @@ def insert_weight_entry(date, weight, person_id):
     """Inserts a new entry into the database with the date and weight provided."""
     sql_statement = (''' INSERT INTO WEIGHT_HISTORY 
                          (DATE, WEIGHT, PERSON_ID) 
-                         VALUES (?,?,?)'''
-                     )
+                         VALUES (?,?,?)''')
     execute_sql_statement(create_connection(), sql_statement, (date, weight, person_id))
 
 
@@ -186,15 +182,13 @@ def update_weight_entry(entry_id, weight, date):
     sql_statement = (''' UPDATE WEIGHT_HISTORY        
                          SET WEIGHT = ?,
                             DATE = ? 
-                         WHERE ID = ?'''
-                     )
+                         WHERE ID = ?''')
     execute_sql_statement(create_connection(), sql_statement, (entry_id, weight, date))
 
 
 def delete_weight_entry(entries):
     """Deletes the entry in the WEIGHT_HISTORY table that matches the ID parameter."""
     sql_statement = (''' DELETE from WEIGHT_HISTORY 
-                         WHERE ID = ?'''
-                     )
+                         WHERE ID = ?''')
     for entry in entries:
         execute_sql_statement(create_connection(), sql_statement, (entry,))
