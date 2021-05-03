@@ -169,8 +169,8 @@ class MainWidget(QWidget):
         name.setText(f'{self.user.name}')
         name.setReadOnly(True)
         sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        name.setMinimumSize(75, 15)
-        name.setMaximumSize(100, 25)
+        name.setMinimumSize(50, 15)
+        name.setMaximumSize(90, 25)
         name.setSizePolicy(sizepolicy)
         name.setAlignment(Qt.Alignment.AlignCenter)
         return name
@@ -188,8 +188,8 @@ class MainWidget(QWidget):
         weight.setValidator(validator)
         weight.setReadOnly(True)
         sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        weight.setMinimumSize(75, 15)
-        weight.setMaximumSize(100, 25)
+        weight.setMinimumSize(50, 15)
+        weight.setMaximumSize(90, 25)
         weight.setSizePolicy(sizepolicy)
         weight.setAlignment(Qt.Alignment.AlignCenter)
         weight.editingFinished.connect(partial(self.update_startweight_db, weight))
@@ -198,7 +198,7 @@ class MainWidget(QWidget):
     def user_startweight_edit_button(self):
         button = QPushButton('Update')
         sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        button.setMinimumSize(35, 15)
+        button.setMinimumSize(40, 15)
         button.setMaximumSize(50, 25)
         button.setSizePolicy(sizepolicy)
         button.clicked.connect(partial(self.disable_read_only, self.user_weight))
@@ -210,6 +210,7 @@ class MainWidget(QWidget):
 
     def update_startweight_db(self, qline):
         database.update_user_weight((float(qline.text()), self.user.user_id))
+        self.user.set_weight(qline.text())
         qline.setReadOnly(True)
         self.set_weight()
 
@@ -226,8 +227,8 @@ class MainWidget(QWidget):
         validator = QDoubleValidator(1, 2000, 2, goal_weight)
         goal_weight.setValidator(validator)
         sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        goal_weight.setMinimumSize(75, 15)
-        goal_weight.setMaximumSize(100, 25)
+        goal_weight.setMinimumSize(50, 15)
+        goal_weight.setMaximumSize(90, 25)
         goal_weight.setSizePolicy(sizepolicy)
         goal_weight.setAlignment(Qt.Alignment.AlignCenter)
         goal_weight.editingFinished.connect(partial(self.update_goalweight_db, goal_weight))
@@ -236,7 +237,7 @@ class MainWidget(QWidget):
     def user_goal_edit(self):
         button = QPushButton('Update')
         sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        button.setMinimumSize(35, 15)
+        button.setMinimumSize(40, 15)
         button.setMaximumSize(50, 25)
         button.setSizePolicy(sizepolicy)
         button.clicked.connect(partial(self.disable_read_only, self.user_goal_weight))
@@ -244,8 +245,11 @@ class MainWidget(QWidget):
 
     def update_goalweight_db(self, qline):
         database.update_user_goal((float(qline.text()), self.user.user_id))
+        self.user.set_goal_weight(qline.text())
         qline.setReadOnly(True)
         self.set_goal()
+        self.update_time_delta()
+        self.set_progress_metrics()
 
     def user_height_properties(self):
         """
@@ -260,8 +264,8 @@ class MainWidget(QWidget):
         validator = QDoubleValidator(1, 200, 2, height)
         height.setValidator(validator)
         sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        height.setMinimumSize(75, 15)
-        height.setMaximumSize(100, 25)
+        height.setMinimumSize(50, 15)
+        height.setMaximumSize(90, 25)
         height.setSizePolicy(sizepolicy)
         height.setAlignment(Qt.Alignment.AlignCenter)
         height.editingFinished.connect(partial(self.update_height_db, height))
@@ -270,7 +274,7 @@ class MainWidget(QWidget):
     def user_height_edit(self):
         button = QPushButton('Update')
         sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        button.setMinimumSize(35, 15)
+        button.setMinimumSize(40, 15)
         button.setMaximumSize(50, 25)
         button.setSizePolicy(sizepolicy)
         button.clicked.connect(partial(self.disable_read_only, self.user_height))
@@ -278,6 +282,7 @@ class MainWidget(QWidget):
 
     def update_height_db(self, qline):
         database.update_user_height((int(qline.text()), self.user.user_id))
+        self.user.set_height(qline.text())
         qline.setReadOnly(True)
         self.set_height()
 
@@ -294,8 +299,8 @@ class MainWidget(QWidget):
         )
         bmi.setReadOnly(True)
         sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        bmi.setMinimumSize(75, 15)
-        bmi.setMaximumSize(100, 25)
+        bmi.setMinimumSize(50, 15)
+        bmi.setMaximumSize(90, 25)
         bmi.setSizePolicy(sizepolicy)
         bmi.setAlignment(Qt.Alignment.AlignCenter)
         return bmi
@@ -442,7 +447,7 @@ class MainWidget(QWidget):
         average_label.setMinimumSize(75, 15)
         average_label.setMaximumSize(150, 25)
         average_label.setSizePolicy(sizepolicy)
-        days_label = QLabel('DAYS UNTIL GOAL REACHED')
+        days_label = QLabel('GOAL REACHED IN')
         days_label.setMinimumSize(75, 15)
         days_label.setMaximumSize(150, 25)
         days_label.setSizePolicy(sizepolicy)
@@ -696,7 +701,7 @@ class MainWidget(QWidget):
                     xMin=-1, xMax=(x_max + 1),
                     yMin=(y_min - 10), yMax=(y_max + 10)
                 )
-                self.user_graph.setYRange((y_max + 10), (y_min - 10))
+                self.user_graph.setYRange((y_max + 5), (y_min - 5))
                 self.user_graph.plot(self.graph_x, self.graph_y, symbol='o', clear=True)
             else:
                 lerp_x, lerp_y = model.lerp_weight_entry(
@@ -711,6 +716,7 @@ class MainWidget(QWidget):
                     (lerp_y_max + (self.weight_delta * days + 1)),
                     (lerp_y_min - (self.weight_delta * days + 1))
                 )
+                self.user_graph.setYRange((lerp_y_max + 5), (lerp_y_min - 5))
                 self.user_graph.plot(self.graph_x, self.graph_y, symbol='o', clear=True)
                 self.user_graph.plot(lerp_x, lerp_y, symbol='h', symbolBrush='r')
         else:

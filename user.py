@@ -26,19 +26,19 @@ class User:
 
     def set_name(self, name):
         """Sets the name of the user."""
-        self.name = str(name.text())
+        self.name = str(name)
 
     def set_weight(self, weight):
         """Sets the weight of the user."""
-        self.weight = float(weight.text())
+        self.weight = float(weight)
 
     def set_goal_weight(self, goal):
         """Sets the goal weight of the user."""
-        self.goal = float(goal.text())
+        self.goal = float(goal)
 
     def set_height(self, height):
         """Sets the user's height."""
-        self.height = float(height.text())
+        self.height = int(height)
 
     def set_weight_history(self, weight_history):
         """Sets the user's weight history to a new list of weight entries."""
