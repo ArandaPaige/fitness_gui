@@ -34,18 +34,22 @@ def execute_sql_statement(connection, sql_statement, params):
         else:
             try:
                 data = cursor.execute(sql_statement, params)
-            except sqlite3.ProgrammingError:
-                logger.exception('Database programming exception occurred.')
-            except sqlite3.IntegrityError:
-                logger.exception('Database integrity exception occurred.')
-            else:
-                if data is None:
+                if len(data.fetchall()) == 0:
                     connection.commit()
                 else:
                     return data
-        finally:
-            connection.close()
-    return
+            except sqlite3.ProgrammingError:
+                logger.exception('Database programming exception occurred.')
+                connection.rollback()
+                return
+            except sqlite3.IntegrityError:
+                logger.exception('Database integrity exception occurred.')
+                connection.rollback()
+                return
+            finally:
+                connection.close()
+    else:
+        return None
 
 
 def create_user_tables():
@@ -122,44 +126,35 @@ def load_user_history(user):
     user.set_weight_history(row_history)
 
 
-def update_user_name(name, user_id):
+def update_user_name(params):
     """Updates the user's name in the USER table."""
-    db = sqlite3.connect(DATABASE)
-    cur = db.cursor()
-    cur.execute('''
-        UPDATE USER SET NAME = ? WHERE USER_ID = ?''', (name, user_id))
-    db.commit()
-    db.close()
+    sql_statement = ''' UPDATE USER 
+                        SET NAME = ? 
+                        WHERE USER_ID = ?'''
+    execute_sql_statement(create_connection(), sql_statement, params)
 
 
-def update_user_weight(weight, user_id):
-    """Updates the user's weight in the USER table."""
-    db = sqlite3.connect(DATABASE)
-    cur = db.cursor()
-    cur.execute('''
-        UPDATE USER SET WEIGHT = ? WHERE USER_ID = ?''', (weight, user_id))
-    db.commit()
-    db.close()
+def update_user_weight(params):
+    sql_statement = ''' UPDATE USER 
+                        SET WEIGHT = ? 
+                        WHERE USER_ID = ?'''
+    execute_sql_statement(create_connection(), sql_statement, params)
 
 
-def update_user_goal(goal, user_id):
+def update_user_goal(params):
     """Updates the user's goal weight in the USER table."""
-    db = sqlite3.connect(DATABASE)
-    cur = db.cursor()
-    cur.execute('''
-        UPDATE USER SET GOAL = ? WHERE USER_ID = ?''', (goal, user_id))
-    db.commit()
-    db.close()
+    sql_statement = ''' UPDATE USER 
+                        SET GOAL = ? 
+                        WHERE USER_ID = ?'''
+    execute_sql_statement(create_connection(), sql_statement, params)
 
 
-def update_user_height(height, user_id):
+def update_user_height(params):
     """Updates the user's height in the USER table."""
-    db = sqlite3.connect(DATABASE)
-    cur = db.cursor()
-    cur.execute('''
-        UPDATE USER SET HEIGHT = ? WHERE USER_ID = ?''', (height, user_id))
-    db.commit()
-    db.close()
+    sql_statement = ''' UPDATE USER 
+                        SET HEIGHT = ? 
+                        WHERE USER_ID = ?'''
+    execute_sql_statement(create_connection(), sql_statement, params)
 
 
 def insert_weight_entry(date, weight, person_id):
@@ -177,11 +172,10 @@ def update_weight_entry(entry_id, weight, date):
     """Updates the entry in the database with new weight and date provided."""
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
-    cur.execute('''
-    UPDATE WEIGHT_HISTORY        
-        SET WEIGHT = ?,
-            DATE = ? 
-        WHERE ID = ?''', (weight, date, entry_id))
+    cur.execute(''' UPDATE WEIGHT_HISTORY        
+                    SET WEIGHT = ?,
+                        DATE = ? 
+                    WHERE ID = ?''', (weight, date, entry_id))
     db.commit()
     db.close()
 
@@ -190,6 +184,7 @@ def delete_weight_entry(entry_id):
     """Deletes the entry in the WEIGHT_HISTORY table that matches the ID parameter."""
     db = sqlite3.connect(DATABASE)
     cur = db.cursor()
-    cur.execute('''DELETE from WEIGHT_HISTORY where ID = ?''', (entry_id,))
+    cur.execute(''' DELETE from WEIGHT_HISTORY 
+                    WHERE ID = ?''', (entry_id,))
     db.commit()
     db.close()
