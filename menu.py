@@ -162,7 +162,8 @@ class MainWidget(QWidget):
         Sets the default properties of the name QLineEdit object.
         :return: None
         """
-        name = QLineEdit()
+        name = QLineSub()
+        name.setToolTip('Double-click to be able to enter a new name.')
         name.setText(f'{self.user.name}')
         name.setReadOnly(True)
         sizepolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
@@ -170,7 +171,14 @@ class MainWidget(QWidget):
         name.setMaximumSize(150, 25)
         name.setSizePolicy(sizepolicy)
         name.setAlignment(Qt.Alignment.AlignCenter)
+        name.editingFinished.connect(partial(self.update_name, name))
         return name
+
+    def update_name(self, qline):
+        database.update_user_name((qline.text(), self.user.user_id))
+        self.user.set_name(qline.text())
+        qline.setReadOnly(True)
+        self.set_name()
 
     def user_weight_properties(self):
         """
@@ -179,7 +187,7 @@ class MainWidget(QWidget):
         """
         weight = QLineSub()
         weight.setToolTip(
-            'The weight at which you started tracking. This value can be updated to reflect dietary changes'
+            'The weight at which you started tracking. Double-click to change to a new value.'
         )
         validator = QDoubleValidator(1, 2000, 2, weight)
         weight.setValidator(validator)
@@ -205,7 +213,7 @@ class MainWidget(QWidget):
         """
         goal_weight = QLineSub()
         goal_weight.setToolTip(
-            'The goal weight you are trying to achieve. This can be edited to reflect changes in your dietary goals.'
+            'The goal weight you are trying to achieve. Double-click to change to a new value.'
         )
         goal_weight.setReadOnly(True)
         validator = QDoubleValidator(1, 2000, 2, goal_weight)
@@ -234,7 +242,7 @@ class MainWidget(QWidget):
         height = QLineSub()
         height.setReadOnly(True)
         height.setToolTip(
-            'Your height, which is utilized to calculate BMI. It can be changed to reflect changes in your height'
+            'Your height, which is utilized to calculate BMI. Double-click to change to a new value.'
         )
         validator = QDoubleValidator(1, 200, 2, height)
         height.setValidator(validator)
@@ -435,15 +443,15 @@ class MainWidget(QWidget):
                 f'{(self.sorted_weight_list[0][2] - self.sorted_weight_list[-1][2]):.2F} {self.settings.units}'
             )
         else:
-            self.net_change.setText(f'Insufficient entries to calculate net change in weight')
+            self.net_change.setText(f'N/A')
         if self.weight_delta is not None:
             self.weight_average.setText(f'{self.weight_delta:.3f} {self.settings.units}')
             self.time_goal.setText(f'{self.time_goal_data[1]} days')
             self.end_date.setText(f'{self.time_goal_data[0]}')
         else:
-            self.weight_average.setText(f'Insufficient entries to calculate weight change delta.')
-            self.time_goal.setText(f'Insufficient entries to calculate time until goal reached.')
-            self.end_date.setText(f'Insufficient entries to calculate end date.')
+            self.weight_average.setText(f'N/A')
+            self.time_goal.setText(f'N/A')
+            self.end_date.setText(f'N/A.')
 
     def user_history_properties(self):
         """
