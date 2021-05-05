@@ -103,6 +103,26 @@ def retrieve_user(user_id):
         return user
 
 
+def dupretrieve_user(user_id):
+    """
+    Loads the supplied ID from the USER table and WEIGHT_HISTORY. If ID is not found, none is returned instead.
+    :param user_id: the user ID to query the database
+    :return: None or USER Object
+    """
+    db = sqlite3.connect(DATABASE)
+    cur = db.cursor()
+    user = cur.execute("SELECT USER_ID from USER where USER_ID = ?", (user_id,))
+    if user.fetchone() is None:
+        return None
+    else:
+        user_data = cur.execute("SELECT NAME, WEIGHT, GOAL, HEIGHT from USER where USER_ID = ?", (user_id,))
+        row = user_data.fetchone()
+        user_history = cur.execute("SELECT ID, DATE, WEIGHT from WEIGHT_HISTORY where PERSON_ID = ?", (user_id,))
+        row_history = user_history.fetchall()
+        user = User(name=row[0], weight=row[1], goal=row[2], height=row[3], weight_history=row_history)
+        return user
+
+
 def insert_user(user):
     """Inserts the user object into the database with the object's attributes as parameters."""
     db = sqlite3.connect(DATABASE)
